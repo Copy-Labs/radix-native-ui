@@ -1,0 +1,27 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "build": "turbo run build",
+    "build:pkg": "pnpm --filter @radix-ui/themes build",
+    "build:radix-native": "pnpm --filter @radix-ui/themes-native build:tsdown",
+    "dev": "turbo run dev --no-cache --continue",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean && rm -rf node_modules .turbo"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "prettier": "^3.4.2",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "expo-router": "~6.0.22"
+  },
+  "pnpm": {
+    "overrides": {
+      "string-width": "4.2.3"
+    }
+  }
+}

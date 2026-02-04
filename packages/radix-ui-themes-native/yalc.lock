@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@radix-ui/themes-native": {
+      "signature": "5a84e48af3797376a0df8a9901e24dca",
+      "file": true
+    }
+  }
+}

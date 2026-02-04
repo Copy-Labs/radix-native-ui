@@ -1,0 +1,6 @@
+.expo
+.DS_Store
+.expo/
+.yalc/
+dist/
+node_modules/
