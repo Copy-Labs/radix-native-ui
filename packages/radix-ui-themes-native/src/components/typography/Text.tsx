@@ -128,7 +128,7 @@ const TextComponent = React.memo(
       const fontWeight = weight ? fontWeights[weight] : undefined;
 
       // Determine text color
-      const textColor = color || colors[12];
+      const textColor = theme.colors[color!]?.['11'] || color || colors[12];
 
       // Determine truncation
       const truncateLines = truncate

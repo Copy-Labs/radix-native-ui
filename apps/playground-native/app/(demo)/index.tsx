@@ -1,23 +1,120 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Checkbox,
+  Code,
+  Flex,
+  Heading,
+  RadioGroup,
+  Select,
+  Strong,
+  Switch,
+  Text,
+  TextArea,
+  TextField,
+  ThemeProvider,
+} from '@radix-ui/themes-native';
+import { useState } from 'react';
+import { Link } from 'expo-router';
 
 export default function App() {
+  const [radioValue, setRadioValue] = useState<string>('option1');
+  const [textValue, setTextValue] = useState<string>('text example text');
+  const [sliderValue, setSliderValue] = useState<number>(3);
+  const [checked, setChecked] = useState<boolean>(false);
+
   return (
-    <View style={{ flex: 1, width: '100%', height: '100%', backgroundColor: 'red' }}>
-      {/*<Text>First open</Text>*/}
-    </View>
-    /*<ThemeProvider mode={'dark'}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'orange' }}>
-        <Box style={styles.header}>
-          <Heading size={5} style={styles.headerTitle}>
-            Radix Themes Native
-          </Heading>
-          <Text size={3} style={styles.headerSubtitle}>
-            Playground App for Testing Components
-          </Text>
-        </Box>
-      </SafeAreaView>
-    </ThemeProvider>*/
+    <ScrollView style={{ flex: 1 }}>
+      {/*<SafeAreaView>*/}
+      <ThemeProvider
+        mode={'light'}
+        themeOptions={{ accentColor: 'blue', radiusFactor: 4, scaling: 1 }}
+      >
+        <SafeAreaView style={{ flex: 1 }}>
+          <Flex direction={'column'} gap={4} paddingVertical={12}>
+            <Text align={'center'} size={8} weight={'bold'}>
+              Radix-UI Native
+            </Text>
+            <Text color={'gray'} align={'center'} size={4}>
+              Playground App for Testing Components
+            </Text>
+            <Text color={'ruby'} align={'center'} size={3}>
+              All you see in this app is built using Radix-UI Native
+            </Text>
+          </Flex>
+          <Flex direction={'column'} gap={16} paddingHorizontal={8}>
+            <Link href={'/buttons'}>
+              <Text size={4}>Buttons</Text>
+            </Link>
+            <Link href={'/badge'}>
+              <Text size={4}>Badge</Text>
+            </Link>
+            <Link href={'/switch'}>
+              <Text size={4}>Switch</Text>
+            </Link>
+            <Link href={'/card'}>
+              <Text size={4}>Card</Text>
+            </Link>
+            <Link href={'/radio'}>
+              <Text size={4}>Radio</Text>
+            </Link>
+            <Link href={'/text_fields'}>
+              <Text size={4}>Text Fields</Text>
+            </Link>
+            <Link href={'/textarea'}>
+              <Text size={4}>Text Area</Text>
+            </Link>
+            <Link href={'/heading'}>
+              <Text size={4}>Heading</Text>
+            </Link>
+          </Flex>
+        </SafeAreaView>
+      </ThemeProvider>
+
+      <ThemeProvider
+        mode={'light'}
+        themeOptions={{ accentColor: 'grass', radiusFactor: 2, scaling: 0.9 }}
+      >
+        <SafeAreaView style={{ flex: 1, gap: 16 }}>
+          <Flex direction={'column'} gap={16} paddingVertical={4} backgroundColor="gray.2">
+            <Checkbox
+              checked={checked}
+              size={'3'}
+              onCheckedChange={(checked: boolean) => setChecked(checked)}
+            />
+
+            <Select
+              disabled={false}
+              placeholder={'Select a select'}
+              size={'3'}
+              value={radioValue}
+              onValueChange={setRadioValue}
+              items={[
+                { value: 'option1', label: 'Option 1' },
+                { value: 'option2', label: 'Option 2' },
+              ]}
+            />
+
+            {/*<Slider value={sliderValue} onValueChange={setSliderValue} />*/}
+
+            <TextField size={'3'} value={textValue} onChangeText={setTextValue} />
+            <TextArea
+              label={'Your Bio'}
+              size={'3'}
+              placeholder={'Set placeholder'}
+              value={textValue}
+              onChangeText={setTextValue}
+            />
+          </Flex>
+        </SafeAreaView>
+      </ThemeProvider>
+      {/*</SafeAreaView>*/}
+    </ScrollView>
   );
 }
 
@@ -32,9 +129,9 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 1,
-    backgroundColor: 'green',
-    marginBottom: 30,
-    alignItems: 'center',
+    // backgroundColor: 'green',
+    // marginBottom: 30,
+    // alignItems: 'center',
   },
   headerTitle: {
     fontSize: 28,
