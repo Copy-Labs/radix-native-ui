@@ -21,7 +21,9 @@ export const RnView = React.memo(
       return (
         <RNView
           ref={ref}
-          style={[{ backgroundColor: colors[1] }, themedStyle, style]}
+          style={[{
+            // backgroundColor: colors[1]
+          }, themedStyle, style]}
           {...rest}
         />
       );

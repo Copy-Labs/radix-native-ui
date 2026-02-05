@@ -152,7 +152,7 @@ const Box = React.memo(
           borderWidth,
           borderRadius: radiusValue ?? borderRadiusProp,
           borderColor,
-          backgroundColor: bgColor,
+          // backgroundColor: bgColor,
           opacity,
           elevation,
         }),
