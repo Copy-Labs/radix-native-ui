@@ -312,7 +312,7 @@ const Flex = React.memo(
           paddingVertical,
           columnGap: columnGap ?? gap,
           rowGap: rowGap ?? gap,
-          backgroundColor: backgroundColor || colors[1],
+          // backgroundColor: backgroundColor || colors[1],
           borderRadius,
           opacity,
         }),

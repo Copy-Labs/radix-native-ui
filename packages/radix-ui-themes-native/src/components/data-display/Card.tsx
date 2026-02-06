@@ -3,9 +3,8 @@ import { StyleSheet, type StyleProp, ViewStyle } from 'react-native';
 import { Slot } from '../utilities/Slot';
 import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import {
-  getGrayAlpha,
-} from '../../theme/color-helpers';
+import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
+import { Color, RadiusSize } from '../../theme';
 
 interface CardProps {
   /**
@@ -13,19 +12,33 @@ interface CardProps {
    */
   asChild?: boolean;
   /**
+   * Color scheme for the badge
+   * @default undefined (uses theme's accentColor)
+   */
+  color?: Color;
+  /**
    * Card content
    */
   children: ReactNode;
+  /**
+   * Radius variant mode for accessibility
+   * @default 'medium'
+   */
+  radius?: RadiusSize;
   /**
    * Card size (affects padding)
    * @default 2
    */
   size?: 1 | 2 | 3 | 4;
   /**
-   * Card variant
-   * @default 'classic'
+   * High contrast mode for accessibility
    */
-  variant?: 'classic' | 'surface' | 'outline' | 'ghost';
+  highContrast?: boolean;
+  /**
+   * Card variant
+   * @default 'solid'
+   */
+  variant?: 'solid' | 'soft' | 'surface' | 'outline' | 'ghost';
   /**
    * Custom style
    */
@@ -49,8 +62,11 @@ const Card = React.forwardRef<any, CardProps>(
     {
       asChild = false,
       children,
+      color,
+      radius = 'medium',
       size = 2,
-      variant = 'classic',
+      highContrast = false,
+      variant = 'solid',
       style,
       ...rest
     },
@@ -61,7 +77,11 @@ const Card = React.forwardRef<any, CardProps>(
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
-    const radii = theme.radii;
+    const activeColor = color || theme.accentColor;
+    // const radii = theme.radii;
+    const radii = theme.radii[radius] ?? theme.radii.medium;
+    const selectedRadius = radius || theme.radius;
+    const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
 
     // Get size values
     const getSizeValues = () => {
@@ -86,15 +106,21 @@ const Card = React.forwardRef<any, CardProps>(
       switch (variant) {
         case 'surface':
           return {
-            backgroundColor: isDark ? grayAlpha['3'] : grayAlpha['2'],
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['3'] : grayAlpha['2'],
+            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['7'] : grayAlpha['8'],
+            borderWidth: 0.5,
+          };
+        case 'soft':
+          return {
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['3'] : grayAlpha['2'],
             borderColor: 'transparent',
             borderWidth: 0,
           };
         case 'outline':
           return {
-            backgroundColor: isDark ? grayAlpha['4'] : grayAlpha['2'],
-            borderColor: isDark ? grayAlpha['7'] : grayAlpha['8'],
-            borderWidth: 1,
+            backgroundColor: 'transparent',
+            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['7'] : grayAlpha['8'],
+            borderWidth: 0.6,
           };
         case 'ghost':
           return {
@@ -102,10 +128,10 @@ const Card = React.forwardRef<any, CardProps>(
             borderColor: 'transparent',
             borderWidth: 0,
           };
-        case 'classic':
+        case 'solid':
         default:
           return {
-            backgroundColor: isDark ? grayAlpha['4'] : grayAlpha['3'],
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['4'] : grayAlpha['3'],
             borderColor: 'transparent',
             borderWidth: 0,
           };
@@ -122,7 +148,7 @@ const Card = React.forwardRef<any, CardProps>(
       backgroundColor: variantStyles.backgroundColor,
       borderColor: variantStyles.borderColor,
       borderWidth: variantStyles.borderWidth,
-      borderRadius: radii.medium,
+      borderRadius: selectedRadius === 'full' ? 9999 : radii, // radii.medium,
       padding: sizeValues.padding,
       ...shadowStyle,
     };
