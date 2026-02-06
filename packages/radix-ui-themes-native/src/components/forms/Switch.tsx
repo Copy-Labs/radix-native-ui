@@ -1,29 +1,48 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, type ViewStyle, Animated, Easing } from 'react-native';
 import { View, TouchableOpacity } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../../components';
-import { getAccentColor, getContrast, getGrayAlpha } from '../../theme/color-helpers';
-import { Color, gray } from '../../theme';
+import {
+  getAccentColor,
+  getContrast,
+  getGrayAlpha,
+  getVariantColors,
+} from '../../theme/color-helpers';
+import { Color, gray, RadiusSize } from '../../theme';
 
 interface SwitchProps {
   /**
+   * If the switch is checked by default. Use in controlled mode.
+   */
+  defaultChecked?: boolean;
+  /**
    * Whether the switch is checked
    */
-  checked: boolean;
+  checked?: boolean;
   /**
    * Callback when checked state changes
    */
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
   /**
    * Whether the switch is disabled
    */
   disabled?: boolean;
   /**
+   * Radius variant mode for accessibility
+   * @default 'medium'
+   */
+  radius?: RadiusSize;
+  /**
    * Size variant
    * @default 2
    */
   size?: '1' | '2' | '3';
+  /**
+   * Badge variant
+   * @default 'soft'
+   */
+  variant?: 'solid' | 'soft' | 'surface';
   /**
    * Custom color for checked state
    */
@@ -50,16 +69,17 @@ interface SwitchProps {
   accessibilityHint?: string;
 }
 
-type StyleProp<T> = T | T[];
-
 const Switch = React.forwardRef<unknown, SwitchProps>(
   (
     {
+      defaultChecked,
       checked,
       onCheckedChange,
       disabled = false,
+      radius = 'full',
       size = '2',
       color,
+      variant = 'solid',
       thumbColor,
       label,
       highContrast,
@@ -80,17 +100,32 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
     const activeColor = color || theme.accentColor;
     const switchContrast = getContrast(theme, activeColor, mode, highContrast);
     const defaultThumbColor = isDark ? grayScale[4] : grayScale[1];
+    const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
+    const radii = theme.radii[radius] ?? theme.radii.medium;
+    const selectedRadius = radius || theme.radius;
 
-    const animatedValue = useRef(new Animated.Value(checked ? 1 : 0));
+    const [internalChecked, setInternalChecked] = useState(defaultChecked ?? false);
+    // Use checked if provided, otherwise use internal state
+    const isChecked = checked !== undefined ? checked : internalChecked;
+    const setChecked = (value: boolean) => {
+      if (checked === undefined) {
+        setInternalChecked(value);
+      }
+      if (onCheckedChange) {
+        onCheckedChange(value);
+      }
+    };
+
+    const animatedValue = useRef(new Animated.Value(isChecked ? 1 : 0));
 
     useEffect(() => {
       Animated.timing(animatedValue.current, {
-        toValue: checked ? 1 : 0,
+        toValue: isChecked ? 1 : 0,
         duration: 200,
         easing: Easing.bezier(0.4, 0.0, 0.2, 1),
         useNativeDriver: false,
       }).start();
-    }, [checked]);
+    }, [isChecked]);
 
     // Get size values
     const getSizeValues = () => {
@@ -98,7 +133,7 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
         case '1':
           return {
             trackWidth: 32,
-            trackHeight: 18,
+            trackHeight: 20,
             thumbSize: 14,
             gap: theme.space[1],
             fontSize: theme.typography.fontSizes[1].fontSize,
@@ -115,7 +150,7 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
         default:
           return {
             trackWidth: 44,
-            trackHeight: 24,
+            trackHeight: 26,
             thumbSize: 20,
             gap: theme.space[2],
             fontSize: theme.typography.fontSizes[2].fontSize,
@@ -127,17 +162,21 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
 
     const handlePress = () => {
       if (!disabled) {
-        onCheckedChange(!checked);
+        // onCheckedChange(!checked);
+        setChecked(!isChecked);
       }
     };
 
     const trackStyle: ViewStyle = {
       width: sizeValues.trackWidth + 2,
       height: sizeValues.trackHeight,
-      borderRadius: sizeValues.trackHeight / 2,
-      backgroundColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['6'],
+      // borderRadius: sizeValues.trackHeight / 2,
+      borderRadius: selectedRadius === 'full' ? 9999 : radii,
+      // backgroundColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['6'],
+      backgroundColor: isChecked ? variantColors.backgroundColor : grayAlpha['6'],
       borderWidth: 1,
-      borderColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['7'],
+      // borderColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['7'],
+      borderColor: isChecked ? variantColors.borderColor : grayAlpha['7'],
       opacity: disabled ? 0.5 : 1,
     };
 
@@ -150,9 +189,15 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
       width: sizeValues.trackHeight,
       height: sizeValues.trackHeight,
       borderWidth: 1,
-      borderColor: checked ? switchColor : isDark ? gray['9'] : gray['8'],
-      borderRadius: sizeValues.thumbSize + 5 / 2,
-      backgroundColor: thumbColor || (checked ? switchContrast : defaultThumbColor),
+      // borderColor: checked ? switchColor : isDark ? gray['9'] : gray['8'],
+      borderColor: isChecked
+        ? variant === 'surface'
+          ? variantColors.borderColor
+          : variantColors.backgroundColor
+        : gray['8'],
+      // borderRadius: sizeValues.thumbSize + 5 / 2,
+      borderRadius: selectedRadius === 'full' ? 9999 : radii,
+      backgroundColor: thumbColor || (isChecked ? switchContrast : defaultThumbColor),
       transform: [{ translateX: thumbTranslateX }],
       /*shadowColor: '#000',
       shadowOffset: { width: 0, height: 0 },
