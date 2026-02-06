@@ -3,7 +3,7 @@ import { StyleSheet, type StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { View } from '../primitives';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import type { Color } from '../../theme';
+import type { Color, RadiusSize } from '../../theme';
 import {
   getVariantColors,
 } from '../../theme/color-helpers';
@@ -17,12 +17,17 @@ interface BadgeProps {
    * Badge variant
    * @default 'soft'
    */
-  variant?: 'solid' | 'soft' | 'outline';
+  variant?: 'solid' | 'soft' | 'surface' | 'outline';
   /**
    * Color scheme for the badge
    * @default undefined (uses theme's accentColor)
    */
   color?: Color;
+  /**
+   * Radius variant mode for accessibility
+   * @default 'medium'
+   */
+  radius?: RadiusSize;
   /**
    * Badge size
    * @default 2
@@ -48,6 +53,7 @@ const Badge = React.forwardRef<any, BadgeProps>(
       children,
       variant = 'soft',
       color,
+      radius = 'medium',
       size = 2,
       highContrast = false,
       style,
@@ -59,26 +65,28 @@ const Badge = React.forwardRef<any, BadgeProps>(
     const theme = useTheme();
     const mode = useThemeMode();
     const isDark = mode === 'dark';
+    const radii = theme.radii[radius] ?? theme.radii.medium;
+    const selectedRadius = radius || theme.radius;
 
     const activeColor = color || theme.accentColor;
 
     // Get size values
     const getSizeValues = () => {
-      const radii = theme.radii;
+      // const radii = theme.radii;
       switch (size) {
         case 1:
           return {
             paddingVertical: 1,
             paddingHorizontal: 6,
             fontSize: theme.typography.fontSizes[1].fontSize,
-            borderRadius: radii.small,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
         case 3:
           return {
             paddingVertical: 6,
             paddingHorizontal: 12,
             fontSize: theme.typography.fontSizes[3].fontSize,
-            borderRadius: radii.small,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
         case 2:
         default:
@@ -86,13 +94,12 @@ const Badge = React.forwardRef<any, BadgeProps>(
             paddingVertical: 3,
             paddingHorizontal: 8,
             fontSize: theme.typography.fontSizes[2].fontSize,
-            borderRadius: radii.small,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
       }
     };
 
     const sizeValues = getSizeValues();
-    const radii = theme.radii;
 
     // Get colors based on variant and mode using the helper function
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
@@ -100,7 +107,7 @@ const Badge = React.forwardRef<any, BadgeProps>(
     const badgeStyle: ViewStyle = {
       backgroundColor: variantColors.backgroundColor,
       borderColor: variantColors.borderColor,
-      borderWidth: variant === 'outline' ? 1 : 0,
+      borderWidth: variant === 'outline' || 'surface' ? 1 : 0,
       borderRadius: sizeValues.borderRadius,
       paddingVertical: sizeValues.paddingVertical,
       paddingHorizontal: sizeValues.paddingHorizontal,
