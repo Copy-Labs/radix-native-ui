@@ -1,13 +1,14 @@
 import { Button, Flex, Heading, ThemeProvider } from '@radix-ui/themes-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
 export default function Buttons() {
   return (
     <ThemeProvider
       mode={'light'}
-      themeOptions={{ accentColor: 'blue', radiusFactor: 4, scaling: 1 }}
+      themeOptions={{ accentColor: 'blue', radius: 'large', scaling: 1 }}
     >
-      <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, gap: 12 }}>
         <Heading size={4}>Buttons</Heading>
         <Flex direction={'column'} gap={12} paddingHorizontal={4}>
           <Button>Hey bro - Solid</Button>
@@ -20,14 +21,24 @@ export default function Buttons() {
             Hey bro - Loading (soft)
           </Button>
           <Button onPress={() => console.log('Pressed!')}>Click Me</Button>
-          <Button highContrast={true}>
-            High Contrast
-          </Button>
+          <Button highContrast={true}>High Contrast</Button>
           <Button highContrast={true} variant={'soft'}>
             High Contrast - Soft
           </Button>
         </Flex>
-      </SafeAreaView>
+
+        <Flex gap={3} padding={4}>
+          <Button radius="none" variant="soft">
+            Edit profile
+          </Button>
+          <Button radius="medium" variant="classic">
+            Edit profile
+          </Button>
+          <Button radius="full" variant="soft">
+            Edit profile
+          </Button>
+        </Flex>
+      </View>
     </ThemeProvider>
   );
 }

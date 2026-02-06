@@ -18,7 +18,7 @@ import {
   getColorAlpha, getVariantColors,
 } from '../../theme/color-helpers';
 import RnTouchableOpacity from '@/components/primitives/TouchableOpacity';
-import { Color } from '../../theme';
+import { Color, RadiusSize } from '../../theme';
 
 interface ButtonProps {
   /**
@@ -39,6 +39,11 @@ interface ButtonProps {
    * @default 'classic'
    */
   variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
+  /**
+   * Radius variant mode for accessibility
+   * @default 'medium'
+   */
+  radius?: RadiusSize;
   /**
    * Button size
    * @default 2
@@ -77,6 +82,7 @@ const areEqual = (prevProps: ButtonProps, nextProps: ButtonProps) => {
     prevProps.style === nextProps.style &&
     prevProps.variant === nextProps.variant &&
     prevProps.color === nextProps.color &&
+    prevProps.radius === nextProps.radius &&
     prevProps.size === nextProps.size &&
     prevProps.disabled === nextProps.disabled &&
     prevProps.loading === nextProps.loading &&
@@ -97,6 +103,7 @@ const Button = React.memo(
         style,
         variant = 'classic',
         color,
+        radius = 'medium',
         size = 2,
         disabled,
         loading,
@@ -117,8 +124,8 @@ const Button = React.memo(
       const accentScale = getColorScale(theme, activeColor, mode);
       const accentAlpha = getColorAlpha(theme, activeColor);
       const focusColor = getFocusColor(theme, mode);
-      const radii = theme.radii;
-      const radius = theme.radius;
+      const radii = theme.radii[radius] ?? theme.radii.medium;
+      const selectedRadius = radius || theme.radius;
 
       // Get colors based on variant and mode
       /*const getVariantColors = useCallback(() => {
@@ -183,14 +190,14 @@ const Button = React.memo(
               paddingVertical: theme.space[2],
               paddingHorizontal: theme.space[3],
               fontSize: theme.typography.fontSizes[1].fontSize,
-              borderRadius: radius === 'full' ? 9999 : radii.small,
+              borderRadius: selectedRadius === 'full' ? 9999 : radii,
             };
           case 3:
             return {
               paddingVertical: theme.space[4],
               paddingHorizontal: theme.space[5],
               fontSize: theme.typography.fontSizes[4].fontSize,
-              borderRadius: radius === 'full' ? 9999 : radii.large,
+              borderRadius: selectedRadius === 'full' ? 9999 : radii,
             };
           case 2:
           default:
@@ -198,7 +205,7 @@ const Button = React.memo(
               paddingVertical: theme.space[3],
               paddingHorizontal: theme.space[4],
               fontSize: theme.typography.fontSizes[2].fontSize,
-              borderRadius: radius === 'full' ? 9999 : radii.medium,
+              borderRadius: selectedRadius === 'full' ? 9999 : radii,
             };
         }
       }, [size, theme, radii]);
