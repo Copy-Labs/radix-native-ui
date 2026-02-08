@@ -4,7 +4,7 @@ import { FlatList, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { getGrayAlpha } from '../../theme/color-helpers';
 
-interface DataListItem<T = any> {
+interface FancyListItem<T = any> {
   /**
    * Unique key for the item
    */
@@ -19,7 +19,7 @@ interface DataListItem<T = any> {
   index: number;
 }
 
-interface DataListProps<T = any> {
+interface FancyListProps<T = any> {
   /**
    * Array of data items
    */
@@ -27,7 +27,7 @@ interface DataListProps<T = any> {
   /**
    * Function to render each item
    */
-  renderItem: (info: DataListItem<T>) => ReactNode;
+  renderItem: (info: FancyListItem<T>) => ReactNode;
   /**
    * Function to extract unique key for each item
    */
@@ -62,7 +62,7 @@ interface DataListProps<T = any> {
   ListFooterComponent?: any;
 }
 
-const DataList = <T extends object>({
+const FancyList = <T extends object>({
   data,
   renderItem,
   keyExtractor,
@@ -73,7 +73,7 @@ const DataList = <T extends object>({
   ListEmptyComponent,
   ListHeaderComponent,
   ListFooterComponent,
-}: DataListProps<T>) => {
+}: FancyListProps<T>) => {
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -94,7 +94,7 @@ const DataList = <T extends object>({
     const itemStyle: ViewStyle = {
       paddingVertical: itemPadding ?? theme.space[3],
       paddingHorizontal: theme.space[4],
-      borderBottomWidth: showDividers ? 1 : 0,
+      // borderBottomWidth: showDividers ? 1 : 0, // Use this if you want to use border separator instead of height separator
       borderBottomColor: dividerColor,
     };
 
@@ -157,7 +157,7 @@ const DataList = <T extends object>({
   );
 };
 
-DataList.displayName = 'DataList';
+FancyList.displayName = 'FancyList';
 
 const styles = StyleSheet.create({
   container: {
@@ -183,5 +183,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export { DataList };
-export type { DataListProps, DataListItem };
+export { FancyList };
+export type { FancyListProps, FancyListItem };

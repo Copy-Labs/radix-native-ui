@@ -81,6 +81,9 @@ export default function App() {
           <Link href={'/demo/strong'}>
             <Text size={4}>strong</Text>
           </Link>
+          <Link href={'/demo/fancylist'}>
+            <Text size={4}>fancylist</Text>
+          </Link>
         </Flex>
       </ThemeProvider>
 

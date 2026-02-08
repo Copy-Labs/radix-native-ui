@@ -13,8 +13,8 @@ export { Card } from './Card';
 export type { CardProps, CardFooterProps } from './Card';
 
 // DataList
-export { DataList } from './DataList';
-export type { DataListProps, DataListItem } from './DataList';
+export { FancyList } from './FancyList';
+export type { FancyListProps, FancyListItem } from './FancyList';
 
 // Progress
 export { Progress } from './Progress';

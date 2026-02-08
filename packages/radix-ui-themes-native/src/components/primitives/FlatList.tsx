@@ -21,7 +21,7 @@ const FlatListComponent = React.memo(
       );
     }
   )
-) as <T>(props: FlatListProps<T> & { ref?: React.Ref<React.ElementRef<typeof RNFlatList>> }) => React.ReactElement;
+) as <T>(props: FlatListProps<T> & { ref?: React.Ref<React.ComponentRef<typeof RNFlatList>> }) => React.ReactElement;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (FlatListComponent as any).displayName = 'RnFlatList';
