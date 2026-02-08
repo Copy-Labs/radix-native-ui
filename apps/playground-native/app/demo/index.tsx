@@ -1,8 +1,10 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet } from 'react-native';
 import {
-  AlertDialog, Button,
+  AlertDialog,
+  Button,
   Checkbox,
+  Dialog,
   Flex,
   Select,
   Text,
@@ -19,14 +21,12 @@ export default function App() {
   const [sliderValue, setSliderValue] = useState<number>(3);
   const [checked, setChecked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   return (
     <ScrollView style={{ flex: 1 }}>
       {/*<SafeAreaView>*/}
-      <ThemeProvider
-        mode={'light'}
-        themeOptions={{ accentColor: 'blue', scaling: 1 }}
-      >
+      <ThemeProvider mode={'light'} themeOptions={{ accentColor: 'blue', scaling: 1 }}>
         <Flex direction={'column'} gap={4} paddingVertical={16}>
           <Text align={'center'} size={8} weight={'bold'}>
             Radix-UI Native
@@ -86,7 +86,7 @@ export default function App() {
 
       <ThemeProvider
         mode={'light'}
-        themeOptions={{ accentColor: 'grass', radiusFactor: 2, scaling: 0.9 }}
+        themeOptions={{ accentColor: 'indigo', radius: 'large', scaling: 0.9 }}
       >
         <SafeAreaView style={{ flex: 1, gap: 16 }}>
           <Flex direction={'column'} gap={16} paddingVertical={4} backgroundColor="gray.2">
@@ -96,14 +96,39 @@ export default function App() {
               </AlertDialog.Trigger>
               <AlertDialog.Portal>
                 <AlertDialog.Overlay />
-                <AlertDialog.Content>
-                  <AlertDialog.Title>Confirm Action</AlertDialog.Title>
-                  <AlertDialog.Description>Are you sure?</AlertDialog.Description>
-                  <AlertDialog.Action>Confirm</AlertDialog.Action>
-                  <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+                <AlertDialog.Content size={3}>
+                  <AlertDialog.Title size={6}>Confirm Action</AlertDialog.Title>
+                  <AlertDialog.Description size={3}>
+                    Are you sure? This application will no longer be accessible and any existing
+                    sessions will be expired.
+                  </AlertDialog.Description>
+                  <Flex gap={12} justify="flex-end">
+                    <AlertDialog.Cancel color={'gray'} variant={'surface'}>Cancel</AlertDialog.Cancel>
+                    <AlertDialog.Action variant={'solid'}>Confirm</AlertDialog.Action>
+                  </Flex>
                 </AlertDialog.Content>
               </AlertDialog.Portal>
             </AlertDialog.Root>
+
+            <Dialog.Root open={isDialogOpen} onOpenChange={(open: boolean) => setIsDialogOpen(open)}>
+              <Dialog.Trigger>
+                <Button variant={'soft'}>Show Dialog</Button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay />
+                <Dialog.Content size={3}>
+                  <Dialog.Title size={6}>Action Dialog</Dialog.Title>
+                  <Dialog.Description size={3}>
+                    Are you sure? This application will no longer be accessible and any existing
+                    sessions will be expired.
+                  </Dialog.Description>
+                  <Flex gap={12} justify="flex-end">
+                    {/*<Dialog.Close>Cancel</Dialog.Close>*/}
+                    {/*<Dialog.Action variant={'solid'}>Confirm</Dialog.Action>*/}
+                  </Flex>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
 
             <Checkbox
               checked={checked}

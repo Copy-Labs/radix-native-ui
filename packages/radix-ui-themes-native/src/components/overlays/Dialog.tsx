@@ -7,15 +7,19 @@ import {
   type StyleProp,
   ViewStyle,
   Pressable,
+  ScrollView,
   Dimensions,
   TextStyle,
 } from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
-import { Heading } from '../../components';
+import { type ButtonProps, Heading } from '../../components';
 import { Button } from '../../components';
 import { getGrayAlpha } from '../../theme/color-helpers';
-import type { BaseColorScale, ColorScale, RadiusScale } from '../../theme';
+import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../theme';
+import { getShadow } from '../../theme/shadows';
+import type { HeadingProps } from '../typography/Heading';
+import type { TextProps } from '../typography/Text';
 
 // ============================================================================
 // Dialog Context
@@ -65,7 +69,8 @@ export const DialogRoot = ({
 
   const theme = useTheme();
   const mode = useThemeMode();
-  const colors = mode === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
+  const isDark = mode === 'dark';
+  const colors = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
   const radii = theme.radii;
 
@@ -146,8 +151,9 @@ export const DialogOverlay = ({ style }: DialogOverlayProps) => {
   const mode = useThemeMode();
   const isDark = mode === 'dark';
 
-  // Use alpha black/white for overlay based on theme
-  const overlayColor = isDark ? `rgba(0, 0, 0, 0.7)` : `rgba(0, 0, 0, 0.5)`;
+  // Use alpha black for overlay based on theme - matches radix-ui styling
+  // Light mode: rgba(10, 10, 10, 0.6) | Dark mode: rgba(0, 0, 0, 0.6)
+  const overlayColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(10, 10, 10, 0.6)';
 
   return (
     <TouchableWithoutFeedback>
@@ -165,6 +171,40 @@ export const DialogOverlay = ({ style }: DialogOverlayProps) => {
 };
 
 // ============================================================================
+// Size configuration matching radix-ui-themes
+// ============================================================================
+
+const getSizeStyles = (
+  size: 1 | 2 | 3 | 4,
+  space: SpaceScale,
+  radii: RadiusScale
+) => {
+  const sizeConfig = {
+    1: {
+      paddingHorizontal: space[3],
+      paddingVertical: space[3],
+      radius: radii.small,
+    },
+    2: {
+      paddingHorizontal: space[4],
+      paddingVertical: space[4],
+      radius: radii.medium,
+    },
+    3: {
+      paddingHorizontal: space[5],
+      paddingVertical: space[5],
+      radius: radii.medium,
+    },
+    4: {
+      paddingHorizontal: space[6],
+      paddingVertical: space[6],
+      radius: radii.large,
+    },
+  };
+  return sizeConfig[size];
+};
+
+// ============================================================================
 // Dialog.Content - The actual dialog content
 // ============================================================================
 
@@ -172,47 +212,81 @@ interface DialogContentProps {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
   hideCloseButton?: boolean;
+  size?: 1 | 2 | 3 | 4;
 }
 
 export const DialogContent = ({
   children,
   style,
   hideCloseButton = false,
+  size = 2,
 }: DialogContentProps) => {
   const { onOpenChange, colors, grayAlpha, radii } = useDialog();
   const theme = useTheme();
-  const { width: screenWidth } = Dimensions.get('window');
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+  // Get size-specific styles
+  const sizeStyles = getSizeStyles(size, theme.space, radii);
+
+  // Get shadow for current theme mode
+  const shadow = getShadow(6, isDark);
 
   const handleClose = () => {
     onOpenChange(false);
   };
+
+  // Max width based on size - matches radix-ui behavior
+  const maxWidth = size <= 2 ? Math.min(screenWidth - 64, 400) : Math.min(screenWidth - 64, 500);
 
   return (
     <View
       style={[
         styles.content,
         {
-          backgroundColor: grayAlpha['2'],
-          borderRadius: radii.medium,
-          maxWidth: Math.min(screenWidth - 32, 400),
+          backgroundColor: isDark ? theme.colors.gray.dark[2] : '#ffffff',
+          borderRadius: sizeStyles.radius,
+          paddingHorizontal: sizeStyles.paddingHorizontal,
+          paddingVertical: sizeStyles.paddingVertical,
+          maxWidth,
+          minWidth: Math.min(screenWidth - 128, 400),
+          top: screenHeight / 2 - 96, // Approximate vertical centering
+          ...(shadow || {}),
         },
         style,
       ]}
     >
-      {children}
+      {/* Scroll container matching radix-ui structure */}
+      <ScrollView
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={true}
+        bounces={true}
+      >
+        {children}
+      </ScrollView>
       {!hideCloseButton && (
         <Pressable
           onPress={handleClose}
           style={[
             styles.closeButton,
             {
-              backgroundColor: grayAlpha['4'],
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
             },
           ]}
           accessibilityRole="button"
           accessibilityLabel="Close dialog"
         >
-          <Text style={{ color: colors[11], fontSize: 16, fontWeight: '600' }}>✕</Text>
+          <Text
+            style={{
+              color: isDark ? theme.colors.gray.dark[12] : theme.colors.gray[12],
+              fontSize: 16,
+              fontWeight: '600',
+            }}
+          >
+            ✕
+          </Text>
         </Pressable>
       )}
     </View>
@@ -221,19 +295,51 @@ export const DialogContent = ({
 
 // ============================================================================
 // Dialog.Title - Accessible title for screen readers
+// Extends HeadingProps to allow all Heading default props
 // ============================================================================
 
-interface DialogTitleProps {
+interface DialogTitleProps extends Omit<HeadingProps, 'children'> {
   children: ReactNode;
-  style?: TextStyle;
+  /**
+   * @deprecated Use 'asChild' directly on the component if needed
+   */
+  style?: HeadingProps['style'];
 }
 
-export const DialogTitle = ({ children, style = {} }: DialogTitleProps) => {
+export const DialogTitle = ({
+  children,
+  style = {},
+  size = 4,
+  weight = 'bold',
+  align,
+  color,
+  truncate,
+  numberOfLines,
+  fontFamily,
+  opacity,
+  asChild = false,
+  ...rest
+}: DialogTitleProps) => {
   const { colors } = useDialog();
   const theme = useTheme();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const dialogColors = isDark ? theme.colors.gray.dark : theme.colors.gray;
 
   return (
-    <Heading size={3} style={[{ color: colors[12], marginBottom: theme.space[2] }, style]}>
+    <Heading
+      asChild={asChild}
+      size={size}
+      weight={weight}
+      align={align}
+      color={color || dialogColors[12]}
+      truncate={truncate}
+      numberOfLines={numberOfLines}
+      fontFamily={fontFamily}
+      opacity={opacity}
+      style={[style]}
+      {...rest}
+    >
       {children}
     </Heading>
   );
@@ -241,28 +347,58 @@ export const DialogTitle = ({ children, style = {} }: DialogTitleProps) => {
 
 // ============================================================================
 // Dialog.Description - Accessible description
+// Extends TextProps to allow all Text default props
 // ============================================================================
 
-interface DialogDescriptionProps {
+interface DialogDescriptionProps extends Omit<TextProps, 'children'> {
   children: ReactNode;
-  style?: TextStyle;
+  /**
+   * @deprecated Use 'asChild' directly on the component if needed
+   */
+  style?: TextProps['style'];
 }
 
-export const DialogDescription = ({ children, style = {} }: DialogDescriptionProps) => {
+export const DialogDescription = ({
+  children,
+  style = {},
+  size = 2,
+  weight,
+  align,
+  color,
+  truncate,
+  numberOfLines,
+  fontFamily,
+  fontStyle,
+  lineHeight,
+  letterSpacing,
+  textDecorationLine,
+  opacity,
+  asChild = false,
+  ...rest
+}: DialogDescriptionProps) => {
   const { colors } = useDialog();
   const theme = useTheme();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const dialogColors = isDark ? theme.colors.gray.dark : theme.colors.gray;
 
   return (
     <Text
-      style={[
-        {
-          color: colors[11],
-          fontSize: theme.typography.fontSizes[2].fontSize,
-          lineHeight: theme.typography.fontSizes[2].lineHeight,
-          marginBottom: theme.space[4],
-        },
-        style,
-      ]}
+      asChild={asChild}
+      size={size}
+      weight={weight}
+      align={align}
+      color={color || dialogColors[11]}
+      truncate={truncate}
+      numberOfLines={numberOfLines}
+      fontFamily={fontFamily}
+      fontStyle={fontStyle}
+      lineHeight={lineHeight || theme.typography.fontSizes[2].lineHeight}
+      letterSpacing={letterSpacing}
+      textDecorationLine={textDecorationLine}
+      opacity={opacity}
+      style={[{ marginVertical: theme.space[2] }, style]}
+      {...rest}
     >
       {children}
     </Text>
@@ -273,18 +409,15 @@ export const DialogDescription = ({ children, style = {} }: DialogDescriptionPro
 // Dialog.Close - Button to close the dialog
 // ============================================================================
 
-interface DialogCloseProps {
+interface DialogCloseProps extends Omit<ButtonProps, 'children'> {
   children?: ReactNode;
   asChild?: boolean;
-  variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'ghost';
-  size?: 1 | 2 | 3;
 }
 
 export const DialogClose = ({
   children,
   asChild = true,
-  variant = 'outline',
-  size = 2,
+  ...buttonProps
 }: DialogCloseProps) => {
   const { onOpenChange } = useDialog();
 
@@ -302,7 +435,7 @@ export const DialogClose = ({
   }
 
   return (
-    <Button variant={variant} size={size} onPress={handlePress}>
+    <Button variant={'soft'} {...buttonProps} onPress={handlePress}>
       {children || 'Close'}
     </Button>
   );
@@ -312,23 +445,31 @@ export const DialogClose = ({
 // Dialog.Action - Action buttons (left/right positioning)
 // ============================================================================
 
-interface DialogActionProps {
+interface DialogActionProps extends Omit<ButtonProps, 'children'> {
   children: ReactNode;
-  side?: 'left' | 'right';
-  style?: StyleProp<ViewStyle>;
+  // side?: 'left' | 'right';
+  // style?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 
-export const DialogAction = ({ children, side = 'right', style }: DialogActionProps) => {
+export const DialogAction = ({ children, onPress, ...buttonProps }: DialogActionProps) => {
   const theme = useTheme();
+  const { onOpenChange } = useDialog();
+
+  const handlePress = () => {
+    onPress?.();
+    onOpenChange(false);
+  };
+
   return (
-    <View style={[{ flexDirection: 'row', gap: theme?.space[3] }, style]}>
+    <Button {...buttonProps} onPress={handlePress}>
       {children}
-    </View>
+    </Button>
   );
 };
 
 // ============================================================================
-// Styles
+// Styles - Updated to match radix-ui proper styling
 // ============================================================================
 
 const styles = StyleSheet.create({
@@ -337,12 +478,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   content: {
+    flex: 1,
     position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -0.5 }, { translateY: -0.5 }],
-    padding: 20,
-    minWidth: 280,
+    // Flexbox centering with margin: auto - proper radix-ui centering
+    alignSelf: 'center',
+    margin: 'auto',
+    // Scroll container structure
+    maxHeight: '90%',
+    // Shadow applied dynamically
+    elevation: 4,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 4,
   },
   closeButton: {
     position: 'absolute',

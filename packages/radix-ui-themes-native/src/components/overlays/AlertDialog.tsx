@@ -7,14 +7,18 @@ import {
   type StyleProp,
   ViewStyle,
   Pressable,
+  ScrollView,
   Dimensions,
   TextStyle,
 } from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
-import { Heading } from '../../components';
+import { type ButtonProps, Heading } from '../../components';
 import { Button } from '../../components';
-import type { BaseColorScale, ColorScale, RadiusScale } from '../../theme';
+import type { BaseColorScale, Color, ColorScale, RadiusScale, SpaceScale } from '../../theme';
+import { getShadow } from '../../theme/shadows';
+import type { HeadingProps } from '../typography/Heading';
+import type { TextProps } from '../typography/Text';
 
 // ============================================================================
 // AlertDialog Context
@@ -62,7 +66,9 @@ export const AlertDialogRoot = ({
   }, [controlledOpen, onOpenChange]);
 
   const theme = useTheme();
-  const colors = useThemeMode() === 'dark' ? theme.colors.gray.dark  : theme.colors.gray;
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const colors = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const radii = theme.radii;
 
   return (
@@ -138,13 +144,20 @@ interface AlertDialogOverlayProps {
 }
 
 export const AlertDialogOverlay = ({ style }: AlertDialogOverlayProps) => {
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+
+  // Use alpha black for overlay based on theme - matches radix-ui styling
+  // Light mode: rgba(10, 10, 10, 0.6) | Dark mode: rgba(0, 0, 0, 0.6)
+  const overlayColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(10, 10, 10, 0.6)';
+
   return (
     <TouchableWithoutFeedback>
       <View
         style={[
           styles.overlay,
           {
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: overlayColor,
           },
           style,
         ]}
@@ -154,51 +167,174 @@ export const AlertDialogOverlay = ({ style }: AlertDialogOverlayProps) => {
 };
 
 // ============================================================================
+// Size configuration matching radix-ui-themes
+// ============================================================================
+
+const getSizeStyles = (
+  size: 1 | 2 | 3 | 4,
+  space: SpaceScale,
+  radii: RadiusScale
+) => {
+  const sizeConfig = {
+    1: {
+      paddingHorizontal: space[3],
+      paddingVertical: space[3],
+      radius: radii.small,
+    },
+    2: {
+      paddingHorizontal: space[4],
+      paddingVertical: space[4],
+      radius: radii.medium,
+    },
+    3: {
+      paddingHorizontal: space[5],
+      paddingVertical: space[5],
+      radius: radii.medium,
+    },
+    4: {
+      paddingHorizontal: space[6],
+      paddingVertical: space[6],
+      radius: radii.large,
+    },
+  };
+  return sizeConfig[size];
+};
+
+
+// ============================================================================
 // AlertDialog.Content - The actual alert dialog content
 // ============================================================================
 
 interface AlertDialogContentProps {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
+  hideCloseButton?: boolean;
+  size?: 1 | 2 | 3 | 4;
 }
 
-export const AlertDialogContent = ({ children, style }: AlertDialogContentProps) => {
-  const { colors, radii } = useAlertDialog();
+export const AlertDialogContent = ({
+  children,
+  style,
+  hideCloseButton = true,
+  size = 2,
+}: AlertDialogContentProps) => {
+  const { onOpenChange, radii } = useAlertDialog();
   const theme = useTheme();
-  const { width: screenWidth } = Dimensions.get('window');
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+  // Get size-specific styles
+  const sizeStyles = getSizeStyles(size, theme.space, radii);
+
+  // Get shadow for current theme mode
+  const shadow = getShadow(6, isDark);
+
+  const handleClose = () => {
+    onOpenChange(false);
+  };
 
   return (
     <View
       style={[
         styles.content,
         {
-          backgroundColor: colors[1],
-          borderRadius: radii.medium,
-          maxWidth: Math.min(screenWidth - 32, 400),
+          backgroundColor: isDark ? theme.colors.gray.dark[2] : theme.colors.gray[1],
+          // borderRadius: radii.medium,
+          borderRadius: sizeStyles.radius,
+          paddingHorizontal: sizeStyles.paddingHorizontal,
+          paddingVertical: sizeStyles.paddingVertical,
+          minWidth: Math.min(screenWidth - 128, 400),
+          maxWidth: Math.min(screenWidth - 64, 400),
+          top: screenHeight / 2 - 100, // Approximate vertical centering
+          ...(shadow || {}),
         },
         style,
       ]}
     >
-      {children}
+      {/* Scroll container matching radix-ui structure */}
+      <ScrollView
+        style={styles.scrollContent}
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={true}
+        bounces={true}
+      >
+        {children}
+      </ScrollView>
+      {!hideCloseButton && (
+        <Pressable
+          onPress={handleClose}
+          style={[
+            styles.closeButton,
+            {
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            },
+          ]}
+          accessibilityRole="button"
+          accessibilityLabel="Close dialog"
+        >
+          <Text
+            style={{
+              color: isDark ? theme.colors.gray.dark[12] : theme.colors.gray[12],
+              fontSize: 16,
+              fontWeight: '600',
+            }}
+          >
+            ✕
+          </Text>
+        </Pressable>
+      )}
     </View>
   );
-};
+};;
 
 // ============================================================================
 // AlertDialog.Title - Accessible title for screen readers
+// Extends HeadingProps to allow all Heading default props
 // ============================================================================
 
-interface AlertDialogTitleProps {
+interface AlertDialogTitleProps extends Omit<HeadingProps, 'children'> {
   children: ReactNode;
-  style?: TextStyle;
+  /**
+   * @deprecated Use 'asChild' directly on the component if needed
+   */
+  style?: HeadingProps['style'];
 }
 
-export const AlertDialogTitle = ({ children, style = {} }: AlertDialogTitleProps) => {
+export const AlertDialogTitle = ({
+  children,
+  style = {},
+  size = 4,
+  weight = 'bold',
+  align,
+  color,
+  truncate,
+  numberOfLines,
+  fontFamily,
+  opacity,
+  asChild = false,
+  ...rest
+}: AlertDialogTitleProps) => {
   const { colors } = useAlertDialog();
   const theme = useTheme();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const dialogColors = isDark ? theme.colors.gray.dark : theme.colors.gray;
 
   return (
-    <Heading size={3} style={[{ color: colors[12], marginBottom: theme.space[2] }, style]}>
+    <Heading
+      asChild={asChild}
+      size={size}
+      weight={weight}
+      align={align}
+      color={color || dialogColors[12]}
+      truncate={truncate}
+      numberOfLines={numberOfLines}
+      fontFamily={fontFamily}
+      opacity={opacity}
+      style={[style]}
+      {...rest}
+    >
       {children}
     </Heading>
   );
@@ -206,28 +342,58 @@ export const AlertDialogTitle = ({ children, style = {} }: AlertDialogTitleProps
 
 // ============================================================================
 // AlertDialog.Description - Accessible description
+// Extends TextProps to allow all Text default props
 // ============================================================================
 
-interface AlertDialogDescriptionProps {
+interface AlertDialogDescriptionProps extends Omit<TextProps, 'children'> {
   children: ReactNode;
-  style?: TextStyle;
+  /**
+   * @deprecated Use 'asChild' directly on the component if needed
+   */
+  style?: TextProps['style'];
 }
 
-export const AlertDialogDescription = ({ children, style = {} }: AlertDialogDescriptionProps) => {
+export const AlertDialogDescription = ({
+  children,
+  style = {},
+  size = 2,
+  weight,
+  align,
+  color,
+  truncate,
+  numberOfLines,
+  fontFamily,
+  fontStyle,
+  lineHeight,
+  letterSpacing,
+  textDecorationLine,
+  opacity,
+  asChild = false,
+  ...rest
+}: AlertDialogDescriptionProps) => {
   const { colors } = useAlertDialog();
   const theme = useTheme();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+  const dialogColors = isDark ? theme.colors.gray.dark : theme.colors.gray;
 
   return (
     <Text
-      style={[
-        {
-          color: colors[11],
-          fontSize: theme.typography.fontSizes[2].fontSize,
-          lineHeight: theme.typography.fontSizes[2].lineHeight,
-          marginBottom: theme.space[4],
-        },
-        style,
-      ]}
+      asChild={asChild}
+      size={size}
+      weight={weight}
+      align={align}
+      color={color || dialogColors[11]}
+      truncate={truncate}
+      numberOfLines={numberOfLines}
+      fontFamily={fontFamily}
+      fontStyle={fontStyle}
+      lineHeight={lineHeight || theme.typography.fontSizes[2].lineHeight}
+      letterSpacing={letterSpacing}
+      textDecorationLine={textDecorationLine}
+      opacity={opacity}
+      style={[{ marginVertical: theme.space[2] }, style]}
+      {...rest}
     >
       {children}
     </Text>
@@ -238,31 +404,25 @@ export const AlertDialogDescription = ({ children, style = {} }: AlertDialogDesc
 // AlertDialog.Action - Action buttons for the dialog
 // ============================================================================
 
-interface AlertDialogActionProps {
+interface AlertDialogActionProps extends Omit<ButtonProps, 'children'> {
   children: ReactNode;
   onPress?: () => void;
-  variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'ghost';
-  color?: 'primary' | 'destructive';
 }
 
 export const AlertDialogAction = ({
   children,
   onPress,
-  variant = 'outline',
-  color = 'primary',
+  ...buttonProps  // Pass remaining props to Button
 }: AlertDialogActionProps) => {
   const { onOpenChange } = useAlertDialog();
-  const { colors } = useAlertDialog();
 
   const handlePress = () => {
     onPress?.();
     onOpenChange(false);
   };
 
-  const buttonColor = color === 'destructive' ? 'crimson' : undefined;
-
   return (
-    <Button variant={variant} onPress={handlePress} highContrast={color === 'destructive'}>
+    <Button {...buttonProps} onPress={handlePress}>
       {children}
     </Button>
   );
@@ -272,14 +432,13 @@ export const AlertDialogAction = ({
 // AlertDialog.Cancel - Cancel action (exits without action)
 // ============================================================================
 
-interface AlertDialogCancelProps {
+interface AlertDialogCancelProps extends Omit<ButtonProps, 'children'> {
   children?: ReactNode;
-  variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'ghost';
 }
 
 export const AlertDialogCancel = ({
   children = 'Cancel',
-  variant = 'ghost',
+  ...buttonProps
 }: AlertDialogCancelProps) => {
   const { onOpenChange } = useAlertDialog();
 
@@ -288,7 +447,7 @@ export const AlertDialogCancel = ({
   };
 
   return (
-    <Button variant={variant} onPress={handlePress}>
+    <Button variant={'soft'} {...buttonProps} onPress={handlePress}>
       {children}
     </Button>
   );
@@ -361,7 +520,7 @@ export const AlertDialog = ({
 };
 
 // ============================================================================
-// Styles
+// Styles - Updated to match radix-ui proper styling
 // ============================================================================
 
 const styles = StyleSheet.create({
@@ -370,12 +529,36 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   content: {
+    flex: 1,
     position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -0.5 }, { translateY: -0.5 }],
+    // alignItems: 'center',
+    // Flexbox centering with margin: auto - proper radix-ui centering
+    alignSelf: 'center',
+    justifyContent: 'center',
+    margin: 'auto',
+    // Scroll container structure
+    maxHeight: '90%',
+    // Padding for alert dialog content
     padding: 20,
-    minWidth: 280,
+    // Shadow applied dynamically
+    elevation: 4,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 4,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionRow: {
     flexDirection: 'row',
