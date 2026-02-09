@@ -100,20 +100,31 @@ const SegmentedControlItem = ({
     justifyContent: 'center',
     height: '100%',
     paddingHorizontal: sizeValues.paddingHorizontal,
-    backgroundColor: isSelected
-      ? color
-        ? solidVariantColors.backgroundColor
-        : theme.colors.gray['1']
-      : 'transparent',
+    backgroundColor: isDisabled
+      ? theme.colors.grayAlpha['1']
+      : isSelected
+        ? color
+          ? solidVariantColors.backgroundColor
+          : theme.colors.gray['1']
+        : 'transparent',
     borderWidth: isSelected ? 0.5 : 0,
-    borderColor: color ? (isSelected ? solidVariantColors.backgroundColor : 'transparent') : (isSelected ? theme.colors.gray['8'] : 'transparent'),
+    borderColor: color
+      ? isSelected
+        ? solidVariantColors.backgroundColor
+        : 'transparent'
+      : isSelected
+        ? theme.colors.gray['8']
+        : 'transparent',
     borderRadius: selectedRadius === 'full' ? 9999 : radii,
+    opacity: isDisabled ? 0.5 : 1, // Reduce opacity
   };
 
   const textStyle = {
-    color: color
-      ? (isSelected ? solidVariantColors.textColor : softVariantColors.textColor)
-      : (isSelected ? grayScale[12] : grayAlpha[10]),
+    color: isDisabled
+      ? grayAlpha['8']
+      : color
+        ? (isSelected ? solidVariantColors.textColor : softVariantColors.textColor)
+        : (isSelected ? grayScale[12] : grayAlpha[10]),
     fontWeight: isSelected ? theme.typography.fontWeights.semibold : theme.typography.fontWeights.regular,
     fontSize: sizeValues.fontSize,
   };
