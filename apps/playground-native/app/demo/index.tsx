@@ -54,6 +54,9 @@ export default function App() {
           <Link href={'/demo/card'}>
             <Text size={4}>Card</Text>
           </Link>
+          <Link href={'/demo/checkbox'}>
+            <Text size={4}>Checkbox</Text>
+          </Link>
           <Link href={'/demo/switch'}>
             <Text size={4}>Switch</Text>
           </Link>
@@ -138,12 +141,6 @@ export default function App() {
                 </Dialog.Content>
               </Dialog.Portal>
             </Dialog.Root>
-
-            <Checkbox
-              checked={checked}
-              size={'3'}
-              onCheckedChange={(checked: boolean) => setChecked(checked)}
-            />
 
             <Select
               disabled={false}

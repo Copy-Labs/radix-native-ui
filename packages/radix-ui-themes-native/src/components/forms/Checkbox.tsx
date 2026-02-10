@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, type ViewStyle } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { getAccentColor, getContrast, getGrayAlpha } from '../../theme/color-helpers';
+import {
+  getAccentColor,
+  getContrast,
+  getGrayAlpha,
+  getVariantColors,
+} from '../../theme/color-helpers';
 import RnTouchableOpacity from '../../components/primitives/TouchableOpacity';
-import { Text } from '../../components';
 import type { Color } from '../../theme';
+import { Text } from '../../components';
 
 interface CheckboxProps {
   /**
-   * Whether the checkbox is checked
+   * Whether the checkbox is checked (controlled mode)
    */
-  checked: boolean;
+  checked?: boolean;
+  /**
+   * Default checked state (uncontrolled mode)
+   */
+  defaultChecked?: boolean;
   /**
    * Callback when checked state changes
    */
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange?: (checked: boolean) => void;
   /**
    * Whether the checkbox is disabled
    */
@@ -25,6 +34,11 @@ interface CheckboxProps {
    * @default 2
    */
   size?: '1' | '2' | '3';
+  /**
+   * Badge variant
+   * @default 'soft'
+   */
+  variant?: 'solid' | 'soft' | 'surface' | 'outline';
   /**
    * Custom color for checked state
    */
@@ -57,9 +71,11 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
   (
     {
       checked,
+      defaultChecked = false,
       onCheckedChange,
       disabled = false,
       size = '2',
+      variant = 'solid',
       color,
       label,
       indeterminate = false,
@@ -70,6 +86,13 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
     },
     ref
   ) => {
+    // Determine if uncontrolled mode
+    const isControlled = checked !== undefined;
+    const [internalChecked, setInternalChecked] = useState(defaultChecked);
+
+    // Use controlled value if provided, otherwise use internal state
+    const isChecked = isControlled ? checked : internalChecked;
+
     const theme = useTheme();
     const mode = useThemeMode();
     const isDark = mode === 'dark';
@@ -80,17 +103,20 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
     // const checkboxContrast = accentScale.contrast;
     const activeColor = color || theme.accentColor;
     const checkboxContrast = getContrast(theme, activeColor, mode, highContrast);
+    // Get colors based on variant and mode using the helper function
+    const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
 
     // Get size values
     const getSizeValues = () => {
       switch (size) {
         case '1':
           return {
-            boxSize: 18,
-            iconSize: 10,
+            boxSize: 20,
+            iconSize: 11,
             fontSize: theme.typography.fontSizes[1].fontSize,
             gap: theme.space[1],
-            borderWidth: 2,
+            borderWidth: 1,
+            height: 2.5,
           };
         case '3':
           return {
@@ -98,16 +124,18 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
             iconSize: 16,
             fontSize: theme.typography.fontSizes[3].fontSize,
             gap: theme.space[3],
-            borderWidth: 2,
+            borderWidth: 1,
+            height: 3,
           };
         case '2':
         default:
           return {
-            boxSize: 22,
+            boxSize: 24,
             iconSize: 12,
             fontSize: theme.typography.fontSizes[2].fontSize,
             gap: theme.space[2],
-            borderWidth: 2,
+            borderWidth: 1,
+            height: 2.7,
           };
       }
     };
@@ -116,17 +144,23 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
 
     const handlePress = () => {
       if (!disabled) {
-        onCheckedChange(!checked);
+        if (isControlled) {
+          onCheckedChange?.(!checked);
+        } else {
+          const newChecked = !internalChecked;
+          setInternalChecked(newChecked);
+          onCheckedChange?.(newChecked);
+        }
       }
     };
 
     const boxStyle: ViewStyle = {
       width: sizeValues.boxSize,
       height: sizeValues.boxSize,
-      borderRadius: 4,
+      borderRadius: 5,
       borderWidth: sizeValues.borderWidth,
-      borderColor: checked || indeterminate ? checkboxColor : grayAlpha['8'],
-      backgroundColor: checked || indeterminate ? checkboxColor : 'transparent',
+      borderColor: isChecked || indeterminate ? variantColors.borderColor : grayAlpha['8'],
+      backgroundColor: isChecked || indeterminate ? variantColors.backgroundColor : 'transparent',
       justifyContent: 'center',
       alignItems: 'center',
       opacity: disabled ? 0.5 : 1,
@@ -137,18 +171,8 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
       height: sizeValues.iconSize,
     };
 
-    // Checkmark or indeterminate dash path
-    const getIconPath = () => {
-      if (indeterminate) {
-        // Horizontal dash for indeterminate state
-        return `M${sizeValues.iconSize * 0.2} ${sizeValues.iconSize / 2} L${sizeValues.iconSize * 0.8} ${sizeValues.iconSize / 2}`;
-      }
-      // Checkmark path
-      return `M${sizeValues.iconSize * 0.2} ${sizeValues.iconSize / 2} L${sizeValues.iconSize * 0.45} ${sizeValues.iconSize * 0.75} L${sizeValues.iconSize * 0.85} ${sizeValues.iconSize * 0.25}`;
-    };
-
     const labelStyle = {
-      color: grayScale[12],
+      color: theme.colors.gray || grayScale[12],
       fontSize: sizeValues.fontSize,
     };
 
@@ -163,54 +187,57 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
         accessibilityHint={
           accessibilityHint || (indeterminate ? 'Partially selected' : 'Toggle checkbox')
         }
-        accessibilityState={{ checked: checked ? true : indeterminate ? 'mixed' : false, disabled }}
+        accessibilityState={{ checked: isChecked ? true : indeterminate ? 'mixed' : false, disabled }}
         accessibilityActions={[{ name: 'activate', label: 'Toggle' }]}
         {...rest}
       >
         <View style={[styles.checkbox, boxStyle]}>
-          {(checked || indeterminate) && (
-            <View
-              style={[
-                styles.icon,
-                iconStyle,
-                {
-                  backgroundColor: 'transparent',
-                },
-              ]}
-            >
-              {/* Checkmark or indeterminate dash rendered as a simple View */}
-              <Text style={{ color: 'white', fontSize: 32 }}>-</Text>
-              {/*<View
-                style={{
-                  width: indeterminate ? sizeValues.iconSize * 0.6 : sizeValues.iconSize * 0.8,
-                  height: 2,
-                  backgroundColor: checkboxContrast,
-                  borderRadius: 1,
-                  transform: indeterminate
-                    ? []
-                    : [
-                        { translateX: sizeValues.iconSize * 0.1 },
-                        { translateY: sizeValues.iconSize * 0.35 },
-                        { rotate: '-45deg' },
+          {(isChecked || indeterminate) && (
+            <View style={[styles.icon, iconStyle]}>
+              {indeterminate ? (
+                // Indeterminate dash
+                <View
+                  style={{
+                    width: sizeValues.iconSize * 0.9,
+                    height: 2.8,
+                    backgroundColor: variantColors.textColor,
+                    borderRadius: 3,
+                  }}
+                />
+              ) : (
+                // Checkmark - composed of two rotated lines
+                // Short stroke (down-right, 45deg) starts from left-middle
+                // Long stroke (up-right, -45deg) goes from bottom-left to top-right
+                <>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      width: sizeValues.iconSize * 0.46,
+                      height: sizeValues.height,
+                      backgroundColor: variantColors.textColor,
+                      borderRadius: 1,
+                      transform: [
+                        { translateX: sizeValues.iconSize * -0.36 },
+                        { translateY: sizeValues.iconSize * 0.18 },
+                        { rotate: '45deg' },
                       ],
-                }}
-              />*/}
-              {checked && !indeterminate && (
-                <Text>✓</Text>
-                // <View
-                //   style={{
-                //     position: 'absolute',
-                //     width: sizeValues.iconSize * 0.8,
-                //     height: 2,
-                //     backgroundColor: checkboxContrast,
-                //     borderRadius: 1,
-                //     transform: [
-                //       { translateX: sizeValues.iconSize * 0.1 },
-                //       { translateY: sizeValues.iconSize * 0.75 },
-                //       { rotate: '45deg' },
-                //     ],
-                //   }}
-                // />
+                    }}
+                  />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      width: sizeValues.iconSize * 1.1,
+                      height: sizeValues.height,
+                      backgroundColor: variantColors.textColor,
+                      borderRadius: 3,
+                      transform: [
+                        { translateX: sizeValues.iconSize * 0.1 },
+                        { translateY: sizeValues.iconSize * 0.0001 },
+                        { rotate: '-55deg' },
+                      ],
+                    }}
+                  />
+                </>
               )}
             </View>
           )}
