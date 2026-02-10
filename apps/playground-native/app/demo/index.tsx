@@ -39,20 +39,23 @@ export default function App() {
           </Text>
         </Flex>
         <Flex direction={'column'} gap={16} paddingHorizontal={8}>
+          <Link href={'/demo/aspect_ratio'}>
+            <Text size={4}>Aspect ratio</Text>
+          </Link>
           <Link href={'/demo/avatars'}>
             <Text size={4}>Avatars</Text>
-          </Link>
-          <Link href={'/demo/buttons'}>
-            <Text size={4}>Buttons</Text>
           </Link>
           <Link href={'/demo/badge'}>
             <Text size={4}>Badge</Text>
           </Link>
-          <Link href={'/demo/switch'}>
-            <Text size={4}>Switch</Text>
+          <Link href={'/demo/buttons'}>
+            <Text size={4}>Buttons</Text>
           </Link>
           <Link href={'/demo/card'}>
             <Text size={4}>Card</Text>
+          </Link>
+          <Link href={'/demo/switch'}>
+            <Text size={4}>Switch</Text>
           </Link>
           <Link href={'/demo/radio'}>
             <Text size={4}>Radio</Text>
