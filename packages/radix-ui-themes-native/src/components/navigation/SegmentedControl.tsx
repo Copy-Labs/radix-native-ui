@@ -1,5 +1,5 @@
-import React, { type ReactNode, createContext, useContext, useState, useCallback } from 'react';
-import { StyleSheet, type StyleProp, ViewStyle } from 'react-native';
+import React, { type ReactNode, createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { StyleSheet, type StyleProp, ViewStyle, type LayoutChangeEvent, Animated, Easing } from 'react-native';
 import { View, TouchableOpacity } from '../primitives';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -31,6 +31,9 @@ interface SegmentedControlContextValue {
     fontSize: number;
     paddingHorizontal: number;
   };
+  onItemLayout: (value: string, event: LayoutChangeEvent) => void;
+  theme: ReturnType<typeof useTheme>;
+  pillBackgroundColor: string;
 }
 
 const SegmentedControlContext = createContext<SegmentedControlContextValue | null>(null);
@@ -78,11 +81,13 @@ const SegmentedControlItem = ({
     activeColor,
     radii,
     selectedRadius,
-    solidVariantColors,
     softVariantColors,
+    solidVariantColors,
     color,
+    onItemLayout,
+    theme,
+    pillBackgroundColor,
   } = useSegmentedControlContext();
-  const theme = useTheme();
 
   const isSelected = value === selectedValue;
   const isDisabled = disabled || itemDisabled;
@@ -93,6 +98,10 @@ const SegmentedControlItem = ({
     }
   }, [isDisabled, onValueChange, value]);
 
+  const handleLayout = useCallback((event: LayoutChangeEvent) => {
+    onItemLayout(value, event);
+  }, [onItemLayout, value]);
+
   const optionStyle: ViewStyle = {
     flex: 1,
     flexDirection: 'row',
@@ -100,20 +109,15 @@ const SegmentedControlItem = ({
     justifyContent: 'center',
     height: '100%',
     paddingHorizontal: sizeValues.paddingHorizontal,
-    backgroundColor: isSelected
-      ? color
-        ? solidVariantColors.backgroundColor
-        : theme.colors.gray['1']
-      : 'transparent',
-    borderWidth: isSelected ? 0.5 : 0,
-    borderColor: color ? (isSelected ? solidVariantColors.backgroundColor : 'transparent') : (isSelected ? theme.colors.gray['8'] : 'transparent'),
-    borderRadius: selectedRadius === 'full' ? 9999 : radii,
+    opacity: isDisabled ? 0.5 : 1,
   };
 
   const textStyle = {
-    color: color
-      ? (isSelected ? solidVariantColors.textColor : softVariantColors.textColor)
-      : (isSelected ? grayScale[12] : grayAlpha[10]),
+    color: isDisabled
+      ? grayAlpha['8']
+      : color
+        ? (isSelected ? solidVariantColors.textColor : softVariantColors.textColor)
+        : (isSelected ? grayScale[12] : grayAlpha[10]),
     fontWeight: isSelected ? theme.typography.fontWeights.semibold : theme.typography.fontWeights.regular,
     fontSize: sizeValues.fontSize,
   };
@@ -122,6 +126,7 @@ const SegmentedControlItem = ({
     <TouchableOpacity
       style={optionStyle}
       onPress={handlePress}
+      onLayout={handleLayout}
       disabled={isDisabled}
       accessibilityRole="radio"
       accessibilityState={{ checked: isSelected, disabled: isDisabled }}
@@ -255,6 +260,44 @@ const SegmentedControlRoot = ({
     [isControlled, onValueChange]
   );
 
+  // Item layout tracking for pill animation
+  const [itemLayouts, setItemLayouts] = useState<Record<string, { x: number; width: number }>>({});
+  const pillPosition = useRef(new Animated.Value(0)).current;
+
+  const handleItemLayout = useCallback((value: string, event: LayoutChangeEvent) => {
+    const { x, width } = event.nativeEvent.layout;
+    setItemLayouts(prev => {
+      const newLayouts = { ...prev, [value]: { x, width } };
+      // If this is the selected item, update pill position immediately
+      if (value === currentValue) {
+        Animated.timing(pillPosition, {
+          toValue: x,
+          duration: 0,
+          useNativeDriver: true,
+        }).start();
+      }
+      return newLayouts;
+    });
+  }, [currentValue, pillPosition]);
+
+  // Animate pill when value changes
+  useEffect(() => {
+    const selectedLayout = itemLayouts[currentValue];
+    if (selectedLayout) {
+      Animated.timing(pillPosition, {
+        toValue: selectedLayout.x,
+        duration: 250,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [currentValue, itemLayouts, pillPosition]);
+
+  // Determine pill background color
+  const pillBackgroundColor = color
+    ? solidVariantColors.backgroundColor
+    : theme.colors.gray['1'];
+
   const contextValue: SegmentedControlContextValue = {
     value: currentValue,
     onValueChange: handleValueChange,
@@ -272,7 +315,15 @@ const SegmentedControlRoot = ({
     solidVariantColors,
     softVariantColors,
     sizeValues,
+    onItemLayout: handleItemLayout,
+    theme,
+    pillBackgroundColor,
   };
+
+  // Calculate pill dimensions
+  const selectedLayout = itemLayouts[currentValue];
+  const pillWidth = selectedLayout?.width || 0;
+  const pillInnerRadius = selectedRadius === 'full' ? 9999 : radii;
 
   return (
     <SegmentedControlContext.Provider value={contextValue}>
@@ -288,6 +339,18 @@ const SegmentedControlRoot = ({
         ]}
         accessibilityRole="radiogroup"
       >
+        {/* Animated Pill Background */}
+        <Animated.View
+          style={[
+            styles.pill,
+            {
+              transform: [{ translateX: pillPosition }],
+              width: pillWidth,
+              backgroundColor: pillBackgroundColor,
+              borderRadius: pillInnerRadius,
+            },
+          ]}
+        />
         {children}
       </View>
     </SegmentedControlContext.Provider>
@@ -310,6 +373,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     overflow: 'hidden',
+    position: 'relative',
+    paddingHorizontal: 1,
+  },
+  pill: {
+    position: 'absolute',
+    top: 1,
+    bottom: 1,
+    // Border simulation for the pill
+    borderWidth: 0.5,
+    borderColor: 'transparent',
   },
 });
 

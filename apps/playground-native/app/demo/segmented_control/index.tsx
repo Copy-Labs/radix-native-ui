@@ -74,7 +74,7 @@ export default function SegmentedControlDemo() {
               <SegmentedControl.Item value="apple">Apple</SegmentedControl.Item>
               <SegmentedControl.Item value="banana">Banana</SegmentedControl.Item>
               <SegmentedControl.Item value="carrot">Carrot</SegmentedControl.Item>
-              <SegmentedControl.Item value="dodo">dodo</SegmentedControl.Item>
+              <SegmentedControl.Item value="dodo">Dodo</SegmentedControl.Item>
             </SegmentedControl.Root>
           </Box>
 
@@ -102,13 +102,13 @@ export default function SegmentedControlDemo() {
               <SegmentedControl.Item value="sent">Sent</SegmentedControl.Item>
             </SegmentedControl.Root>
 
-            <SegmentedControl.Root defaultValue="inbox" size={3}>
+            <SegmentedControl.Root defaultValue="inbox" radius={'large'} size={3}>
               <SegmentedControl.Item value="inbox">Inbox</SegmentedControl.Item>
               <SegmentedControl.Item value="drafts">Drafts</SegmentedControl.Item>
               <SegmentedControl.Item value="sent">Sent</SegmentedControl.Item>
             </SegmentedControl.Root>
 
-            <SegmentedControl.Root defaultValue="inbox" size={4}>
+            <SegmentedControl.Root defaultValue="inbox" radius={'large'} size={4}>
               <SegmentedControl.Item value="inbox">Inbox</SegmentedControl.Item>
               <SegmentedControl.Item value="drafts">Drafts</SegmentedControl.Item>
               <SegmentedControl.Item value="sent">Sent</SegmentedControl.Item>
