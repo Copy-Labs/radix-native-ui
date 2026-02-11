@@ -2,10 +2,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, StyleSheet } from 'react-native';
 import {
   AlertDialog,
+  Box,
   Button,
   Checkbox,
   Dialog,
-  Flex,
+  Flex, Heading,
   Select,
   Text,
   TextArea,
@@ -115,14 +116,19 @@ export default function App() {
                     sessions will be expired.
                   </AlertDialog.Description>
                   <Flex gap={12} justify="flex-end">
-                    <AlertDialog.Cancel color={'gray'} variant={'surface'}>Cancel</AlertDialog.Cancel>
+                    <AlertDialog.Cancel color={'gray'} variant={'surface'}>
+                      Cancel
+                    </AlertDialog.Cancel>
                     <AlertDialog.Action variant={'solid'}>Confirm</AlertDialog.Action>
                   </Flex>
                 </AlertDialog.Content>
               </AlertDialog.Portal>
             </AlertDialog.Root>
 
-            <Dialog.Root open={isDialogOpen} onOpenChange={(open: boolean) => setIsDialogOpen(open)}>
+            <Dialog.Root
+              open={isDialogOpen}
+              onOpenChange={(open: boolean) => setIsDialogOpen(open)}
+            >
               <Dialog.Trigger>
                 <Button variant={'soft'}>Show Dialog</Button>
               </Dialog.Trigger>
@@ -156,7 +162,67 @@ export default function App() {
 
             {/*<Slider value={sliderValue} onValueChange={setSliderValue} />*/}
 
-            <TextField size={'3'} value={textValue} onChangeText={setTextValue} />
+            <Flex direction={'column'} gap={12} padding={16}>
+              {/* Sizes */}
+              <Flex direction={'column'} gap={12} padding={16}>
+                <Heading>Sizes</Heading>
+                <Flex direction="column" gap={12}>
+                  <Box maxWidth={200}>
+                    <TextField size="1" placeholder="Search the docs…" />
+                  </Box>
+                  <Box maxWidth={250}>
+                    <TextField size="2" placeholder="Search the docs…" />
+                  </Box>
+                  <Box maxWidth={300}>
+                    <TextField size="3" placeholder="Search the docs…" />
+                  </Box>
+                </Flex>
+              </Flex>
+
+              <TextField
+                size={'3'}
+                value={textValue}
+                variant={'outline'}
+                onChangeText={setTextValue}
+              />
+              <TextField
+                size={'3'}
+                value={textValue}
+                variant={'soft'}
+                onChangeText={setTextValue}
+              />
+              <TextField
+                placeholder={'Surface size 3 input'}
+                size={'3'}
+                value={textValue}
+                variant={'surface'}
+                onChangeText={setTextValue}
+              />
+
+              {/* Colors */}
+              <Flex direction="column" gap={12} maxWidth={250}>
+                <TextField color="indigo" variant="soft" placeholder="Search the docs…" />
+                <TextField color="green" variant="soft" placeholder="Search the docs…" />
+                <TextField color="red" variant="soft" placeholder="Search the docs…" />
+              </Flex>
+
+              <TextField
+                value={textValue}
+                onChangeText={setTextValue}
+                placeholder={'Default placeholder'}
+                color={'crimson'}
+                variant="soft"
+                size={'2'}
+                disabled={false}
+                // error={"Error occurred"}
+                multiline={false}
+                // numberOfLines={3}
+                accessibilityLabel={''}
+                secureTextEntry={false}
+                // highContrast={boolean}
+              />
+            </Flex>
+
             <TextArea
               label={'Your Bio'}
               size={'3'}

@@ -12,7 +12,9 @@ export const RnTextInput = React.memo(
       const colors = mode === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
 
       return (
-        <View style={[{ backgroundColor: colors[1] }]}>
+        <View style={[{
+          // backgroundColor: colors[1]
+        }]}>
           <RNTextInput
             ref={ref}
             style={[{ color: colors[12] }, style]}

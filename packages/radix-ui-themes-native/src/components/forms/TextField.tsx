@@ -1,20 +1,38 @@
 import React from 'react';
-import { StyleSheet, type ViewStyle, TextInput as RNTextInput } from 'react-native';
+import { StyleSheet, type ViewStyle, TextInput as RNTextInput, type KeyboardType } from 'react-native';
 import { TextInput, View, PrimitiveText } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import {
-  getGrayAlpha,
-} from '../../theme/color-helpers';
+import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
+import { Color, RadiusSize } from '../../theme';
 
 interface TextFieldProps {
   /**
+   * Color scheme for the badge
+   * @default undefined (uses theme's accentColor)
+   */
+  color?: Color;
+  /**
+   * Radius variant
+   * @default 'medium'
+   */
+  radius?: RadiusSize;
+  /**
    * The value of the text input
    */
-  value: string;
+  value?: string;
+  /**
+   * Badge variant
+   * @default 'soft'
+   */
+  variant?: 'surface' | 'soft' | 'outline';
+  /**
+   * High contrast mode for accessibility
+   */
+  highContrast?: boolean;
   /**
    * Callback when text changes
    */
-  onChangeText: (value: string) => void;
+  onChangeText?: (value: string) => void;
   /**
    * Placeholder text
    */
@@ -48,7 +66,7 @@ interface TextFieldProps {
    * Keyboard type
    * @default 'default'
    */
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  keyboardType?: KeyboardType;
   /**
    * Accessibility label
    */
@@ -72,7 +90,11 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
       label,
       error,
       disabled = false,
+      color = 'gray',
+      highContrast = false,
+      radius = 'medium',
       size = '2',
+      variant = 'outline',
       multiline = false,
       secureTextEntry = false,
       keyboardType = 'default',
@@ -88,33 +110,38 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
+    const activeColor = color || theme.accentColor;
+    const radii = theme.radii[radius] ?? theme.radii.medium;
+    const selectedRadius = radius || theme.radius;
+    const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
+    const [isFocused, setIsFocused] = React.useState(false);
 
     // Get size values
     const getSizeValues = () => {
       switch (size) {
         case '1':
           return {
-            fontSize: theme.typography.fontSizes[1].fontSize,
+            fontSize: theme.typography.fontSizes[4].fontSize,
             paddingVertical: theme.space[2],
             paddingHorizontal: theme.space[3],
-            borderRadius: theme.radii.small,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
             height: multiline ? undefined : 36,
           };
         case '3':
           return {
-            fontSize: theme.typography.fontSizes[3].fontSize,
+            fontSize: theme.typography.fontSizes[6].fontSize,
             paddingVertical: theme.space[4],
             paddingHorizontal: theme.space[4],
-            borderRadius: theme.radii.medium,
-            height: multiline ? undefined : 52,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
+            height: multiline ? undefined : 56,
           };
         case '2':
         default:
           return {
-            fontSize: theme.typography.fontSizes[2].fontSize,
+            fontSize: theme.typography.fontSizes[5].fontSize,
             paddingVertical: theme.space[3],
             paddingHorizontal: theme.space[3],
-            borderRadius: theme.radii.medium,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
             height: multiline ? undefined : 44,
           };
       }
@@ -127,33 +154,62 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
     };
 
     const labelStyle = {
-      color: isDark ? grayScale[11] : grayScale[10],
-      fontSize: theme.typography.fontSizes[1].fontSize,
+      color: variantColors.textColor || isDark ? grayScale[11] : grayScale[10],
+      fontSize: sizeValues.fontSize,
       fontWeight: '500' as const,
     };
 
+    const inputContainerBorderColor = () => {
+      if (error) {
+        return theme.colors.ruby[9];
+      } else {
+        return isFocused ? theme.colors[activeColor]['8'] : 'transparent';
+      }
+      // else {
+      //   return isFocused ? grayAlpha['8'] : 'transparent';
+      // }
+    }
+
+    const inputContainerBackgroundColor = () => {
+      if (disabled) {
+        return isDark ? grayAlpha['3'] : grayAlpha['2'];
+      } else {
+        return variantColors.backgroundColor;
+      }
+      // else {
+      //   return 'transparent';
+      // }
+    }
+
+    const inputBorderColor = () => {
+      if (isFocused) {
+        return 'transparent';
+      } else if (error) {
+        return theme.colors.ruby[9];
+      } else {
+        return variantColors.borderColor;
+      }
+      // else {
+      //   return grayAlpha['8'];
+      // }
+    }
+
     // Use alpha colors for background and border to match original Radix Themes
     const inputContainerStyle: ViewStyle = {
-      borderWidth: 1,
-      borderColor: error
-        ? theme.colors.ruby[9]
-        : isDark
-          ? grayAlpha['7']
-          : grayAlpha['8'],
-      backgroundColor: disabled
-        ? isDark
-          ? grayAlpha['3']
-          : grayAlpha['2']
-        : isDark
-          ? grayAlpha['4']
-          : grayAlpha['3'],
+      borderWidth: 2,
+      borderColor: inputContainerBorderColor(),
+      backgroundColor: inputContainerBackgroundColor(),
       borderRadius: sizeValues.borderRadius,
       opacity: disabled ? 0.6 : 1,
     };
 
     const inputStyle = {
+      borderWidth: 1,
+      // borderColor: isFocused ? 'transparent' : color ? variantColors.borderColor : grayAlpha['8'],
+      borderColor: inputBorderColor(),
+      borderRadius: sizeValues.borderRadius,
       fontSize: sizeValues.fontSize,
-      color: grayScale[12],
+      color: color ? variantColors.textColor : grayScale[12],
       paddingVertical: sizeValues.paddingVertical,
       paddingHorizontal: sizeValues.paddingHorizontal,
       minHeight: multiline ? sizeValues.height : undefined,
@@ -167,7 +223,7 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
     };
 
     return (
-      <View style={[styles.container, containerStyle, style]} {...rest}>
+      <View style={[styles.container, containerStyle, style]}>
         {label && (
           <PrimitiveText style={labelStyle} accessibilityLabel={accessibilityLabel}>
             {label}
@@ -179,7 +235,7 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
             value={value}
             onChangeText={onChangeText}
             placeholder={placeholder}
-            placeholderTextColor={isDark ? grayAlpha['9'] : grayScale[8]}
+            placeholderTextColor={color ? theme.colors[activeColor].alpha['7'] : grayScale[4]}
             editable={!disabled}
             secureTextEntry={secureTextEntry}
             keyboardType={keyboardType}
@@ -188,6 +244,9 @@ const TextField = React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextF
             accessibilityHint={accessibilityHint}
             accessibilityState={{ disabled }}
             style={[styles.input, inputStyle]}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            {...rest}
           />
         </View>
         {error && <PrimitiveText style={errorStyle}>{error}</PrimitiveText>}
