@@ -116,9 +116,9 @@ export default function TextFields() {
             {/* Variants */}
             <Flex direction={'column'} gap={12}>
               <Heading>Variants</Heading>
+              <TextField placeholder={'Surface size 3 input'} size={'2'} variant={'surface'} />
               <TextField placeholder={'Outline size 3 input'} size={'2'} variant={'outline'} />
               <TextField placeholder={'Soft size 3 input'} size={'2'} variant={'soft'} />
-              <TextField placeholder={'Surface size 3 input'} size={'2'} variant={'surface'} />
             </Flex>
 
             {/* Colors */}
@@ -133,9 +133,11 @@ export default function TextFields() {
             <Flex direction="column" gap={12}>
               <Heading>Radius</Heading>
               <Flex direction="column" gap={12}>
-                <TextField radius="none" placeholder="Search the docs…" />
-                <TextField radius="large" placeholder="Search the docs…" />
-                <TextField radius="full" placeholder="Search the docs…" />
+                <TextField radius="none" placeholder="None - Search the docs…" />
+                <TextField radius="small" placeholder="Small - Search the docs…" />
+                <TextField radius="medium" placeholder="Medium - Search the docs…" />
+                <TextField radius="large" placeholder="Large - Search the docs…" />
+                <TextField radius="full" placeholder="Full - Search the docs…" />
               </Flex>
             </Flex>
 
