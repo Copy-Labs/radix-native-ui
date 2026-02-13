@@ -25,25 +25,47 @@ export default function DropdownMenuDemo() {
   return (
     <ThemeProvider
       mode={'light'}
-      themeOptions={{ accentColor: 'blue', radius: 'medium', scaling: 1 }}
+      themeOptions={{ accentColor: 'indigo', radius: 'medium', scaling: 1 }}
     >
       <ScrollView>
         <SafeAreaView>
           <Flex direction={'column'} gap={20} padding={12}>
             <Heading size={6}>DropdownMenu</Heading>
 
+            <Flex direction={'column'} gap={16}>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Button variant="soft" size={2}>
+                    Options
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Portal>
+                  <DropdownMenu.Overlay />
+                  <DropdownMenu.Content align={'center'} sideOffset={5} size={2}>
+                    <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
+                    <DropdownMenu.Item shortcut="⌘ D">Duplicate</DropdownMenu.Item>
+                    <DropdownMenu.Separator />
+                    <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
+
+                    <DropdownMenu.Separator />
+                    <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
+                      Delete
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Portal>
+              </DropdownMenu.Root>
+            </Flex>
+
             {/* Basic DropdownMenu */}
             <Flex direction={'column'} gap={16}>
               <Heading size={4}>Basic DropdownMenu</Heading>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                  <Button variant={'soft'}>
-                    Open Menu ▾
-                  </Button>
+                  <Button variant={'soft'}>Open Menu ▾</Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Overlay />
-                  <DropdownMenu.Content sideOffset={5}>
+                  <DropdownMenu.Content align={'center'} sideOffset={5}>
                     <DropdownMenu.Item onSelect={() => handleSelect('Profile')}>
                       Profile
                     </DropdownMenu.Item>
@@ -76,9 +98,7 @@ export default function DropdownMenuDemo() {
                   <DropdownMenu.Overlay />
                   <DropdownMenu.Content sideOffset={5}>
                     <DropdownMenu.Label>File Actions</DropdownMenu.Label>
-                    <DropdownMenu.Item onSelect={() => handleSelect('New')}>
-                      New
-                    </DropdownMenu.Item>
+                    <DropdownMenu.Item onSelect={() => handleSelect('New')}>New</DropdownMenu.Item>
                     <DropdownMenu.Item onSelect={() => handleSelect('Open')}>
                       Open
                     </DropdownMenu.Item>
@@ -110,35 +130,20 @@ export default function DropdownMenuDemo() {
                 <DropdownMenu.Portal>
                   <DropdownMenu.Overlay />
                   <DropdownMenu.Content sideOffset={5}>
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelect('Undo')}
-                      shortcut="⌘Z"
-                    >
+                    <DropdownMenu.Item onSelect={() => handleSelect('Undo')} shortcut="⌘Z">
                       Undo
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelect('Redo')}
-                      shortcut="⌘⇧Z"
-                    >
+                    <DropdownMenu.Item onSelect={() => handleSelect('Redo')} shortcut="⌘⇧Z">
                       Redo
                     </DropdownMenu.Item>
                     <DropdownMenu.Separator />
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelect('Cut')}
-                      shortcut="⌘X"
-                    >
+                    <DropdownMenu.Item onSelect={() => handleSelect('Cut')} shortcut="⌘X">
                       Cut
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelect('Copy')}
-                      shortcut="⌘C"
-                    >
+                    <DropdownMenu.Item onSelect={() => handleSelect('Copy')} shortcut="⌘C">
                       Copy
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelect('Paste')}
-                      shortcut="⌘V"
-                    >
+                    <DropdownMenu.Item onSelect={() => handleSelect('Paste')} shortcut="⌘V">
                       Paste
                     </DropdownMenu.Item>
                   </DropdownMenu.Content>
@@ -237,9 +242,7 @@ export default function DropdownMenuDemo() {
               <Heading size={4}>Menu with Disabled Items</Heading>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                  <Button variant={'outline'}>
-                    Advanced Options ▾
-                  </Button>
+                  <Button variant={'outline'}>Advanced Options ▾</Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.Overlay />
@@ -247,10 +250,7 @@ export default function DropdownMenuDemo() {
                     <DropdownMenu.Item onSelect={() => handleSelect('Enabled')}>
                       Enabled Option
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item
-                      disabled
-                      onSelect={() => handleSelect('Disabled')}
-                    >
+                    <DropdownMenu.Item disabled onSelect={() => handleSelect('Disabled')}>
                       Disabled Option
                     </DropdownMenu.Item>
                     <DropdownMenu.Separator />
