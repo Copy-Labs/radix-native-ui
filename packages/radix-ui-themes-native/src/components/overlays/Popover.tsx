@@ -185,6 +185,14 @@ export const PopoverOverlay = ({ style }: PopoverOverlayProps) => {
 
 export type { PopoverSide, PopoverAlign };
 
+/**
+ * Size variant for Popover content
+ * - 1: Small - compact padding, smaller fonts
+ * - 2: Medium - default padding and font sizes
+ * - 3: Large - generous padding, larger fonts
+ */
+type PopoverSize = 1 | 2 | 3;
+
 interface PopoverContentProps {
   children: ReactNode;
   side?: PopoverSide;
@@ -192,6 +200,11 @@ interface PopoverContentProps {
   align?: PopoverAlign;
   alignOffset?: number;
   avoidCollisions?: boolean;
+  /**
+   * Size of the popover content
+   * @default 2
+   */
+  size?: PopoverSize;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -202,6 +215,7 @@ export const PopoverContent = ({
   align = 'center',
   alignOffset = 0,
   avoidCollisions = true,
+  size = 2,
   style,
 }: PopoverContentProps) => {
   const { colors, grayAlpha, radii, onOpenChange, anchorPosition } = usePopover();
@@ -210,6 +224,33 @@ export const PopoverContent = ({
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
   const [position, setPosition] = useState<{ top?: number; left?: number }>({});
   const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+  // Get size-based styles
+  const getSizeStyles = useCallback(() => {
+    switch (size) {
+      case 1:
+        return {
+          padding: theme.space[2],
+          minWidth: 140,
+          maxWidth: 220,
+        };
+      case 3:
+        return {
+          padding: theme.space[5],
+          minWidth: 240,
+          maxWidth: 360,
+        };
+      case 2:
+      default:
+        return {
+          padding: theme.space[4],
+          minWidth: 180,
+          maxWidth: 280,
+        };
+    }
+  }, [size, theme.space]);
+
+  const sizeStyles = getSizeStyles();
 
   // Calculate position when content size or anchor position changes
   const updatePosition = useCallback(() => {
@@ -261,6 +302,10 @@ export const PopoverContent = ({
             borderRadius: radii.medium,
             borderWidth: 1,
             borderColor: grayAlpha['7'],
+            // Apply size-based styles
+            padding: sizeStyles.padding,
+            minWidth: sizeStyles.minWidth,
+            maxWidth: sizeStyles.maxWidth,
             // Only apply position styles when we have valid measurements
             ...(hasValidPosition && hasContentSize ? {
               position: 'absolute',
@@ -410,9 +455,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.01)', // Nearly transparent for touch-through
   },
   content: {
-    padding: 16,
-    minWidth: 180,
-    maxWidth: 280,
+    // Padding, minWidth, maxWidth are now controlled by size prop
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -456,4 +499,5 @@ export type {
   PopoverTitleProps,
   PopoverDescriptionProps,
   PopoverCloseProps,
+  PopoverSize,
 };

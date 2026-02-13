@@ -17,7 +17,7 @@ import {
   getColorScale,
   getColorAlpha, getVariantColors,
 } from '../../theme/color-helpers';
-import RnTouchableOpacity from '@/components/primitives/TouchableOpacity';
+import RnTouchableOpacity from '../../components/primitives/TouchableOpacity';
 import { Color, RadiusSize } from '../../theme';
 
 interface ButtonProps {

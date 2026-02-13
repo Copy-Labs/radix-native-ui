@@ -42,7 +42,7 @@ export default function PopoverDemo() {
                   </Popover.Trigger>
                   <Popover.Portal>
                     <Popover.Overlay />
-                    <Popover.Content sideOffset={5}>
+                    <Popover.Content size={1} sideOffset={5}>
                       <Card size={1} variant={'surface'}>
                         <Popover.Title>Carol One</Popover.Title>
                         <Popover.Description>
@@ -213,17 +213,17 @@ export default function PopoverDemo() {
                 <Popover.Portal>
                   <Popover.Overlay />
                   <Popover.Content sideOffset={5} style={{ width: 200 }}>
-                    <Box mb={2}>
+                    <Box marginBottom={2}>
                       <Text weight={'bold'} size={2}>
                         Actions
                       </Text>
                     </Box>
-                    <Box mb={2}>
+                    <Box marginBottom={2}>
                       <Text size={2} color="gray">
                         Edit your profile settings
                       </Text>
                     </Box>
-                    <Flex gap={2} mt={3}>
+                    <Flex gap={2} marginTop={3}>
                       <Popover.Close>
                         <Button size={1} variant={'soft'} style={{ flex: 1 }}>
                           Cancel
@@ -255,7 +255,7 @@ export default function PopoverDemo() {
                     <Popover.Description>
                       This popover is controlled by React state.
                     </Popover.Description>
-                    <Flex justify="flex-end" mt={3}>
+                    <Flex justify="flex-end" marginTop={3}>
                       <Popover.Close>
                         <Button size={1} variant={'soft'}>
                           Close
