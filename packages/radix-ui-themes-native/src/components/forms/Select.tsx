@@ -1,341 +1,722 @@
-import React, { useState, useCallback } from 'react';
-import { StyleSheet, type ViewStyle, Modal, View as RNView, type ListRenderItem } from 'react-native';
-import { View, PrimitiveText, TouchableOpacity } from '../primitives';
+import React, { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  type StyleProp,
+  ViewStyle,
+  Modal,
+  Dimensions,
+  TouchableWithoutFeedback,
+  TextStyle,
+  ScrollView,
+} from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { Text } from '../typography';
+import { BaseColorScale, type Color, ColorScale, RadiusScale } from '../../theme';
+import {
+  useAnchorPosition,
+  calculatePopoverPosition,
+  type AnchorPosition,
+  type PopoverSide,
+  type PopoverAlign,
+} from '../../hooks/useAnchorPosition';
 
-interface SelectItem {
-  /**
-   * Value for this select item
-   */
+// ============================================================================
+// Select Context
+// ============================================================================
+
+/**
+ * Size variant for Select content
+ * - 1: Small - compact padding, smaller fonts
+ * - 2: Medium - default padding and font sizes
+ * - 3: Large - generous padding, large fonts
+ * - 4: Larger - generous padding, larger fonts
+ */
+export type SelectSize = 1 | 2 | 3 | 4;
+
+interface SelectContextValue {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   value: string;
-  /**
-   * Label text displayed in the picker
-   */
-  label: string;
-  /**
-   * Whether this item is disabled
-   */
-  disabled?: boolean;
+  onValueChange: (value: string) => void;
+  disabled: boolean;
+  colors: ColorScale | BaseColorScale;
+  radii: RadiusScale;
+  anchorRef: React.RefObject<View | null>;
+  anchorPosition: AnchorPosition;
+  measureAnchor: () => void;
+  size: SelectSize;
+  // For Select.Value to know the selected item text
+  selectedItemText: string;
+  setSelectedItemText: (text: string) => void;
+  // Track all items for Select.Value
+  itemTexts: Map<string, string>;
+  registerItem: (value: string, text: string) => void;
+  unregisterItem: (value: string) => void;
 }
 
-interface SelectProps {
+const SelectContext = createContext<SelectContextValue | null>(null);
+
+const useSelect = () => {
+  const context = useContext(SelectContext);
+  if (!context) {
+    throw new Error('Select components must be used within a Select.Root');
+  }
+  return context;
+};
+
+// ============================================================================
+// Select.Root - Main component
+// ============================================================================
+
+interface SelectRootProps {
   /**
-   * Currently selected value
+   * Default value (uncontrolled mode)
    */
-  value: string;
+  defaultValue?: string;
   /**
-   * Callback when selection changes
+   * Current value (controlled mode)
    */
-  onValueChange: (value: string) => void;
+  value?: string;
   /**
-   * Array of select items
+   * Callback when value changes
    */
-  items: SelectItem[];
+  onValueChange?: (value: string) => void;
   /**
-   * Placeholder text when no value is selected
+   * Whether the select is open (controlled mode)
    */
-  placeholder?: string;
+  open?: boolean;
+  /**
+   * Callback when open state changes
+   */
+  onOpenChange?: (open: boolean) => void;
+  /**
+   * Whether the select is open by default (uncontrolled mode)
+   * @default false
+   */
+  defaultOpen?: boolean;
   /**
    * Whether the select is disabled
+   * @default false
    */
   disabled?: boolean;
   /**
-   * Size variant
-   * @default 2
+   * Child components
    */
-  size?: '1' | '2' | '3';
-  /**
-   * Label text displayed above the select
-   */
-  label?: string;
-  /**
-   * Accessibility label
-   */
-  accessibilityLabel?: string;
-  /**
-   * Style prop for the container
-   */
-  style?: ViewStyle;
+  children: ReactNode;
 }
 
-const Select = React.forwardRef<React.ComponentRef<typeof RNView>, SelectProps>(
-  (
-    {
+export const SelectRoot = ({
+  defaultValue,
+  value: controlledValue,
+  onValueChange,
+  open: controlledOpen,
+  onOpenChange,
+  defaultOpen = false,
+  disabled = false,
+  children,
+}: SelectRootProps) => {
+  // Uncontrolled vs controlled state for open
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const isControlledOpen = controlledOpen !== undefined;
+  const open = isControlledOpen ? controlledOpen : internalOpen;
+
+  // Uncontrolled vs controlled state for value
+  const [internalValue, setInternalValue] = useState(defaultValue || '');
+  const isControlledValue = controlledValue !== undefined;
+  const value = isControlledValue ? controlledValue! : internalValue;
+
+  const handleOpenChange = useCallback((newOpen: boolean) => {
+    if (!isControlledOpen) {
+      setInternalOpen(newOpen);
+    }
+    onOpenChange?.(newOpen);
+  }, [isControlledOpen, onOpenChange]);
+
+  const handleValueChange = useCallback((newValue: string) => {
+    if (!isControlledValue) {
+      setInternalValue(newValue);
+    }
+    onValueChange?.(newValue);
+    // Close the select when a value is selected
+    handleOpenChange(false);
+  }, [isControlledValue, onValueChange, handleOpenChange]);
+
+  const theme = useTheme();
+  const colors = useThemeMode() === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
+  const radii = theme.radii;
+  const { anchorRef, anchorPosition, measureAnchor } = useAnchorPosition();
+
+  // Default size is 2, will be overridden by SelectContent
+  const [size, setSize] = useState<SelectSize>(2);
+
+  // Track selected item text for Select.Value
+  const [selectedItemText, setSelectedItemText] = useState<string>('');
+
+  // Track all registered items
+  const itemTextsRef = useRef<Map<string, string>>(new Map());
+
+  const registerItem = useCallback((itemValue: string, text: string) => {
+    itemTextsRef.current.set(itemValue, text);
+  }, []);
+
+  const unregisterItem = useCallback((itemValue: string) => {
+    itemTextsRef.current.delete(itemValue);
+  }, []);
+
+  return (
+    <SelectContext.Provider value={{
+      open,
+      onOpenChange: handleOpenChange,
       value,
-      onValueChange,
-      items,
-      placeholder = 'Select an option',
-      disabled = false,
-      size = '2',
-      label,
-      accessibilityLabel,
-      style,
-      ...rest
-    },
-    ref
-  ) => {
-    const theme = useTheme();
-    const mode = useThemeMode();
-    const isDark = mode === 'dark';
-    const colors = isDark ? theme.colors.gray.dark : theme.colors.gray;
-    const accentColor = theme.accentColor;
-    const [isModalVisible, setIsModalVisible] = useState(false);
+      onValueChange: handleValueChange,
+      disabled,
+      colors,
+      radii,
+      anchorRef,
+      anchorPosition,
+      measureAnchor,
+      size,
+      selectedItemText,
+      setSelectedItemText,
+      itemTexts: itemTextsRef.current,
+      registerItem,
+      unregisterItem,
+    }}>
+      {children}
+    </SelectContext.Provider>
+  );
+};
 
-    // Get size values
-    const getSizeValues = () => {
-      switch (size) {
-        case '1':
-          return {
-            fontSize: theme.typography.fontSizes[1].fontSize,
-            paddingVertical: theme.space[2],
-            paddingHorizontal: theme.space[3],
-            borderRadius: theme.radii.small,
-            height: 36,
-            itemHeight: 40,
-          };
-        case '3':
-          return {
-            fontSize: theme.typography.fontSizes[3].fontSize,
-            paddingVertical: theme.space[4],
-            paddingHorizontal: theme.space[4],
-            borderRadius: theme.radii.medium,
-            height: 52,
-            itemHeight: 56,
-          };
-        case '2':
-        default:
-          return {
-            fontSize: theme.typography.fontSizes[2].fontSize,
-            paddingVertical: theme.space[3],
-            paddingHorizontal: theme.space[3],
-            borderRadius: theme.radii.medium,
-            height: 44,
-            itemHeight: 48,
-          };
-      }
-    };
+// ============================================================================
+// Select.Trigger - The button that opens the select
+// ============================================================================
 
-    const sizeValues = getSizeValues();
-    const selectedItem = items.find(item => item.value === value);
+interface SelectTriggerProps {
+  children: ReactNode;
+  asChild?: boolean;
+}
 
-    const containerStyle: ViewStyle = {
-      gap: theme.space[1],
-    };
+export const SelectTrigger = ({ children, asChild = true }: SelectTriggerProps) => {
+  const { onOpenChange, open, anchorRef, measureAnchor, disabled } = useSelect();
 
-    const selectContainerStyle: ViewStyle = {
-      borderWidth: 1,
-      borderColor: isDark ? colors[6] : colors[7],
-      backgroundColor: disabled ? (isDark ? colors[3] : colors[2]) : isDark ? colors[4] : colors[1],
-      borderRadius: sizeValues.borderRadius,
-      opacity: disabled ? 0.6 : 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: sizeValues.paddingHorizontal,
-      height: sizeValues.height,
-    };
+  const handlePress = () => {
+    // Measure the anchor position before opening
+    measureAnchor();
+    onOpenChange(!open);
+  };
 
-    const textStyle = {
-      fontSize: sizeValues.fontSize,
-      color: selectedItem ? colors[12] : colors[8],
-    };
-
-    const labelStyle = {
-      color: isDark ? colors[11] : colors[10],
-      fontSize: theme.typography.fontSizes[1].fontSize,
-      fontWeight: '500' as const,
-    };
-
-    const handleSelect = useCallback((itemValue: string) => {
-      onValueChange(itemValue);
-      setIsModalVisible(false);
-    }, [onValueChange]);
-
-    const handleClose = useCallback(() => {
-      setIsModalVisible(false);
-    }, []);
-
-    const renderItem: ListRenderItem<SelectItem> = useCallback(({ item }) => {
-      const isSelected = item.value === value;
-      const isDisabled = item.disabled || false;
-
-      const itemContainerStyle: ViewStyle = {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: theme.space[4],
-        height: sizeValues.itemHeight,
-        opacity: isDisabled ? 0.5 : 1,
-        borderBottomWidth: 1,
-        borderBottomColor: isDark ? colors[5] : colors[4],
-      };
-
-      const itemTextStyle = {
-        fontSize: sizeValues.fontSize,
-        color: isSelected ? accentColor : colors[12],
-        fontWeight: isSelected ? ('600' as const) : ('400' as const),
-      };
-
-      const checkmarkStyle = {
-        fontSize: sizeValues.fontSize,
-        color: accentColor,
-        fontWeight: '600' as const,
-      };
-
-      return (
-        <TouchableOpacity
-          style={itemContainerStyle}
-          onPress={() => !isDisabled && handleSelect(item.value)}
-          disabled={isDisabled}
-          accessibilityRole="button"
-          accessibilityLabel={item.label}
-          accessibilityState={{ selected: isSelected, disabled: isDisabled }}
-        >
-          <PrimitiveText style={itemTextStyle}>{item.label}</PrimitiveText>
-          {isSelected && <PrimitiveText style={checkmarkStyle}>✓</PrimitiveText>}
-        </TouchableOpacity>
-      );
-    }, [value, colors, theme, accentColor, sizeValues, handleSelect, isDark]);
-
-    const keyExtractor = useCallback((item: SelectItem) => item.value, []);
-
-    // Theme-aware modal styles
-    const modalOverlayStyle: ViewStyle = {
-      flex: 1,
-      backgroundColor: isDark ? 'rgba(0, 0, 0, 0.7)' : 'rgba(0, 0, 0, 0.5)',
-      justifyContent: 'flex-end',
-    };
-
-    const modalContentStyle: ViewStyle = {
-      backgroundColor: colors[1],
-      borderTopLeftRadius: theme.radii.large,
-      borderTopRightRadius: theme.radii.large,
-      maxHeight: '70%',
-    };
-
-    const modalHeaderStyle: ViewStyle = {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: theme.space[4],
-      borderBottomWidth: 1,
-      borderBottomColor: isDark ? colors[5] : colors[4],
-    };
-
-    const modalTitleStyle = {
-      fontSize: theme.typography.fontSizes[3].fontSize,
-      fontWeight: '600' as const,
-      color: colors[12],
-    };
-
-    const modalCloseStyle = {
-      fontSize: theme.typography.fontSizes[4].fontSize,
-      color: colors[9],
-      padding: theme.space[1],
-    };
-
-    return (
-      <View ref={ref} style={[styles.container, containerStyle, style]} {...rest}>
-        {label && (
-          <PrimitiveText style={labelStyle} accessibilityLabel={accessibilityLabel}>
-            {label}
-          </PrimitiveText>
-        )}
-        <TouchableOpacity
-          style={selectContainerStyle}
-          onPress={() => !disabled && setIsModalVisible(true)}
-          disabled={disabled}
-          accessibilityRole="combobox"
-          accessibilityLabel={accessibilityLabel || label || placeholder}
-          accessibilityState={{ expanded: isModalVisible, disabled }}
-        >
-          <PrimitiveText style={textStyle}>{selectedItem?.label || placeholder}</PrimitiveText>
-          <PrimitiveText style={styles.chevron}>▼</PrimitiveText>
-        </TouchableOpacity>
-        <Modal
-          visible={isModalVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={handleClose}
-        >
-          <TouchableOpacity
-            style={modalOverlayStyle}
-            activeOpacity={1}
-            onPress={handleClose}
-          >
-            <View style={modalContentStyle}>
-              <View style={modalHeaderStyle}>
-                <PrimitiveText style={modalTitleStyle}>{placeholder}</PrimitiveText>
-                <TouchableOpacity onPress={handleClose}>
-                  <PrimitiveText style={modalCloseStyle}>✕</PrimitiveText>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.listContainer}>
-                {items.map((item) => {
-                  const isSelected = item.value === value;
-                  const isItemDisabled = item.disabled || false;
-
-                  const itemContainerStyle: ViewStyle = {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: theme.space[4],
-                    height: sizeValues.itemHeight,
-                    opacity: isItemDisabled ? 0.5 : 1,
-                    borderBottomWidth: 1,
-                    borderBottomColor: isDark ? colors[5] : colors[4],
-                  };
-
-                  const itemTextStyle = {
-                    fontSize: sizeValues.fontSize,
-                    color: isSelected ? accentColor : colors[12],
-                    fontWeight: isSelected ? ('600' as const) : ('400' as const),
-                  };
-
-                  const checkmarkStyle = {
-                    fontSize: sizeValues.fontSize,
-                    color: accentColor,
-                    fontWeight: '600' as const,
-                  };
-
-                  return (
-                    <TouchableOpacity
-                      key={item.value}
-                      style={itemContainerStyle}
-                      onPress={() => !isItemDisabled && handleSelect(item.value)}
-                      disabled={isItemDisabled}
-                      accessibilityRole="button"
-                      accessibilityLabel={item.label}
-                      accessibilityState={{ selected: isSelected, disabled: isItemDisabled }}
-                    >
-                      <PrimitiveText style={itemTextStyle}>{item.label}</PrimitiveText>
-                      {isSelected && <PrimitiveText style={checkmarkStyle}>✓</PrimitiveText>}
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      </View>
-    );
+  if (asChild && React.isValidElement(children)) {
+    // Clone the child element and inject our ref and onPress handler
+    const child = children as React.ReactElement<any>;
+    return React.cloneElement(child, {
+      ref: anchorRef,
+      onPress: (e: any) => {
+        // Call the original onPress if it exists
+        child.props?.onPress?.(e);
+        if (!disabled) {
+          handlePress();
+        }
+      },
+    });
   }
-);
 
-Select.displayName = 'Select';
+  return (
+    <Pressable ref={anchorRef} onPress={handlePress} disabled={disabled}>
+      {children}
+    </Pressable>
+  );
+};
+
+// ============================================================================
+// Select.Value - Displays the selected value
+// ============================================================================
+
+interface SelectValueProps {
+  placeholder?: string;
+  style?: TextStyle;
+}
+
+export const SelectValue = ({ placeholder = 'Select an option', style }: SelectValueProps) => {
+  const { value, itemTexts, colors } = useSelect();
+
+  // Get the text for the selected value
+  const selectedText = value ? itemTexts.get(value) : undefined;
+
+  return (
+    <Text style={[
+      { color: selectedText ? colors[12] : colors[9] },
+      style || {}
+    ]}>
+      {selectedText || placeholder}
+    </Text>
+  );
+};
+
+// ============================================================================
+// Select.Portal - Renders content in modal
+// ============================================================================
+
+interface SelectPortalProps {
+  children: ReactNode;
+}
+
+export const SelectPortal = ({ children }: SelectPortalProps) => {
+  const { open } = useSelect();
+
+  return (
+    <Modal
+      transparent
+      visible={open}
+      animationType="fade"
+      supportedOrientations={['portrait', 'landscape']}
+      onRequestClose={() => {}}
+      hardwareAccelerated={false}
+    >
+      {children}
+    </Modal>
+  );
+};
+
+// ============================================================================
+// Select.Overlay - Backdrop
+// ============================================================================
+
+interface SelectOverlayProps {
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SelectOverlay = ({ style }: SelectOverlayProps) => {
+  const { onOpenChange } = useSelect();
+
+  return (
+    <TouchableWithoutFeedback onPress={() => onOpenChange(false)}>
+      <View style={[styles.overlay, style]} />
+    </TouchableWithoutFeedback>
+  );
+};
+
+// ============================================================================
+// Select.Content - The dropdown content
+// ============================================================================
+
+export type { PopoverSide as SelectSide, PopoverAlign as SelectAlign };
+
+interface SelectContentProps {
+  children: ReactNode;
+  side?: PopoverSide;
+  sideOffset?: number;
+  align?: PopoverAlign;
+  alignOffset?: number;
+  avoidCollisions?: boolean;
+  size?: SelectSize;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SelectContent = ({
+  children,
+  side = 'bottom',
+  sideOffset = 4,
+  align = 'start',
+  alignOffset = 0,
+  avoidCollisions = true,
+  size = 2,
+  style,
+}: SelectContentProps) => {
+  const { colors, radii, anchorPosition } = useSelect();
+  const theme = useTheme();
+  const contentRef = useRef<View>(null);
+  const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
+  const [position, setPosition] = useState<{ top?: number; left?: number }>({});
+  const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+
+  // Get size-based styles
+  const getSizeStyles = useCallback(() => {
+    switch (size) {
+      case 1:
+        return {
+          paddingVertical: theme.space[1],
+          paddingHorizontal: theme.space[1],
+          minWidth: 140,
+          maxWidth: 220,
+        };
+      case 3:
+        return {
+          paddingVertical: theme.space[3],
+          paddingHorizontal: theme.space[2],
+          minWidth: 240,
+          maxWidth: 360,
+        };
+      case 4:
+        return {
+          paddingVertical: theme.space[3],
+          paddingHorizontal: theme.space[2],
+          minWidth: 240,
+          maxWidth: 360,
+        };
+      case 2:
+      default:
+        return {
+          paddingVertical: theme.space[2],
+          paddingHorizontal: theme.space[2],
+          minWidth: 180,
+          maxWidth: 280,
+        };
+    }
+  }, [size, theme.space]);
+
+  const sizeStyles = getSizeStyles();
+
+  // Calculate position when content size or anchor position changes
+  const updatePosition = useCallback(() => {
+    if (contentSize.width === 0 || contentSize.height === 0) {
+      return;
+    }
+
+    const calculatedPosition = calculatePopoverPosition(
+      anchorPosition,
+      contentSize,
+      { width: screenWidth, height: screenHeight },
+      side,
+      align,
+      sideOffset,
+      alignOffset,
+      avoidCollisions
+    );
+
+    setPosition({
+      top: calculatedPosition.top,
+      left: calculatedPosition.left,
+    });
+  }, [anchorPosition, contentSize, screenWidth, screenHeight, side, align, sideOffset, alignOffset, avoidCollisions]);
+
+  // Update position when dependencies change
+  React.useEffect(() => {
+    updatePosition();
+  }, [updatePosition]);
+
+  // Handle content layout to get size
+  const handleLayout = useCallback((event: { nativeEvent: { layout: { width: number; height: number } } }) => {
+    const { width, height } = event.nativeEvent.layout;
+    setContentSize({ width, height });
+  }, []);
+
+  // Don't render until we have valid anchor position
+  const hasValidPosition = anchorPosition.x !== 0 || anchorPosition.y !== 0;
+  const hasContentSize = contentSize.width > 0 && contentSize.height > 0;
+
+  // Create a new context with the size value for children
+  const contextValue = useSelect();
+  const contextWithSize = { ...contextValue, size };
+
+  return (
+    <TouchableWithoutFeedback>
+      <SelectContext.Provider value={contextWithSize}>
+          <View
+            ref={contentRef}
+            onLayout={handleLayout}
+            style={[
+              styles.content,
+              {
+                backgroundColor: colors[1],
+                borderRadius: radii.medium,
+                borderWidth: 1,
+                borderColor: colors[6],
+                // Apply size-based styles
+                paddingVertical: sizeStyles.paddingVertical,
+                paddingHorizontal: sizeStyles.paddingHorizontal,
+                minWidth: sizeStyles.minWidth,
+                maxWidth: sizeStyles.maxWidth,
+                // Only apply position styles when we have valid measurements
+                ...(hasValidPosition && hasContentSize ? {
+                  position: 'absolute',
+                  top: position.top ?? 0,
+                  left: position.left ?? 0,
+                } : {
+                  position: 'absolute',
+                  left: -9999, // Off-screen until positioned
+                  opacity: 0,
+                }),
+              },
+              style,
+            ]}
+          >
+        <ScrollView style={{ flex: 1 }}>
+            {children}
+        </ScrollView>
+          </View>
+      </SelectContext.Provider>
+    </TouchableWithoutFeedback>
+  );
+};
+
+// ============================================================================
+// Select.Group - Groups select items
+// ============================================================================
+
+interface SelectGroupProps {
+  children: ReactNode;
+}
+
+export const SelectGroup = ({ children }: SelectGroupProps) => {
+  return <View>{children}</View>;
+};
+
+// ============================================================================
+// Select.Item - Individual select item
+// ============================================================================
+
+interface SelectItemProps {
+  children: ReactNode;
+  value: string;
+  disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SelectItem = ({
+  children,
+  value: itemValue,
+  disabled = false,
+  style,
+}: SelectItemProps) => {
+  const { value, onValueChange, colors, onOpenChange, size, registerItem, unregisterItem } = useSelect();
+  const theme = useTheme();
+  const isSelected = value === itemValue;
+
+  // Extract text from children for Select.Value
+  React.useEffect(() => {
+    // Extract text from children
+    const extractText = (node: ReactNode): string => {
+      if (typeof node === 'string') return node;
+      if (typeof node === 'number') return String(node);
+      if (!node) return '';
+      if (Array.isArray(node)) return node.map(extractText).join('');
+      if (React.isValidElement(node) && node.props.children) {
+        return extractText(node.props.children);
+      }
+      return '';
+    };
+
+    const text = extractText(children);
+    registerItem(itemValue, text);
+
+    return () => unregisterItem(itemValue);
+  }, [children, itemValue, registerItem, unregisterItem]);
+
+  // Get font size based on size prop
+  const getFontSize = useCallback(() => {
+    switch (size) {
+      case 1:
+        return theme.typography.fontSizes[2].fontSize;
+      case 3:
+        return theme.typography.fontSizes[4].fontSize;
+      case 4:
+        return theme.typography.fontSizes[5].fontSize;
+      case 2:
+      default:
+        return theme.typography.fontSizes[3].fontSize;
+    }
+  }, [size, theme.typography.fontSizes]);
+
+  // Get padding based on size prop
+  const getItemPadding = useCallback(() => {
+    switch (size) {
+      case 1:
+        return { paddingHorizontal: theme.space[2], paddingVertical: theme.space[1] };
+      case 3:
+        return { paddingHorizontal: theme.space[4], paddingVertical: theme.space[3] };
+      case 4:
+        return { paddingHorizontal: theme.space[5], paddingVertical: theme.space[4] };
+      case 2:
+      default:
+        return { paddingHorizontal: theme.space[3], paddingVertical: theme.space[2] };
+    }
+  }, [size, theme.space]);
+
+  const handlePress = () => {
+    if (!disabled) {
+      onValueChange(itemValue);
+    }
+  };
+
+  const itemPadding = getItemPadding();
+  const fontSize = getFontSize();
+  const accentColor = theme.accentColor;
+
+  return (
+    <Pressable
+      onPress={handlePress}
+      disabled={disabled}
+      style={[
+        styles.item,
+        disabled && styles.itemDisabled,
+        itemPadding,
+        style,
+      ]}
+      accessibilityRole="menuitem"
+      accessibilityState={{ selected: isSelected, disabled }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+        <Text
+          style={[
+            {
+              color: disabled ? colors[8] : isSelected ? accentColor : colors[12],
+              fontSize,
+              flex: 1,
+            },
+          ]}
+        >
+          {children}
+        </Text>
+        {isSelected && (
+          <Text style={{ color: accentColor, fontSize, marginLeft: theme.space[2] }}>✓</Text>
+        )}
+      </View>
+    </Pressable>
+  );
+};
+
+// ============================================================================
+// Select.Separator - Visual divider
+// ============================================================================
+
+interface SelectSeparatorProps {
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SelectSeparator = ({ style }: SelectSeparatorProps) => {
+  const { colors } = useSelect();
+
+  return (
+    <View
+      style={[
+        styles.separator,
+        { backgroundColor: colors[6] },
+        style,
+      ]}
+    />
+  );
+};
+
+// ============================================================================
+// Select.Label - Section label
+// ============================================================================
+
+interface SelectLabelProps {
+  children: ReactNode;
+  style?: TextStyle;
+}
+
+export const SelectLabel = ({ children, style = {} }: SelectLabelProps) => {
+  const { colors, size } = useSelect();
+  const theme = useTheme();
+
+  // Get font size based on size prop
+  const getFontSize = useCallback(() => {
+    switch (size) {
+      case 1:
+        return theme.typography.fontSizes[1].fontSize;
+      case 3:
+        return theme.typography.fontSizes[3].fontSize;
+      case 2:
+      default:
+        return theme.typography.fontSizes[2].fontSize;
+    }
+  }, [size, theme.typography.fontSizes]);
+
+  // Get padding based on size prop
+  const getPadding = useCallback(() => {
+    switch (size) {
+      case 1:
+        return { paddingHorizontal: theme.space[2], paddingVertical: theme.space[1] };
+      case 3:
+        return { paddingHorizontal: theme.space[4], paddingVertical: theme.space[2] };
+      case 2:
+      default:
+        return { paddingHorizontal: theme.space[3], paddingVertical: theme.space[1] };
+    }
+  }, [size, theme.space]);
+
+  const padding = getPadding();
+
+  return (
+    <Text
+      style={[
+        {
+          color: colors[10],
+          fontSize: getFontSize(),
+          fontWeight: '600',
+          paddingHorizontal: padding.paddingHorizontal,
+          paddingVertical: padding.paddingVertical,
+          textTransform: 'uppercase',
+          letterSpacing: 0.5,
+        },
+        style,
+      ]}
+    >
+      {children}
+    </Text>
+  );
+};
+
+// ============================================================================
+// Styles
+// ============================================================================
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.01)',
   },
-  chevron: {
-    fontSize: 12,
-    color: 'gray',
+  content: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  listContainer: {
-    maxHeight: 400,
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 44,
+  },
+  itemDisabled: {
+    opacity: 0.5,
+  },
+  separator: {
+    height: 1,
+    marginVertical: 4,
+    marginHorizontal: 8,
   },
 });
 
-export { Select };
-export type { SelectProps, SelectItem };
+// ============================================================================
+// Export all Select components
+// ============================================================================
+
+export const Select = {
+  Root: SelectRoot,
+  Trigger: SelectTrigger,
+  Portal: SelectPortal,
+  Overlay: SelectOverlay,
+  Content: SelectContent,
+  Item: SelectItem,
+  Group: SelectGroup,
+  Label: SelectLabel,
+  Separator: SelectSeparator,
+  Value: SelectValue,
+};
+
+export type {
+  SelectRootProps,
+  SelectTriggerProps,
+  SelectPortalProps,
+  SelectOverlayProps,
+  SelectContentProps,
+  SelectItemProps,
+  SelectGroupProps,
+  SelectLabelProps,
+  SelectSeparatorProps,
+  SelectValueProps,
+};

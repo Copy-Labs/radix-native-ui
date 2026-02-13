@@ -45,12 +45,17 @@ export default function DropdownMenuDemo() {
                 <DropdownMenu.Root>
                   <DropdownMenu.Trigger>
                     <Button variant="ghost" size={1}>
-                      <Avatar
-                        radius={'full'}
-                        size={2}
-                        src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
-                        fallback="A"
-                      />
+                      <Button.Label>
+                        <Avatar
+                          radius={'full'}
+                          size={2}
+                          src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
+                          fallback="A"
+                        />
+                      </Button.Label>
+                      <Button.Icon>
+                        <Ionicons name="caret-down" size={12} />
+                      </Button.Icon>
                     </Button>
                   </DropdownMenu.Trigger>
                   <DropdownMenu.Portal>
@@ -131,8 +136,11 @@ export default function DropdownMenuDemo() {
               <Heading size={4}>Menu with Groups</Heading>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
-                  <Button variant={'soft'} color={'indigo'} width={100}>
+                  <Button variant={'soft'} color={'indigo'} width={120}>
                     File Menu
+                    <Button.Icon>
+                      <Ionicons name="caret-down" style={{ fontSize: 16 }} />
+                    </Button.Icon>
                   </Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>
@@ -166,7 +174,9 @@ export default function DropdownMenuDemo() {
                 <DropdownMenu.Trigger>
                   <Button color={'crimson'} size={1} variant={'soft'} width={120}>
                     Edit Menu
-                    <Ionicons name="caret-down" size={16} />
+                    <Button.Icon>
+                      <Ionicons name="caret-down" size={12} />
+                    </Button.Icon>
                   </Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Portal>

@@ -32,9 +32,9 @@ export type { RadioGroupProps, RadioItem } from './RadioGroup';
 export { Switch } from './Switch';
 export type { SwitchProps } from './Switch';
 
-// Select component
-export { Select } from './Select';
-export type { SelectProps, SelectItem } from './Select';
+// Select component (compound)
+export { Select, SelectRoot, SelectTrigger, SelectPortal, SelectOverlay, SelectContent, SelectItem, SelectGroup, SelectLabel, SelectSeparator, SelectValue } from './Select';
+export type { SelectRootProps, SelectTriggerProps, SelectPortalProps, SelectOverlayProps, SelectContentProps, SelectItemProps, SelectGroupProps, SelectLabelProps, SelectSeparatorProps, SelectValueProps, SelectSize, SelectSide, SelectAlign } from './Select';
 
 // Slider component
 export { Slider } from './Slider';

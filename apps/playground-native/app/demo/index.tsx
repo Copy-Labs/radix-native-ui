@@ -106,6 +106,9 @@ export default function App() {
           <Link href={'/demo/dropdown_menu'}>
             <Text size={4}>DropdownMenu</Text>
           </Link>
+          <Link href={'/demo/select'}>
+            <Text size={4}>Select (Compound)</Text>
+          </Link>
         </Flex>
       </ThemeProvider>
 
@@ -160,17 +163,20 @@ export default function App() {
               </Dialog.Portal>
             </Dialog.Root>
 
-            <Select
-              disabled={false}
-              placeholder={'Select a select'}
-              size={'3'}
-              value={radioValue}
-              onValueChange={setRadioValue}
-              items={[
-                { value: 'option1', label: 'Option 1' },
-                { value: 'option2', label: 'Option 2' },
-              ]}
-            />
+            <Select.Root value={radioValue} onValueChange={setRadioValue}>
+              <Select.Trigger asChild>
+                <Button variant="solid">
+                  <Select.Value placeholder="Select an option" />
+                </Button>
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Overlay />
+                <Select.Content size={3}>
+                  <Select.Item value="option1">Option 1</Select.Item>
+                  <Select.Item value="option2">Option 2</Select.Item>
+                </Select.Content>
+              </Select.Portal>
+            </Select.Root>
 
             {/*<Slider value={sliderValue} onValueChange={setSliderValue} />*/}
           </Flex>
