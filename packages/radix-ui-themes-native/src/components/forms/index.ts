@@ -38,4 +38,4 @@ export type { SelectRootProps, SelectTriggerProps, SelectPortalProps, SelectOver
 
 // Slider component
 export { Slider } from './Slider';
-export type { SliderProps, SliderThumb } from './Slider';
+export type { SliderProps, SliderValue } from './Slider';

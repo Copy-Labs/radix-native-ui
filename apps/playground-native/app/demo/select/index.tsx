@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
-import { Select, Button, Flex, ThemeProvider } from '@radix-ui/themes-native';
-import { Text, Heading } from '@radix-ui/themes-native';
+import { Select, Text, Heading, Button, Flex, ThemeProvider } from '@radix-ui/themes-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SelectDemo() {
   const [fruit, setFruit] = useState<string>('');
@@ -62,7 +62,7 @@ export default function SelectDemo() {
                   <Select.Trigger asChild>
                     <Button variant="solid" style={styles.trigger}>
                       <Button.Label>
-                        <Select.Value  />
+                        <Select.Value />
                       </Button.Label>
                     </Button>
                   </Select.Trigger>
@@ -167,6 +167,7 @@ export default function SelectDemo() {
                     <Button variant="outline" style={styles.trigger}>
                       <Button.Label>
                         <Select.Value placeholder="Some options disabled" />
+                        <Ionicons name={'caret-down'} />
                       </Button.Label>
                     </Button>
                   </Select.Trigger>
