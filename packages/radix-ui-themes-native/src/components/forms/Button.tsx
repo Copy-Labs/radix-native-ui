@@ -68,6 +68,15 @@ interface ButtonProps {
    */
   onPress?: (event: GestureResponderEvent) => void;
   /**
+   * Callback when button is long-pressed
+   */
+  onLongPress?: (event: GestureResponderEvent) => void;
+  /**
+   * Duration (in milliseconds) before onLongPress is called
+   * @default 500
+   */
+  delayLongPress?: number;
+  /**
    * Accessibility label
    */
   accessibilityLabel?: string;
@@ -173,6 +182,8 @@ const areEqual = (prevProps: ButtonProps, nextProps: ButtonProps) => {
     prevProps.disabled === nextProps.disabled &&
     prevProps.loading === nextProps.loading &&
     prevProps.onPress === nextProps.onPress &&
+    prevProps.onLongPress === nextProps.onLongPress &&
+    prevProps.delayLongPress === nextProps.delayLongPress &&
     prevProps.width === nextProps.width &&
     prevProps.highContrast === nextProps.highContrast
   ) {

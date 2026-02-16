@@ -64,15 +64,16 @@ export type {
 } from './Popover';
 
 // Tooltip
-export { TooltipComponent as Tooltip } from './Tooltip';
+export { Tooltip } from './Tooltip';
 export type {
-  TooltipProviderProps,
   TooltipRootProps,
   TooltipTriggerProps,
   TooltipPortalProps,
   TooltipContentProps,
   TooltipArrowProps,
   SimpleTooltipProps,
+  TooltipSide,
+  TooltipAlign,
 } from './Tooltip';
 
 // DropdownMenu

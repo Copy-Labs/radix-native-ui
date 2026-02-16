@@ -47,6 +47,15 @@ interface IconButtonProps {
    */
   onPress?: (event: import('react-native').GestureResponderEvent) => void;
   /**
+   * Callback when button is long-pressed
+   */
+  onLongPress?: (event: import('react-native').GestureResponderEvent) => void;
+  /**
+   * Duration (in milliseconds) before onLongPress is called
+   * @default 500
+   */
+  delayLongPress?: number;
+  /**
    * Accessibility label (required for accessibility)
    */
   accessibilityLabel: string;

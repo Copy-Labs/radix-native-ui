@@ -103,30 +103,59 @@ export default function App() {
             <Text size={4}>segmented control</Text>
           </Link>
           <Link href={'/demo/popover'}>
-            <Text size={4}>Popover</Text>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Popover</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
+            </Flex>
           </Link>
           <Link href={'/demo/dropdown_menu'}>
-            <Text size={4}>DropdownMenu</Text>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>DropdownMenu</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
+            </Flex>
           </Link>
           <Link href={'/demo/select'}>
-            <Text size={4}>Select (Compound)</Text>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Select</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
+            </Flex>
           </Link>
           <Link href={'/demo/slider'}>
             <Flex align={'center'} gap={8}>
               <Text size={4}>Slider</Text>
-              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
             </Flex>
           </Link>
           <Link href={'/demo/spinner'}>
             <Flex align={'center'} gap={8}>
               <Text size={4}>Spinner</Text>
-              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
             </Flex>
           </Link>
           <Link href={'/demo/progress'}>
             <Flex align={'center'} gap={8}>
               <Text size={4}>Progress</Text>
-              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
+            </Flex>
+          </Link>
+          <Link href={'/demo/tooltip'}>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Tooltip</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
             </Flex>
           </Link>
         </Flex>
