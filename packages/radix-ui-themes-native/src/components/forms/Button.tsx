@@ -240,14 +240,14 @@ const Button = React.memo(
         switch (size) {
           case 1:
             return {
-              paddingVertical: theme.space[2],
+              paddingVertical: theme.space[1],
               paddingHorizontal: theme.space[3],
               fontSize: theme.typography.fontSizes[1].fontSize,
               borderRadius: selectedRadius === 'full' ? 9999 : radii,
             };
           case 3:
             return {
-              paddingVertical: theme.space[4],
+              paddingVertical: theme.space[3],
               paddingHorizontal: theme.space[5],
               fontSize: theme.typography.fontSizes[4].fontSize,
               borderRadius: selectedRadius === 'full' ? 9999 : radii,
@@ -255,7 +255,7 @@ const Button = React.memo(
           case 2:
           default:
             return {
-              paddingVertical: theme.space[3],
+              paddingVertical: theme.space[2],
               paddingHorizontal: theme.space[4],
               fontSize: theme.typography.fontSizes[2].fontSize,
               borderRadius: selectedRadius === 'full' ? 9999 : radii,

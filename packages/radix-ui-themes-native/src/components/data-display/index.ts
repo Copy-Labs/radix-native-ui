@@ -13,6 +13,19 @@ export { Card } from './Card';
 export type { CardProps, CardFooterProps } from './Card';
 
 // DataList
+export { DataList, DataListRoot, DataListItem, DataListLabel, DataListValue } from './DataList';
+export type {
+  DataListRootProps,
+  DataListItemProps,
+  DataListLabelProps,
+  DataListValueProps,
+  DataListOrientation,
+  DataListSize,
+  DataListTrim,
+  DataListItemAlign,
+} from './DataList';
+
+// FancyList
 export { FancyList } from './FancyList';
 export type { FancyListProps, FancyListItem } from './FancyList';
 
