@@ -50,6 +50,18 @@ export default function Buttons() {
               </Flex>
             </Card>
 
+            <Flex gap={3} align="center">
+              <Button size={1} variant="soft">
+                Edit profile
+              </Button>
+              <Button size={2} variant="soft">
+                Edit profile
+              </Button>
+              <Button size={3} variant="soft">
+                Edit profile
+              </Button>
+            </Flex>
+
             <Heading size={5} style={{ marginTop: 16 }}>
               Button.Icon Examples
             </Heading>
@@ -196,9 +208,7 @@ export default function Buttons() {
               </Button>
 
               <Button variant="outline" color="green">
-                <Button.Label style={{ fontStyle: 'italic' }}>
-                  Custom Styled Label
-                </Button.Label>
+                <Button.Label style={{ fontStyle: 'italic' }}>Custom Styled Label</Button.Label>
               </Button>
             </Flex>
 
