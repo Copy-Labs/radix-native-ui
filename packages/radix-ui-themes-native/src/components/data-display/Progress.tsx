@@ -1,8 +1,25 @@
-import React from 'react';
-import { StyleSheet, type StyleProp, ViewStyle, Animated } from 'react-native';
+import React, { forwardRef, useRef, useEffect, useMemo } from 'react';
+import {
+  StyleSheet,
+  type StyleProp,
+  ViewStyle,
+  Animated,
+  View as RNView,
+} from 'react-native';
 import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { getGrayAlpha, getAccentColor } from '../../theme/color-helpers';
+import {
+  getGrayAlpha,
+  getAccentColor,
+  getColorScale,
+  getColorAlpha,
+  getVariantColors,
+} from '../../theme/color-helpers';
+import { Color, RadiusSize } from '../../theme';
+
+// ============================================================================
+// Types
+// ============================================================================
 
 interface ProgressProps {
   /**
@@ -20,95 +37,197 @@ interface ProgressProps {
    */
   size?: 1 | 2 | 3;
   /**
-   * Custom color for the progress indicator
+   * Visual style variant
+   * @default 'surface'
    */
-  color?: string;
+  variant?: 'surface' | 'solid' | 'soft' | 'outline';
+  /**
+   * Custom color for the progress indicator (uses theme color name)
+   */
+  color?: Color;
+  /**
+   * Radius variant
+   * @default 'full'
+   */
+  radius?: RadiusSize;
+  /**
+   * High contrast mode for accessibility
+   */
+  highContrast?: boolean;
+  /**
+   * Duration of the animation in milliseconds
+   * @default 300
+   */
+  duration?: number;
   /**
    * Custom style
    */
   style?: StyleProp<ViewStyle>;
   /**
    * Accessibility label
+   * @default 'Progress'
    */
   accessibilityLabel?: string;
+  /**
+   * Test ID for testing
+   */
+  testID?: string;
 }
 
-const Progress = ({
-  value,
-  max = 100,
-  size = 2,
-  color,
-  style,
-  accessibilityLabel = 'Progress',
-}: ProgressProps) => {
-  const theme = useTheme();
-  const mode = useThemeMode();
-  const isDark = mode === 'dark';
-  const grayAlpha = getGrayAlpha(theme);
-  const accentScale = getAccentColor(theme, mode);
+// ============================================================================
+// Progress Component
+// ============================================================================
 
-  // Calculate progress percentage
-  const progress = Math.min(Math.max(value / max, 0), 1);
+const Progress = forwardRef<React.ComponentRef<typeof RNView>, ProgressProps>(
+  (
+    {
+      value,
+      max = 100,
+      size = 2,
+      variant = 'solid',
+      color,
+      radius = 'full',
+      highContrast = false,
+      duration = 300,
+      style,
+      accessibilityLabel = 'Progress',
+      testID,
+    },
+    ref
+  ) => {
+    const theme = useTheme();
+    const mode = useThemeMode();
+    const isDark = mode === 'dark';
+    const grayAlpha = getGrayAlpha(theme);
+    const activeColor = color || theme.accentColor;
+    const colorScale = getColorScale(theme, activeColor, mode);
+    const colorAlpha = getColorAlpha(theme, activeColor);
 
-  // Get size values
-  const getSizeValues = () => {
-    switch (size) {
-      case 1:
-        return { height: 4, borderRadius: 2 };
-      case 3:
-        return { height: 12, borderRadius: 6 };
-      case 2:
-      default:
-        return { height: 8, borderRadius: 4 };
-    }
-  };
+    // Radius handling
+    const radii = theme.radii[radius] ?? theme.radii.full;
+    const selectedRadius = radius === 'full' ? 9999 : radii;
 
-  const sizeValues = getSizeValues();
+    // Get variant colors for the slider
+    const variantColors = useMemo(
+      () => getVariantColors(theme, activeColor, mode, variant, highContrast),
+      [theme, activeColor, mode, variant, highContrast]
+    );
 
-  // Get indicator color - use solid accent color
-  const getIndicatorColor = () => {
-    if (color) return color;
-    return accentScale[9];
-  };
+    // Calculate progress percentage (clamped between 0 and 1)
+    const progress = useMemo(() => Math.min(Math.max(value / max, 0), 1), [value, max]);
 
-  // Track uses alpha color for subtle background
-  const trackColor = isDark ? grayAlpha['7'] : grayAlpha['6'];
-  const indicatorColor = getIndicatorColor();
+    // Animated value for smooth transitions
+    const animatedProgress = useRef(new Animated.Value(0)).current;
 
-  return (
-    <View
-      style={[
-        styles.track,
-        {
-          backgroundColor: trackColor,
-          height: sizeValues.height,
-          borderRadius: sizeValues.borderRadius,
-          overflow: 'hidden',
-        },
-        style,
-      ]}
-      accessibilityLabel={accessibilityLabel}
-      accessibilityValue={{
-        now: value,
-        min: 0,
-        max: max,
-      }}
-      accessibilityRole="progressbar"
-    >
-      <Animated.View
+    // Animate when progress changes
+    useEffect(() => {
+      Animated.timing(animatedProgress, {
+        toValue: progress,
+        duration: duration,
+        useNativeDriver: false, // width cannot use native driver
+        isInteraction: false,
+      }).start();
+    }, [progress, animatedProgress, duration]);
+
+    // Get size values
+    const sizeValues = useMemo(() => {
+      switch (size) {
+        case 1:
+          return { height: 4, borderRadius: 2 };
+        case 3:
+          return { height: 12, borderRadius: 6 };
+        case 2:
+        default:
+          return { height: 8, borderRadius: 4 };
+      }
+    }, [size]);
+
+    // Get border radius from theme or size defaults
+    const borderRadius = useMemo(() => {
+      if (radius === 'full') return 9999;
+      const themeRadius = theme.radii[radius];
+      return themeRadius ?? sizeValues.borderRadius;
+    }, [radius, theme.radii, sizeValues.borderRadius]);
+
+    // Get indicator color based on variant and highContrast
+    const indicatorColor = useMemo(() => {
+      if (highContrast) {
+        return colorScale[12];
+      }
+      return colorScale[9];
+    }, [colorScale, highContrast]);
+
+    // Get track background color based on variant
+    const trackBackgroundColor = useMemo(() => {
+      switch (variant) {
+        case 'outline':
+          return 'transparent';
+        case 'surface':
+        case 'soft':
+          return variantColors.backgroundColor; // colorAlpha['3'];
+        case 'solid':
+        default:
+          return isDark ? theme.colors['gray'].dark['4'] : grayAlpha['6'];
+      }
+    }, [variant, isDark, grayAlpha, colorAlpha]);
+
+    const trackBorder = useMemo(() => {
+      switch (variant) {
+        case 'surface':
+        case 'outline':
+          return {
+            borderWidth: 0.4,
+            borderColor: variantColors.borderColor, // colorScale[8]
+          };
+        default:
+          return { borderWidth: 0.5, borderColor: 'transparent' };
+      }
+    }, [variant, colorAlpha]);
+
+    // Interpolate animated width
+    const animatedWidth = animatedProgress.interpolate({
+      inputRange: [0, 1],
+      outputRange: ['0%', '100%'],
+    });
+
+    return (
+      <View
+        ref={ref}
         style={[
-          styles.indicator,
+          styles.track,
           {
-            width: `${progress * 100}%`,
-            backgroundColor: indicatorColor,
+            backgroundColor: trackBackgroundColor,
+            borderColor: trackBorder.borderColor,
+            borderWidth: trackBorder.borderWidth,
             height: sizeValues.height,
-            borderRadius: sizeValues.borderRadius,
+            borderRadius: selectedRadius,
+            overflow: 'hidden',
           },
+          style,
         ]}
-      />
-    </View>
-  );
-};
+        accessibilityLabel={accessibilityLabel}
+        accessibilityValue={{
+          now: value,
+          min: 0,
+          max: max,
+        }}
+        accessibilityRole="progressbar"
+        testID={testID}
+      >
+        <Animated.View
+          style={[
+            styles.indicator,
+            {
+              width: animatedWidth,
+              backgroundColor: indicatorColor,
+              borderRadius: selectedRadius,
+            },
+          ]}
+        />
+      </View>
+    );
+  }
+);
 
 Progress.displayName = 'Progress';
 

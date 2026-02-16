@@ -114,7 +114,19 @@ export default function App() {
           <Link href={'/demo/slider'}>
             <Flex align={'center'} gap={8}>
               <Text size={4}>Slider</Text>
-              <Badge color={'ruby'} radius={'full'} size={1} variant={'solid'}>New</Badge>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
+            </Flex>
+          </Link>
+          <Link href={'/demo/spinner'}>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Spinner</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
+            </Flex>
+          </Link>
+          <Link href={'/demo/progress'}>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Progress</Text>
+              <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>New</Badge>
             </Flex>
           </Link>
         </Flex>

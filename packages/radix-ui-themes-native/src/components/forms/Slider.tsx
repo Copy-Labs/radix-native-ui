@@ -388,13 +388,11 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
     const handleTrackPress = useCallback(
       (event: GestureResponderEvent) => {
         const currentTrackLayout = trackLayoutRef2.current;
-        console.log('[Slider] handleTrackPress', { trackLayout: currentTrackLayout });
         if (disabledRef.current || currentTrackLayout.width === 0) return;
 
         const touchX = event.nativeEvent.locationX;
         const position = Math.max(0, Math.min(1, touchX / currentTrackLayout.width));
         const newValue = positionToValue(position);
-        console.log('[Slider] handleTrackPress calculated', { touchX, position, newValue });
 
         if (valuesRef.current.length === 1) {
           updateValue([newValue]);
@@ -426,18 +424,12 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
     const handleDrag = useCallback(
       (gestureState: PanResponderGestureState, thumbIndex: number) => {
         const currentTrackLayout = trackLayoutRef2.current;
-        console.log('[Slider] handleDrag', {
-          thumbIndex,
-          trackLayout: currentTrackLayout,
-          moveX: gestureState.moveX,
-        });
         if (disabledRef.current || currentTrackLayout.width === 0) return;
 
         // Calculate relative position within track
         const relativeX = gestureState.moveX - currentTrackLayout.pageX;
         const position = Math.max(0, Math.min(1, relativeX / currentTrackLayout.width));
         const newValue = positionToValue(position);
-        console.log('[Slider] handleDrag calculated', { relativeX, position, newValue });
 
         const newValues = [...valuesRef.current];
         newValues[thumbIndex] = newValue;
@@ -473,61 +465,35 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
     // Pan responder for drag gestures
     const panResponder = useRef(
       PanResponder.create({
-        onStartShouldSetPanResponder: () => {
-          console.log('[Slider] onStartShouldSetPanResponder', { disabled: disabledRef.current });
-          return !disabledRef.current;
-        },
-        onMoveShouldSetPanResponder: () => {
-          console.log('[Slider] onMoveShouldSetPanResponder', { disabled: disabledRef.current });
-          return !disabledRef.current;
-        },
+        onStartShouldSetPanResponder: () => !disabledRef.current,
+        onMoveShouldSetPanResponder: () => !disabledRef.current,
         // Capture the gesture from the start to prevent ScrollView from taking it
-        onStartShouldSetPanResponderCapture: () => {
-          console.log('[Slider] onStartShouldSetPanResponderCapture', { disabled: disabledRef.current });
-          return !disabledRef.current;
-        },
-        onMoveShouldSetPanResponderCapture: () => {
-          console.log('[Slider] onMoveShouldSetPanResponderCapture', { disabled: disabledRef.current });
-          return !disabledRef.current;
-        },
+        onStartShouldSetPanResponderCapture: () => !disabledRef.current,
+        onMoveShouldSetPanResponderCapture: () => !disabledRef.current,
         onPanResponderGrant: (event: GestureResponderEvent) => {
-          console.log('[Slider] onPanResponderGrant', {
-            trackLayout: trackLayoutRef2.current,
-            locationX: event.nativeEvent.locationX,
-          });
           if (disabledRef.current || trackLayoutRef2.current.width === 0) return;
 
           const touchX = event.nativeEvent.locationX;
           const position = Math.max(0, Math.min(1, touchX / trackLayoutRef2.current.width));
           const nearestIndex = getNearestThumbIndex(position);
-          console.log('[Slider] Setting activeThumbIndex:', nearestIndex);
 
           setActiveThumbIndex(nearestIndex);
           activeThumbIndexRef.current = nearestIndex;
-          // Don't call handleTrackPress here - just set the active thumb
-          // The initial position will be set on move
         },
         onPanResponderMove: (
           _event: GestureResponderEvent,
           gestureState: PanResponderGestureState
         ) => {
-          console.log('[Slider] onPanResponderMove', {
-            activeThumbIndex: activeThumbIndexRef.current,
-            moveX: gestureState.moveX,
-            trackLayout: trackLayoutRef2.current,
-          });
           if (activeThumbIndexRef.current !== null) {
             handleDrag(gestureState, activeThumbIndexRef.current);
           }
         },
         onPanResponderRelease: () => {
-          console.log('[Slider] onPanResponderRelease');
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
         },
         onPanResponderTerminate: () => {
-          console.log('[Slider] onPanResponderTerminate');
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
@@ -539,7 +505,17 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
     // Calculate track colors based on variant
     const trackBackgroundColor = useMemo(() => {
-      if (variant === 'solid') {
+      switch (variant) {
+        case 'surface':
+        case 'soft':
+          return variantColors.backgroundColor;
+        case 'outline':
+          return 'transparent';
+        case 'solid':
+        default:
+          return isDark ? grayAlpha['7'] : grayAlpha['6'];
+      }
+      /*if (variant === 'solid') {
         return isDark ? grayAlpha['7'] : grayAlpha['6'];
       } else if (variant === 'outline') {
         return 'transparent';
@@ -547,7 +523,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
         return variantColors.backgroundColor
       }
       // surface variant
-      return colorAlpha['3'];
+      return colorAlpha['3'];*/
     }, [variant, isDark, grayAlpha, colorAlpha]);
 
     const filledTrackColor = useMemo(() => {

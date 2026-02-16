@@ -373,53 +373,60 @@ export default function SliderDemo() {
                 Radius Variants
               </Text>
 
-              <Text size={2} color="gray">
-                Full (Default)
-              </Text>
-              <Slider
-                radius="full"
-                defaultValue={50}
-                showValueLabel
+              <Card size={1}>
+                <Text size={2} color="gray">
+                  Full (Default)
+                </Text>
+                <Slider
+                  radius="full"
+                  defaultValue={50}
+                  showValueLabel
+                />
+              </Card>
 
-              />
+              <Card size={1}>
+                <Text size={2} color="gray">
+                  Large
+                </Text>
+                <Slider
+                  radius="large"
+                  defaultValue={50}
+                  showValueLabel
+                />
+              </Card>
 
-              <Text size={2} color="gray">
-                Large
-              </Text>
-              <Slider
-                radius="large"
-                defaultValue={50}
-                showValueLabel
+              <Card size={1}>
+                <Text size={2} color="gray">
+                  Medium
+                </Text>
+                <Slider
+                  radius="medium"
+                  defaultValue={50}
+                  showValueLabel
+                />
+              </Card>
 
-              />
+              <Card size={1}>
+                <Text size={2} color="gray">
+                  Small
+                </Text>
+                <Slider
+                  radius="small"
+                  defaultValue={50}
+                  showValueLabel
+                />
+              </Card>
 
-              <Text size={2} color="gray">
-                Medium
-              </Text>
-              <Slider
-                radius="medium"
-                defaultValue={50}
-                showValueLabel
-
-              />
-
-              <Text size={2} color="gray">
-                Small
-              </Text>
-              <Slider
-                radius="small"
-                defaultValue={50}
-                showValueLabel
-              />
-
-              <Text size={2} color="gray">
-                None
-              </Text>
-              <Slider
-                radius="none"
-                defaultValue={50}
-                showValueLabel
-              />
+              <Card size={1}>
+                <Text size={2} color="gray">
+                  None
+                </Text>
+                <Slider
+                  radius="none"
+                  defaultValue={50}
+                  showValueLabel
+                />
+              </Card>
             </Flex>
 
             {/* Accessibility Demo */}

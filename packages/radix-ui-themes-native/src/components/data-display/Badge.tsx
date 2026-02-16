@@ -32,7 +32,7 @@ interface BadgeProps {
    * Badge size
    * @default 2
    */
-  size?: 1 | 2 | 3;
+  size?: 1 | 2 | 3 | 4;
   /**
    * High contrast mode for accessibility
    */
@@ -76,19 +76,26 @@ const Badge = React.forwardRef<any, BadgeProps>(
       switch (size) {
         case 1:
           return {
+            paddingVertical: 0.5,
+            paddingHorizontal: 6,
+            fontSize: theme.typography.fontSizes[1].fontSize,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
+          };
+        case 2:
+          return {
             paddingVertical: 1,
             paddingHorizontal: 6,
             fontSize: theme.typography.fontSizes[1].fontSize,
             borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
-        case 3:
+        case 4:
           return {
             paddingVertical: 6,
             paddingHorizontal: 12,
             fontSize: theme.typography.fontSizes[3].fontSize,
             borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
-        case 2:
+        case 3:
         default:
           return {
             paddingVertical: 3,
@@ -119,6 +126,7 @@ const Badge = React.forwardRef<any, BadgeProps>(
       color: variantColors.textColor,
       fontSize: sizeValues.fontSize,
       fontWeight: '500',
+      lineHeight: size === 1 ? sizeValues.fontSize * 1.3 : sizeValues.fontSize * 1.6,
     };
 
     return (

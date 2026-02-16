@@ -21,8 +21,11 @@ export default function Badges() {
             <Badge size={2} variant="soft" color="purple">
               Featured
             </Badge>
-            <Badge variant="outline" color="bronze">
+            <Badge size={3} variant="surface" color="amber">
               Warning
+            </Badge>
+            <Badge radius={'full'} size={4} variant="solid" color="ruby">
+              Danger
             </Badge>
           </Flex>
 
@@ -76,13 +79,13 @@ export default function Badges() {
           </Flex>
 
           <Flex gap={2}>
-            <Badge variant="solid" radius="none" color="indigo">
+            <Badge variant="solid" size={2} radius="none" color="indigo">
               New
             </Badge>
-            <Badge variant="solid" radius="large" color="indigo">
+            <Badge variant="solid" size={2} radius="large" color="indigo">
               New
             </Badge>
-            <Badge variant="solid" radius="full" color="indigo">
+            <Badge variant="solid" size={2} radius="full" color="indigo">
               New
             </Badge>
           </Flex>

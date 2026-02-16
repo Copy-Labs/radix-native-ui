@@ -1,8 +1,16 @@
 import React from 'react';
 import { StyleSheet, type StyleProp, ViewStyle } from 'react-native';
-import { ActivityIndicator } from '../primitives';
+import { ActivityIndicator, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { getAccentColor } from '../../theme/color-helpers';
+import { getAccentColor, getVariantColors } from '../../theme/color-helpers';
+import { Color } from '../../theme';
+
+// Size configuration map
+const SIZE_CONFIG = {
+  small: { dimension: 20, indicatorSize: 'small' as const },
+  medium: { dimension: 36, indicatorSize: 'small' as const },
+  large: { dimension: 48, indicatorSize: 'large' as const },
+};
 
 interface SpinnerProps {
   /**
@@ -11,63 +19,78 @@ interface SpinnerProps {
    */
   size?: 'small' | 'medium' | 'large';
   /**
-   * Custom color for the spinner
+   * High contrast mode for accessibility
    */
-  color?: string;
+  highContrast?: boolean;
   /**
-   * Custom style
+   * Custom color for the spinner (uses theme color name)
+   */
+  color?: Color;
+  /**
+   * Custom style applied to the container
    */
   style?: StyleProp<ViewStyle>;
   /**
    * Accessibility label
+   * @default 'Loading'
    */
   accessibilityLabel?: string;
+  /**
+   * Test ID for testing
+   */
+  testID?: string;
 }
 
-const Spinner = ({
-  size = 'medium',
-  color,
-  style,
-  accessibilityLabel = 'Loading',
-}: SpinnerProps) => {
-  const theme = useTheme();
-  const mode = useThemeMode();
-  const accentScale = getAccentColor(theme, mode);
+const Spinner = React.forwardRef<React.ElementRef<typeof View>, SpinnerProps>(
+  ({ size = 'medium', color, highContrast = false, style, accessibilityLabel = 'Loading', testID }, ref) => {
+    const theme = useTheme();
+    const mode = useThemeMode();
+    const accentScale = getAccentColor(theme, mode);
+    const sizeConfig = SIZE_CONFIG[size];
+    const activeColor = color || theme.accentColor;
+    // Get colors based on variant and mode using the helper function
+    const solidVariant = 'solid';
+    const variantColors = getVariantColors(theme, activeColor, mode, solidVariant, highContrast);
 
-  // Map size to ActivityIndicator size
-  const getActivityIndicatorSize = (): 'small' | 'large' => {
-    switch (size) {
-      case 'small':
-        return 'small';
-      case 'large':
-        return 'large';
-      case 'medium':
-      default:
-        return 'small';
-    }
-  };
+    // Get spinner color - use accent color scale for consistency
+    const getSpinnerColor = (): string | undefined => {
+      if (color) {
+        // If color is a theme color name, get its scale
+        const colorScale = mode === 'dark' ? theme.colors[color]?.dark : theme.colors[color];
+        return colorScale?.[9] || accentScale[9];
+      }
+      // Use accent 9 for good visibility
+      return accentScale[9];
+    };
 
-  // Get spinner color - use accent color scale for consistency
-  const getSpinnerColor = () => {
-    if (color) return color;
-    // Use accent 9 for good visibility
-    return accentScale[9];
-  };
-
-  return (
-    <ActivityIndicator
-      size={getActivityIndicatorSize()}
-      color={getSpinnerColor()}
-      style={style}
-      accessibilityLabel={accessibilityLabel}
-    />
-  );
-};
+    return (
+      <View
+        ref={ref}
+        style={[
+          styles.container,
+          {
+            width: sizeConfig.dimension,
+            height: sizeConfig.dimension,
+          },
+          style,
+        ]}
+        testID={testID}
+      >
+        <ActivityIndicator
+          size={sizeConfig.indicatorSize}
+          color={variantColors.backgroundColor}
+          accessibilityLabel={accessibilityLabel}
+          accessibilityRole="progressbar"
+        />
+      </View>
+    );
+  }
+);
 
 Spinner.displayName = 'Spinner';
 
 const styles = StyleSheet.create({
-  spinner: {
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
   },

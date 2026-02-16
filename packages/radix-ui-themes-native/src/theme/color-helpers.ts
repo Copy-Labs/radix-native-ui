@@ -32,6 +32,7 @@ export const getColorScale = (theme: Theme, color: Color, mode: 'light' | 'dark'
  * Returns the alpha color scale (1-12) for the specified color
  */
 export const getColorAlpha = (theme: Theme, color: Color) => {
+  console.log("getColorAlpha", color);
   return theme.colors[color].alpha;
 };
 
@@ -211,7 +212,7 @@ export const getVariantColors = (
     case 'classic':
       return {
         backgroundColor: colorScale[9],
-        textColor: whiteAlpha['12'], // textColor,
+        textColor: textColor, // whiteAlpha['12'], // textColor,
         borderColor: 'transparent',
       };
     case 'soft':
