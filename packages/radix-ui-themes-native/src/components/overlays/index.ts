@@ -98,7 +98,6 @@ export type {
 // ContextMenu
 export { ContextMenu } from './ContextMenu';
 export type {
-  ContextMenuProviderProps,
   ContextMenuRootProps,
   ContextMenuTriggerProps,
   ContextMenuPortalProps,
@@ -110,4 +109,7 @@ export type {
   ContextMenuLabelProps,
   ContextMenuCheckboxItemProps,
   ContextMenuRadioItemProps,
+  ContextMenuSize,
+  ContextMenuSide,
+  ContextMenuAlign,
 } from './ContextMenu';

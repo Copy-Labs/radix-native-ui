@@ -243,3 +243,129 @@ function clampToScreen(
     left: clampedLeft,
   };
 }
+
+// ============================================================================
+// ContextMenu Position Calculation
+// ============================================================================
+
+/**
+ * Side preference for context menu positioning
+ * - 'bottom': Menu appears below the touch point (default)
+ * - 'top': Menu appears above the touch point
+ */
+export type ContextMenuSide = 'top' | 'bottom';
+
+/**
+ * Horizontal alignment for context menu relative to touch point
+ * - 'start': Menu left edge aligns with touch point
+ * - 'center': Menu center aligns with touch point
+ * - 'end': Menu right edge aligns with touch point
+ */
+export type ContextMenuAlign = 'start' | 'center' | 'end';
+
+/**
+ * Result of context menu position calculation
+ */
+export interface ContextMenuPosition {
+  top: number;
+  left: number;
+  actualSide: ContextMenuSide;
+}
+
+/**
+ * Calculate the position for a context menu based on touch point.
+ * Handles collision detection and automatic flipping.
+ *
+ * @param touchPoint - The x, y coordinates of the touch/long-press
+ * @param contentSize - Width and height of the menu content
+ * @param screenSize - Width and height of the screen
+ * @param side - Preferred side ('top' or 'bottom')
+ * @param align - Horizontal alignment relative to touch point
+ * @param sideOffset - Distance from touch point to menu
+ * @param alignOffset - Horizontal offset from aligned position
+ * @param avoidCollisions - Whether to flip when colliding with screen edges
+ */
+export function calculateContextMenuPosition(
+  touchPoint: { x: number; y: number },
+  contentSize: ContentSize,
+  screenSize: ScreenSize,
+  side: ContextMenuSide = 'bottom',
+  align: ContextMenuAlign = 'start',
+  sideOffset: number = 4,
+  alignOffset: number = 0,
+  avoidCollisions: boolean = true
+): ContextMenuPosition {
+  const { x, y } = touchPoint;
+  const { width: contentWidth, height: contentHeight } = contentSize;
+  const { width: screenWidth, height: screenHeight } = screenSize;
+
+  // Calculate horizontal position based on alignment
+  let left: number;
+  switch (align) {
+    case 'start':
+      left = x + alignOffset;
+      break;
+    case 'center':
+      left = x - contentWidth / 2 + alignOffset;
+      break;
+    case 'end':
+      left = x - contentWidth + alignOffset;
+      break;
+    default:
+      left = x + alignOffset;
+  }
+
+  // Calculate vertical position based on side
+  let top: number;
+  if (side === 'bottom') {
+    top = y + sideOffset;
+  } else {
+    top = y - contentHeight - sideOffset;
+  }
+
+  // Check for collisions and flip if needed
+  let actualSide = side;
+  if (avoidCollisions) {
+    const wouldOverflowBottom = top + contentHeight > screenHeight;
+    const wouldOverflowTop = top < 0;
+
+    if (side === 'bottom' && wouldOverflowBottom) {
+      // Flip to top if there's room
+      const topPosition = y - contentHeight - sideOffset;
+      if (topPosition >= 0) {
+        actualSide = 'top';
+        top = topPosition;
+      }
+    } else if (side === 'top' && wouldOverflowTop) {
+      // Flip to bottom if there's room
+      const bottomPosition = y + sideOffset;
+      if (bottomPosition + contentHeight <= screenHeight) {
+        actualSide = 'bottom';
+        top = bottomPosition;
+      }
+    }
+  }
+
+  // Clamp to screen bounds with padding
+  const padding = 8;
+
+  // Clamp left position
+  if (left < padding) {
+    left = padding;
+  } else if (left + contentWidth > screenWidth - padding) {
+    left = Math.max(padding, screenWidth - contentWidth - padding);
+  }
+
+  // Clamp top position
+  if (top < padding) {
+    top = padding;
+  } else if (top + contentHeight > screenHeight - padding) {
+    top = Math.max(padding, screenHeight - contentHeight - padding);
+  }
+
+  return {
+    top,
+    left,
+    actualSide,
+  };
+}
