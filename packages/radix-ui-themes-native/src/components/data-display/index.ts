@@ -8,6 +8,10 @@ export type { AvatarProps, AvatarFallbackProps } from './Avatar';
 export { Badge } from './Badge';
 export type { BadgeProps } from './Badge';
 
+// Callout
+export { Callout, CalloutRoot, CalloutIcon, CalloutText } from './Callout';
+export type { CalloutRootProps, CalloutIconProps, CalloutTextProps, CalloutSize, CalloutVariant } from './Callout';
+
 // Card
 export { Card } from './Card';
 export type { CardProps, CardFooterProps } from './Card';

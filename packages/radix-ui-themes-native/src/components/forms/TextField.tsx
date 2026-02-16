@@ -419,7 +419,7 @@ const TextFieldRoot = React.forwardRef<
     placeholder,
     placeholderTextColor:
       color !== 'gray'
-        ? theme.colors[activeColor].alpha['8']
+        ? theme.colors[color][12]+'99' // theme.colors[activeColor].alpha['8']
         : theme.colors.gray[9],
     editable: !disabled,
     secureTextEntry,

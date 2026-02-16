@@ -279,7 +279,7 @@ const Flex = React.memo(
           alignContent,
           flexWrap: wrap,
           flexGrow,
-          flexShrink,
+          flexShrink: 1,
           flexBasis,
           flex,
           alignSelf,

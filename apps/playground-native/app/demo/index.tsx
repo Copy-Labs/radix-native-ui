@@ -57,6 +57,14 @@ export default function App() {
           <Link href={'/demo/buttons'}>
             <Text size={4}>Buttons</Text>
           </Link>
+          <Link href={'/demo/callout'}>
+            <Flex align={'center'} gap={8}>
+              <Text size={4}>Callout</Text>
+              <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                New
+              </Badge>
+            </Flex>
+          </Link>
           <Link href={'/demo/card'}>
             <Text size={4}>Card</Text>
           </Link>

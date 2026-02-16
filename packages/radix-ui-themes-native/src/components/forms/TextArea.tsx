@@ -222,9 +222,7 @@ const TextAreaRoot = React.forwardRef<
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={
-            color !== 'gray' ? theme.colors[activeColor].alpha['8'] : theme.colors.gray[9]
-          }
+          placeholderTextColor={color !== 'gray' ? theme.colors[color][12]+'99' : theme.colors.gray[9]}
           editable={!disabled}
           multiline={true}
           accessibilityLabel={accessibilityLabel || label}
