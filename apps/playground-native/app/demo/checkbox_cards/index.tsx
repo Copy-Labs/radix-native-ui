@@ -28,7 +28,7 @@ export default function CheckboxCardsDemo() {
             {/* Basic Example */}
             <Box>
               <Heading size={4} style={{ marginBottom: 12 }}>Basic Example</Heading>
-              <CheckboxCards.Root defaultValue={['1']}>
+              <CheckboxCards.Root defaultValue={['1']} gap={12}>
                 <CheckboxCards.Item value="1">
                   <Flex direction="column" width="100%">
                     <Text weight="bold">A1 Keyboard</Text>

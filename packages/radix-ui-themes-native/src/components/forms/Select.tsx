@@ -21,6 +21,7 @@ import {
   type PopoverSide,
   type PopoverAlign,
 } from '../../hooks/useAnchorPosition';
+import { ChevronDownIcon } from '../../components/utilities/icons';
 
 // ============================================================================
 // Select Context
@@ -297,19 +298,31 @@ interface SelectValueProps {
 }
 
 export const SelectValue = ({ placeholder = 'Select an option', style }: SelectValueProps) => {
-  const { value, itemTexts, selectedItemText, colors } = useSelect();
+  const { value, itemTexts, selectedItemText, colors, size } = useSelect();
 
   // Priority: selectedItemText > itemTexts lookup > placeholder
   // selectedItemText persists even when the dropdown closes (itemTexts gets cleared)
   const selectedText = selectedItemText || (value ? itemTexts.get(value) : undefined);
 
+  const sizeStyles = () => {
+    switch (size) {
+      case 1: return 14;
+      case 2: return 16;
+      case 3: return 20;
+      case 4: return 24;
+    }
+  }
+
   return (
-    <Text style={[
-      { color: selectedText ? colors[12] : colors[9] },
-      style || {}
-    ]}>
-      {selectedText || placeholder}
-    </Text>
+    <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
+      <Text style={[
+        { color: selectedText ? colors[12] : colors[9], flex: 1, flexShrink: 1 },
+        style || {}
+      ]}>
+        {selectedText || placeholder}
+      </Text>
+      <ChevronDownIcon color={selectedText ? colors[12] : colors[9]} width={sizeStyles()} height={sizeStyles()} style={{ justifyContent: 'center' }} />
+    </View>
   );
 };
 

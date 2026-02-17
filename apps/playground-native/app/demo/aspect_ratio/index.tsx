@@ -7,6 +7,7 @@ import {
   ThemeProvider,
 } from '@radix-ui/themes-native';
 import { Image as RNImage, ScrollView, View } from 'react-native';
+import React from 'react';
 
 export default function AspectRatioDemo() {
   return (
@@ -17,7 +18,12 @@ export default function AspectRatioDemo() {
       <ScrollView>
         <View style={{ flex: 1 }}>
           <Flex direction={'column'} gap={20} padding={12}>
-            <Heading size={6}>AspectRatio</Heading>
+            <Box>
+              <Heading size={6}>AspectRatio</Heading>
+              <Text color={'gray'} size={4}>
+                Displays content within a desired ratio.
+              </Text>
+            </Box>
 
             {/* Default 1:1 */}
             <Flex direction={'column'} gap={16}>

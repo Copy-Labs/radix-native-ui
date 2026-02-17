@@ -3,6 +3,8 @@ import React, {
   useContext,
   useState,
   useCallback,
+  useEffect,
+  useRef,
   type ReactNode,
   type ComponentRef,
 } from 'react';
@@ -10,6 +12,8 @@ import {
   StyleSheet,
   type ViewStyle,
   type StyleProp,
+  Animated,
+  type LayoutChangeEvent,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
 import { Text } from '../typography';
@@ -307,6 +311,18 @@ const AccordionTrigger = React.forwardRef<
 
   const grayAlpha = getGrayAlpha(theme);
 
+  // Animation for chevron rotation
+  const rotationAnim = useRef(new Animated.Value(open ? 1 : 0)).current;
+
+  // Animate rotation when open state changes
+  useEffect(() => {
+    Animated.timing(rotationAnim, {
+      toValue: open ? 1 : 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [open, rotationAnim]);
+
   // Size-based styling
   const getSizeStyles = () => {
     switch (size) {
@@ -362,9 +378,11 @@ const AccordionTrigger = React.forwardRef<
     }
   };
 
-  // Chevron rotation based on open state
-  const rotation = open ? '180deg' : '0deg';
-  const rtlRotation = dir === 'rtl' ? (open ? '-180deg' : '0deg') : rotation;
+  // RTL support for rotation
+  const rtlRotationInterpolate = rotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: dir === 'rtl' ? ['0deg', '-180deg'] : ['0deg', '180deg'],
+  });
 
   const triggerStyle: ViewStyle = {
     flexDirection: 'row',
@@ -413,9 +431,9 @@ const AccordionTrigger = React.forwardRef<
       {icon ? (
         icon
       ) : (
-        <View
+        <Animated.View
           style={{
-            transform: [{ rotate: rtlRotation }],
+            transform: [{ rotate: rtlRotationInterpolate }],
             marginLeft: theme.space[2],
           }}
         >
@@ -424,7 +442,7 @@ const AccordionTrigger = React.forwardRef<
             height={sizeStyles.iconSize}
             color={getIconColor()}
           />
-        </View>
+        </Animated.View>
       )}
     </TouchableOpacity>
   );
@@ -462,6 +480,15 @@ const AccordionContent = React.forwardRef<
 
   const grayAlpha = getGrayAlpha(theme);
 
+  // Track content height
+  const [contentHeight, setContentHeight] = useState(0);
+
+  // Animation value for height
+  const heightAnim = useRef(new Animated.Value(0)).current;
+
+  // Animation value for opacity
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
   // Size-based padding
   const getContentPadding = () => {
     switch (size) {
@@ -475,35 +502,86 @@ const AccordionContent = React.forwardRef<
     }
   };
 
-  if (!open) {
-    return null;
-  }
+  // Handle content layout to get height
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const height = event.nativeEvent.layout.height;
+    if (height > 0 && height !== contentHeight) {
+      setContentHeight(height);
+    }
+  };
+
+  // Animate when open state or content height changes
+  useEffect(() => {
+    if (open && contentHeight > 0) {
+      // Opening animation
+      Animated.parallel([
+        Animated.timing(heightAnim, {
+          toValue: contentHeight,
+          duration: 200,
+          useNativeDriver: false,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else if (!open && contentHeight > 0) {
+      // Closing animation
+      Animated.parallel([
+        Animated.timing(heightAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: false,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0,
+          duration: 100,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [open, contentHeight, heightAnim, opacityAnim]);
+
+  const contentPadding = getContentPadding();
 
   const contentStyle: ViewStyle = {
-    paddingVertical: getContentPadding(),
-    paddingHorizontal: getContentPadding(),
+    paddingVertical: contentPadding,
+    paddingHorizontal: contentPadding,
   };
 
   return (
-    <View
-      ref={ref}
-      style={[styles.content, contentStyle, style]}
-      accessibilityState={{ expanded: open, hidden: !open }}
+    <Animated.View
+      style={[
+        styles.contentWrapper,
+        {
+          height: contentHeight > 0 ? heightAnim : undefined,
+          opacity: opacityAnim,
+          overflow: 'hidden',
+        },
+      ]}
     >
-      {typeof children === 'string' ? (
-        <Text
-          style={{
-            color: isDark ? grayAlpha['11'] : grayAlpha['11'],
-            fontSize: theme.typography.fontSizes[2].fontSize,
-            lineHeight: theme.typography.fontSizes[2].lineHeight,
-          }}
-        >
-          {children}
-        </Text>
-      ) : (
-        children
-      )}
-    </View>
+      <View
+        ref={ref}
+        style={[styles.content, contentStyle, style]}
+        onLayout={handleLayout}
+        accessibilityState={{ expanded: open }}
+      >
+        {typeof children === 'string' ? (
+          <Text
+            style={{
+              color: isDark ? grayAlpha['11'] : grayAlpha['11'],
+              fontSize: theme.typography.fontSizes[2].fontSize,
+              lineHeight: theme.typography.fontSizes[2].lineHeight,
+            }}
+          >
+            {children}
+          </Text>
+        ) : (
+          children
+        )}
+      </View>
+    </Animated.View>
   );
 });
 
@@ -523,8 +601,15 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
   },
+  contentWrapper: {
+    width: '100%',
+  },
   content: {
     width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });
 

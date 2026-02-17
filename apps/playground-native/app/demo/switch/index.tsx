@@ -1,6 +1,6 @@
-import { Flex, ThemeProvider, Heading, Switch, Grid, Text } from '@radix-ui/themes-native';
+import { Flex, ThemeProvider, Heading, Switch, Grid, Text, Box } from '@radix-ui/themes-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 export default function Switches() {
@@ -14,7 +14,13 @@ export default function Switches() {
       <ScrollView style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <Flex direction={'column'} gap={16} padding={12}>
-            <Heading size={4}>Switches</Heading>
+            <Box>
+              <Heading size={6}>Switches</Heading>
+              <Text color={'gray'} size={4}>
+                Toggle switch, alternative to the checkbox.
+              </Text>
+            </Box>
+
             <Flex padding={8} gap={8}>
               <Switch
                 checked={checked}
@@ -75,7 +81,7 @@ export default function Switches() {
             </Flex>
 
             {/* High Contrast */}
-            <Grid rows="2" gapX={2} gapY={3} display="inline-grid" flow="column">
+            <Grid rowGap={12} columns={5}>
               <Switch color="indigo" defaultChecked />
               <Switch color="indigo" defaultChecked highContrast />
               <Switch color="cyan" defaultChecked />
@@ -99,23 +105,23 @@ export default function Switches() {
             {/* Alignment */}
             <Heading>Alignment</Heading>
             <Flex direction="column" gap={12}>
-              <Switch size="1" label={"Sync Settings"} defaultChecked />
+              <Switch size="1" label={'Sync Settings'} defaultChecked />
 
-              <Switch size="2" label={"Sync settings"} defaultChecked />
+              <Switch size="2" label={'Sync settings'} defaultChecked />
 
-              <Switch size="3" label={"Sync settings"} defaultChecked />
+              <Switch size="3" label={'Sync settings'} defaultChecked />
             </Flex>
 
             {/* Disabled */}
             <Heading>Disabled</Heading>
             <Flex direction="column" gap={8}>
-              <Switch label={"Off"} size="1" />
+              <Switch label={'Off'} size="1" />
 
-              <Switch label={"On"} size="1" defaultChecked />
+              <Switch label={'On'} size="1" defaultChecked />
 
-              <Switch label={"On"} size="1" disabled />
+              <Switch label={'On'} size="1" disabled />
 
-              <Switch label={"Off"} size="1" disabled defaultChecked />
+              <Switch label={'Off'} size="1" disabled defaultChecked />
             </Flex>
           </Flex>
         </View>

@@ -17,7 +17,7 @@ const ChevronDownIcon = React.forwardRef<View, IconProps>(
     // Calculate the size of the chevron arms
     const armWidth = width * 0.55;
     const armHeight = 2;
-    const armOffset = width * 0.12;
+    const armOffset = width * 0.22;
 
     return (
       <View

@@ -243,7 +243,7 @@ export default function AccordionScreen() {
         <Accordion.Root type="single" collapsible style={styles.accordion}>
           <Accordion.Item value="item-1">
             <Accordion.Header>
-              <Accordion.Trigger icon={<Text>+</Text>}>
+              <Accordion.Trigger icon={<Text size={5}>+</Text>}>
                 Custom Icon Item
               </Accordion.Trigger>
             </Accordion.Header>

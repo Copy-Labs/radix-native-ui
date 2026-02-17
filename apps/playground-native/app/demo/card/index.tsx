@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView, View } from 'react-native';
 import { Link } from 'expo-router';
+import React from 'react';
 
 export default function Cards() {
   return (
@@ -21,7 +22,13 @@ export default function Cards() {
       <ScrollView>
         <View style={{ flex: 1 }}>
           <Flex direction={'column'} gap={20} padding={12}>
-            <Heading size={6}>Cards</Heading>
+            <Box>
+              <Heading size={6}>Cards</Heading>
+              <Text color={'gray'} size={4}>
+                Container that groups related content and actions.
+              </Text>
+            </Box>
+
             <Flex direction={'column'} gap={16}>
               <Heading size={4}>Variants</Heading>
               <Box maxWidth={240}>

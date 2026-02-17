@@ -16,5 +16,4 @@ export type {
   AccordionContentProps,
   AccordionType,
   AccordionSize,
-  AccordionVariant,
 } from './Accordion';

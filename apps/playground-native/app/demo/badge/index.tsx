@@ -1,6 +1,7 @@
-import { Badge, Flex, ThemeProvider, Heading } from '@radix-ui/themes-native';
+import { Badge, Flex, ThemeProvider, Heading, Text, Box } from '@radix-ui/themes-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View } from 'react-native';
+import React from 'react';
 
 export default function Badges() {
   return (
@@ -10,7 +11,13 @@ export default function Badges() {
     >
       <View style={{ flex: 1 }}>
         <Flex direction={'column'} gap={16} padding={12}>
-          <Heading size={4}>Badges</Heading>
+          <Box>
+            <Heading size={6}>Badges</Heading>
+            <Text color={'gray'} size={4}>
+              Stylized badge element.
+            </Text>
+          </Box>
+
           <Flex align={'center'} gap={8} wrap="wrap">
             <Badge size={3} variant="solid">
               Accent

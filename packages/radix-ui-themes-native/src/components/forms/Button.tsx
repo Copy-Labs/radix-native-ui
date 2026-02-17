@@ -329,6 +329,7 @@ const Button = React.memo(
           alignItems: 'center',
           justifyContent: 'center',
           flexDirection: 'row',
+          flexShrink: 1,
           columnGap: theme.space[2],
         }),
         [disabled, grayAlpha, variantColors, variant, sizeValues, width, color, activeColor]

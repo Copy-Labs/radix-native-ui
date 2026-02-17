@@ -10,7 +10,7 @@ import {
   ThemeProvider,
 } from '@radix-ui/themes-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 export default function Radios() {
@@ -23,7 +23,14 @@ export default function Radios() {
     >
       <ScrollView>
         <View style={{ flex: 1 }}>
-          <Flex direction={'column'} gap={16}>
+          <Flex direction={'column'} gap={16} padding={12}>
+            <Box>
+              <Heading size={6}>Radios</Heading>
+              <Text color={'gray'} size={4}>
+                Allow users to select one option from a set.
+              </Text>
+            </Box>
+
             {/* Color */}
             <Box padding={12}>
               <Card color={'orange'} radius={'large'} variant={'surface'}>
@@ -86,13 +93,7 @@ export default function Radios() {
               <Card color={'gray'} radius={'large'} size={3} variant={'surface'}>
                 <Flex align={'center'} justify={'space-between'}>
                   <Heading>Text Radio Card</Heading>
-                  <Radio
-                    size={'2'}
-                    value={'b'}
-                    variant={'surface'}
-                    color="blue"
-                    defaultChecked
-                  />
+                  <Radio size={'2'} value={'b'} variant={'surface'} color="blue" defaultChecked />
                 </Flex>
               </Card>
 
