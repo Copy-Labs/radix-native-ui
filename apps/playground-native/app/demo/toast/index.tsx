@@ -28,38 +28,23 @@ function ToastDemo() {
             Show Default Toast
           </Button>
 
-          <Button
-            color="green"
-            onPress={() => toast.success({ title: 'Operation successful!' })}
-          >
+          <Button color="green" onPress={() => toast.success({ title: 'Operation successful!' })}>
             Show Success Toast
           </Button>
 
-          <Button
-            color="red"
-            onPress={() => toast.error({ title: 'Something went wrong' })}
-          >
+          <Button color="red" onPress={() => toast.error({ title: 'Something went wrong' })}>
             Show Error Toast
           </Button>
 
-          <Button
-            color="yellow"
-            onPress={() => toast.warning({ title: 'Warning: Please review' })}
-          >
+          <Button color="yellow" onPress={() => toast.warning({ title: 'Warning: Please review' })}>
             Show Warning Toast
           </Button>
 
-          <Button
-            color="blue"
-            onPress={() => toast.info({ title: 'Here is some information' })}
-          >
+          <Button color="blue" onPress={() => toast.info({ title: 'Here is some information' })}>
             Show Info Toast
           </Button>
 
-          <Button
-            color="indigo"
-            onPress={() => toast.accent({ title: 'Accent colored toast' })}
-          >
+          <Button color="indigo" onPress={() => toast.accent({ title: 'Accent colored toast' })}>
             Show Accent Toast
           </Button>
         </Flex>
@@ -71,20 +56,25 @@ function ToastDemo() {
           <Heading size={4}>With Description</Heading>
 
           <Button
-            onPress={() => toast.success({
-              title: 'File uploaded',
-              description: 'Your document has been successfully uploaded to the server.'
-            })}
+            onPress={() =>
+              toast.success({
+                title: 'File uploaded',
+                description: 'Your document has been successfully uploaded to the server.',
+              })
+            }
           >
             Upload Complete
           </Button>
 
           <Button
             color="red"
-            onPress={() => toast.error({
-              title: 'Connection failed',
-              description: 'Unable to connect to the server. Please check your internet connection.'
-            })}
+            onPress={() =>
+              toast.error({
+                title: 'Connection failed',
+                description:
+                  'Unable to connect to the server. Please check your internet connection.',
+              })
+            }
           >
             Connection Error
           </Button>
@@ -97,16 +87,27 @@ function ToastDemo() {
           <Heading size={4}>With Action</Heading>
 
           <Button
-            color="yellow"
-            onPress={() => toast.warning({
-              title: 'File deleted',
-              description: 'Your file has been moved to trash.',
-              action: {
-                label: 'Undo',
-                onPress: () => toast.success({ title: 'File restored!' }),
-              },
-            })}
+            color="ruby"
+            onPress={() =>
+              toast.error({
+                title: 'File deleted',
+                description: 'Your file has been moved to trash.',
+                action: {
+                  label: 'Undo',
+                  onPress: () => toast.success({ title: 'File restored!' }),
+                },
+                showClose: false,
+                icon: (
+                  <Text color={'ruby'}>
+                    <Ionicons name="trash-outline" size={20} color="currentColor" />
+                  </Text>
+                ),
+              })
+            }
           >
+            <Button.Icon>
+              <Ionicons name="trash-outline" size={20} color="currentColor" />
+            </Button.Icon>
             Delete File (with Undo)
           </Button>
         </Flex>
@@ -118,20 +119,24 @@ function ToastDemo() {
           <Heading size={4}>Custom Duration</Heading>
 
           <Button
-            onPress={() => toast.show({
-              title: 'Quick toast (2s)',
-              duration: 2000,
-            })}
+            onPress={() =>
+              toast.show({
+                title: 'Quick toast (2s)',
+                duration: 2000,
+              })
+            }
           >
             2 Second Toast
           </Button>
 
           <Button
-            onPress={() => toast.show({
-              title: 'Long toast (10s)',
-              description: 'This toast will stay for 10 seconds',
-              duration: 10000,
-            })}
+            onPress={() =>
+              toast.show({
+                title: 'Long toast (10s)',
+                description: 'This toast will stay for 10 seconds',
+                duration: 10000,
+              })
+            }
           >
             10 Second Toast
           </Button>
@@ -144,19 +149,23 @@ function ToastDemo() {
           <Heading size={4}>Position Override</Heading>
 
           <Button
-            onPress={() => toast.show({
-              title: 'Top positioned toast',
-              position: 'top',
-            })}
+            onPress={() =>
+              toast.show({
+                title: 'Top positioned toast',
+                position: 'top',
+              })
+            }
           >
             Show at Top
           </Button>
 
           <Button
-            onPress={() => toast.show({
-              title: 'Bottom positioned toast',
-              position: 'bottom',
-            })}
+            onPress={() =>
+              toast.show({
+                title: 'Bottom positioned toast',
+                position: 'bottom',
+              })
+            }
           >
             Show at Bottom
           </Button>
@@ -190,11 +199,7 @@ function ToastDemo() {
           <Heading size={4}>Programmatic Control</Heading>
 
           <Flex direction="row" gap={8}>
-            <Button
-              color="red"
-              variant="soft"
-              onPress={() => toast.hideAll()}
-            >
+            <Button color="red" variant="soft" onPress={() => toast.hideAll()}>
               Hide All
             </Button>
           </Flex>
@@ -207,11 +212,13 @@ function ToastDemo() {
           <Heading size={4}>Without Close Button</Heading>
 
           <Button
-            onPress={() => toast.show({
-              title: 'No close button',
-              description: 'Swipe to dismiss',
-              showClose: false,
-            })}
+            onPress={() =>
+              toast.show({
+                title: 'No close button',
+                description: 'Swipe to dismiss',
+                showClose: false,
+              })
+            }
           >
             Show Toast (no X)
           </Button>

@@ -279,7 +279,9 @@ export default function App() {
             <Select.Root value={radioValue} onValueChange={setRadioValue}>
               <Select.Trigger asChild>
                 <Button variant="solid">
-                  <Select.Value placeholder="Select an option" />
+                  <Button.Label>
+                    <Select.Value placeholder="Select an option" />
+                  </Button.Label>
                 </Button>
               </Select.Trigger>
               <Select.Portal>

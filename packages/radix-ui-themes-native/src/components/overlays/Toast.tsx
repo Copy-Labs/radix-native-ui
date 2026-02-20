@@ -40,6 +40,7 @@ import {
   type ToastActionProps,
   DEFAULT_TOAST_CONFIG,
 } from './Toast.types';
+import { Button } from '../../components';
 
 // ============================================================================
 // Toast Context - Uses ThemeContext from ThemeProvider
@@ -66,9 +67,9 @@ export const useToastContext = (): ToastContextValue => {
 const getVariantColorName = (variant: ToastVariant): Color => {
   switch (variant) {
     case 'success':
-      return 'green';
+      return 'jade';
     case 'error':
-      return 'ruby';
+      return 'red';
     case 'warning':
       return 'amber';
     case 'info':
@@ -104,8 +105,8 @@ const getToastColors = (
     borderColor = isDark ? theme.colors.gray.dark[6] : theme.colors.gray[6];
   } else {
     // Other variants use soft background with colored text
-    backgroundColor = colorAlpha[3];
-    textColor = colorAlpha[11];
+    backgroundColor = isDark ? theme.colors.gray.dark[3] : theme.colors.gray[1]; // colorAlpha[3];
+    textColor = colorAlpha[9];
     borderColor = colorAlpha[6];
   }
 
@@ -245,8 +246,8 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
       backgroundColor: colors.backgroundColor,
       borderColor: colors.borderColor,
       borderWidth: 1,
-      borderRadius: theme.radii.medium,
-      padding: theme.space[3],
+      borderRadius: theme.radii.large,
+      padding: theme.space[4],
       marginBottom: index === 0 ? 0 : stackOffset,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
@@ -267,20 +268,16 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
         accessibilityLiveRegion="polite"
         accessibilityLabel={toast.accessibilityLabel || toast.title}
       >
-        <View style={styles.contentContainer}>
+        <View style={[styles.contentContainer, { alignItems: toast.description ? 'flex-start' : 'center' }]}>
           {/* Icon */}
-          {toast.icon && (
-            <View style={styles.iconContainer}>
-              {toast.icon}
-            </View>
-          )}
+          {toast.icon && <View style={styles.iconContainer}>{toast.icon}</View>}
 
           {/* Text content */}
           <View style={styles.textContainer}>
             <Text
               style={[
                 styles.title,
-                { color: colors.textColor, fontSize: theme.typography.fontSizes[2].fontSize },
+                { color: colors.textColor, fontSize: theme.typography.fontSizes[3].fontSize },
               ]}
               numberOfLines={1}
             >
@@ -291,8 +288,9 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
                 style={[
                   styles.description,
                   {
-                    color: colors.textColor,
-                    fontSize: theme.typography.fontSizes[1].fontSize,
+                    // color: colors.textColor,
+                    fontSize: theme.typography.fontSizes[2].fontSize,
+                    lineHeight: theme.typography.fontSizes[2].fontSize * 1.5,
                     opacity: 0.8,
                   },
                 ]}
@@ -307,17 +305,9 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
           {toast.action && (
             <Pressable
               onPress={toast.action.onPress}
-              style={({ pressed }) => [
-                styles.actionButton,
-                { opacity: pressed ? 0.7 : 1 },
-              ]}
+              style={({ pressed }) => [styles.actionButton, { opacity: pressed ? 0.7 : 1 }]}
             >
-              <Text
-                style={[
-                  styles.actionText,
-                  { color: colors.accentColor },
-                ]}
-              >
+              <Text style={[styles.actionText, { color: colors.accentColor }]}>
                 {toast.action.label}
               </Text>
             </Pressable>
@@ -325,7 +315,8 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
 
           {/* Close button */}
           {toast.showClose && (
-            <Pressable
+            <Button style={{ backgroundColor: colors.textColor }} radius={'large'} size={1} onPress={() => handleDismiss(true)}>Close</Button>
+            /*<Pressable
               onPress={() => handleDismiss(true)}
               style={({ pressed }) => [
                 styles.closeButton,
@@ -334,7 +325,7 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Text style={{ color: colors.textColor, fontSize: 14 }}>✕</Text>
-            </Pressable>
+            </Pressable>*/
           )}
         </View>
       </Animated.View>
@@ -513,7 +504,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     position: 'absolute',
-    top: 0,
+    top: 8,
     left: 16,
     right: 16,
     alignItems: 'center',
@@ -521,7 +512,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 16,
     left: 16,
     right: 16,
     alignItems: 'center',
@@ -529,7 +520,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 8,
   },
   iconContainer: {
@@ -537,9 +528,11 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     flex: 1,
+    gap: 4,
+    justifyContent: 'center',
   },
   title: {
-    fontWeight: '600',
+    fontWeight: '500',
   },
   description: {
     marginTop: 2,
