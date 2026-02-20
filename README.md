@@ -347,6 +347,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-Licensed under the MIT License, Copyright © 2023-present.
+Licensed under the MIT License, Copyright [Copy-Labs](https://github.com/Copy-Labs) &copy; 2026-present.
 
 See [LICENSE](./LICENSE) for more information.
