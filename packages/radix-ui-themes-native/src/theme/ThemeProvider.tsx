@@ -35,11 +35,11 @@ export const useThemeContext = () => {
 export interface ThemeProviderProps {
   children: ReactNode;
   /**
-   * Initial theme mode. If not provided, will use device color scheme.
+   * Initial theme mode. If not provided, will inherit from parent ThemeProvider or use device color scheme.
    */
   mode?: ThemeMode;
   /**
-   * Force theme mode (overrides device settings)
+   * Force theme mode (overrides parent and device settings)
    */
   forcedMode?: ThemeMode;
   /**
@@ -57,7 +57,14 @@ export interface ThemeProviderProps {
 }
 
 /**
- * ThemeProvider component that provides theme context to all children
+ * ThemeProvider component that provides theme context to all children.
+ *
+ * Mode resolution priority:
+ * 1. forcedMode prop (highest - overrides everything)
+ * 2. mode prop (explicit initial mode)
+ * 3. Parent ThemeProvider's mode (inheritance for nested providers)
+ * 4. Device color scheme
+ * 5. 'light' (default fallback)
  */
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
@@ -67,20 +74,35 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   onModeChange,
   toastConfig: userToastConfig,
 }) => {
+  // Get parent theme context if it exists (for nested ThemeProviders)
+  const parentContext = useContext(ThemeContext);
   const deviceColorScheme = useDeviceColorScheme();
-  const [mode, setMode] = useState<ThemeMode>(initialMode || deviceColorScheme || 'light');
+
+  // Initialize mode with priority: initialMode > parent mode > device scheme > 'light'
+  const [mode, setMode] = useState<ThemeMode>(
+    initialMode ?? parentContext?.mode ?? deviceColorScheme ?? 'light'
+  );
 
   // Toast state
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const toastIdCounter = useRef(0);
 
+  // Handle mode changes from props and parent context
   useEffect(() => {
     if (forcedMode !== undefined) {
+      // forcedMode takes highest priority
       setMode(forcedMode);
-    } else if (initialMode === undefined) {
-      setMode(deviceColorScheme || 'light');
+    } else if (initialMode !== undefined) {
+      // Explicit mode prop takes second priority
+      setMode(initialMode);
+    } else if (parentContext?.mode !== undefined) {
+      // Inherit from parent ThemeProvider
+      setMode(parentContext.mode);
+    } else {
+      // Fall back to device color scheme
+      setMode(deviceColorScheme ?? 'light');
     }
-  }, [forcedMode, initialMode, deviceColorScheme]);
+  }, [forcedMode, initialMode, parentContext?.mode, deviceColorScheme]);
 
   const handleSetMode = (newMode: ThemeMode) => {
     setMode(newMode);
