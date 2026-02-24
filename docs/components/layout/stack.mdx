@@ -1,0 +1,236 @@
+---
+title: Stack
+description: Simplified flex container for stacking elements with consistent gaps.
+---
+
+# Stack
+
+`Stack` is a simplified flex container optimized for stacking elements vertically or horizontally with consistent gaps. It provides a more intuitive API than Flex for common stacking layouts.
+
+## Import
+
+```tsx
+import { Stack, VStack, HStack } from '@radix-ui/themes-native';
+```
+
+## Usage
+
+### Vertical Stack (default)
+
+```tsx
+import { Stack, Text } from '@radix-ui/themes-native';
+
+<Stack gap={3}>
+  <Text>Item 1</Text>
+  <Text>Item 2</Text>
+  <Text>Item 3</Text>
+</Stack>
+```
+
+### Horizontal Stack
+
+```tsx
+<Stack direction="horizontal" gap={2}>
+  <Button>Cancel</Button>
+  <Button>Confirm</Button>
+</Stack>
+```
+
+### Using VStack and HStack
+
+Convenience wrappers for common directions:
+
+```tsx
+// VStack - Vertical stack
+<VStack gap={4}>
+  <Text>Vertical item 1</Text>
+  <Text>Vertical item 2</Text>
+</VStack>
+
+// HStack - Horizontal stack
+<HStack gap={2} align="center">
+  <Text>Horizontal item 1</Text>
+  <Text>Horizontal item 2</Text>
+</HStack>
+```
+
+## Props
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Child components.
+  </Prop>
+
+  <Prop name="direction" type="'horizontal' | 'vertical'" default="'vertical'">
+    Stack direction:
+    - `horizontal`: stack items in a row
+    - `vertical`: stack items in a column
+  </Prop>
+
+  <Prop name="gap" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Gap between items using theme.space scale.
+  </Prop>
+
+  <Prop name="align" type="'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'">
+    Align items on cross axis.
+  </Prop>
+
+  <Prop name="justify" type="'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly'">
+    Justify content on main axis.
+  </Prop>
+
+  <Prop name="wrap" type="'wrap' | 'nowrap' | 'wrap-reverse'" default="'nowrap'">
+    Wrap behavior for items.
+  </Prop>
+
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto immediate child element.
+  </Prop>
+
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+
+  <Prop name="width" type="DimensionValue">
+    Width of the stack container.
+  </Prop>
+
+  <Prop name="height" type="DimensionValue">
+    Height of the stack container.
+  </Prop>
+
+  <Prop name="padding" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Padding using theme.space scale.
+  </Prop>
+
+  <Prop name="backgroundColor" type="string">
+    Background color.
+  </Prop>
+</PropTable>
+
+## Examples
+
+### Card Layout
+
+```tsx
+<Card>
+  <VStack gap={3}>
+    <HStack justify="between" align="center">
+      <Heading size={3}>Card Title</Heading>
+      <Badge>New</Badge>
+    </HStack>
+    <Text color="gray">Card description goes here.</Text>
+    <HStack gap={2}>
+      <Button variant="soft">Cancel</Button>
+      <Button>Confirm</Button>
+    </HStack>
+  </VStack>
+</Card>
+```
+
+### Form Layout
+
+```tsx
+<VStack gap={4}>
+  <VStack gap={1}>
+    <Text size={2} weight="medium">Email</Text>
+    <TextField placeholder="Enter email" />
+  </VStack>
+
+  <VStack gap={1}>
+    <Text size={2} weight="medium">Password</Text>
+    <TextField placeholder="Enter password" secureTextEntry />
+  </VStack>
+
+  <HStack justify="end" gap={2}>
+    <Button variant="outline">Cancel</Button>
+    <Button>Sign In</Button>
+  </HStack>
+</VStack>
+```
+
+### Wrapping Items
+
+```tsx
+<HStack gap={2} wrap="wrap">
+  <Badge>Tag 1</Badge>
+  <Badge>Tag 2</Badge>
+  <Badge>Tag 3</Badge>
+  <Badge>Tag 4</Badge>
+  <Badge>Tag 5</Badge>
+</HStack>
+```
+
+### Alignment Options
+
+```tsx
+// Align to start
+<HStack align="flex-start" gap={2}>
+  <Box height={50}>Short</Box>
+  <Box height={100}>Tall</Box>
+</HStack>
+
+// Center align
+<HStack align="center" gap={2}>
+  <Box height={50}>Short</Box>
+  <Box height={100}>Tall</Box>
+</HStack>
+
+// Stretch to fill
+<HStack align="stretch" gap={2}>
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+</HStack>
+```
+
+### Justify Content
+
+```tsx
+// Space between
+<HStack justify="space-between">
+  <Text>Left</Text>
+  <Text>Right</Text>
+</HStack>
+
+// Center
+<HStack justify="center" gap={2}>
+  <Text>Centered</Text>
+</HStack>
+
+// Space around
+<HStack justify="space-around" gap={2}>
+  <Text>A</Text>
+  <Text>B</Text>
+  <Text>C</Text>
+</HStack>
+```
+
+## Direction Values
+
+| Value | Description | Flex Direction |
+|-------|-------------|----------------|
+| `vertical` | Stack items vertically | `column` |
+| `horizontal` | Stack items horizontally | `row` |
+
+## Gap Scale
+
+Gap uses the theme.space scale:
+
+| Value | Size |
+|-------|------|
+| `1` | ~4px |
+| `2` | ~8px |
+| `3` | ~12px |
+| `4` | ~16px |
+| `5` | ~24px |
+| `6` | ~32px |
+| `7` | ~40px |
+| `8` | ~48px |
+| `9` | ~64px |
+
+## Related
+
+- [Spacer](/components/layout/spacer) - Space utility
+- [Separator](/components/layout/separator) - Visual divider
+- [Center](/components/layout/center) - Centering utility
+- [Flex](/components/layout/flex) - Full flexbox layout

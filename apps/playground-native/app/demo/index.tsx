@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import {
   AlertDialog,
   Badge,
+  Box,
   Button,
   Dialog,
   Flex,
@@ -27,244 +28,279 @@ export default function App() {
   return (
     <Flex flex={1}>
       {/*<ThemeProvider themeOptions={{ accentColor: 'blue', scaling: 1 }}>*/}
-        <Flex position={'absolute'} bottom={24} right={24} zIndex={20}>
-          <ThemeToggle />
-        </Flex>
-        <PageContainer>
-          <PageHeader showBackButton>
+      <Flex position={'absolute'} bottom={24} right={24} zIndex={20}>
+        <ThemeToggle />
+      </Flex>
+      <PageContainer>
+        <PageHeader showBackButton>
+          <Box>
             <PageHeading>Playground</PageHeading>
-          </PageHeader>
-          <PageBody>
-            <ScrollView style={{ flex: 1 }}>
-              {/*<SafeAreaView>*/}
-              <Flex direction={'column'} gap={4} paddingHorizontal={16} paddingVertical={16}>
-                <Heading align={'center'} size={7}>
-                  Copy Native UI Playground
-                </Heading>
-                <Text color={'gray'} align={'center'} size={4}>
-                  Check out all Copy Native UI Components here
-                </Text>
-              </Flex>
-              <Flex direction={'column'} gap={16} paddingHorizontal={8}>
-                <Link href={'/demo/alert_dialog'}>
-                  <Text size={4}>Alert Dialog</Text>
-                </Link>
-                <Link href={'/demo/accordion'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Accordion</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/aspect_ratio'}>
-                  <Text size={4}>Aspect ratio</Text>
-                </Link>
-                <Link href={'/demo/avatars'}>
-                  <Text size={4}>Avatars</Text>
-                </Link>
-                <Link href={'/demo/badge'}>
-                  <Text size={4}>Badge</Text>
-                </Link>
-                <Link href={'/demo/buttons'}>
-                  <Text size={4}>Buttons</Text>
-                </Link>
-                <Link href={'/demo/callout'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Callout</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/card'}>
-                  <Text size={4}>Card</Text>
-                </Link>
-                <Link href={'/demo/checkbox'}>
-                  <Text size={4}>Checkbox</Text>
-                </Link>
-                <Link href={'/demo/checkbox_cards'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Checkbox Cards</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/dialog'}>
-                  <Text size={4}>Dialog</Text>
-                </Link>
-                <Link href={'/demo/switch'}>
-                  <Text size={4}>Switch</Text>
-                </Link>
-                <Link href={'/demo/radio'}>
-                  <Text size={4}>Radio</Text>
-                </Link>
-                <Link href={'/demo/radio_cards'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Radio Cards</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/text_fields'}>
-                  <Text size={4}>Text Fields</Text>
-                </Link>
-                <Link href={'/demo/textarea'}>
-                  <Text size={4}>Text Area</Text>
-                </Link>
-                <Link href={'/demo/heading'}>
-                  <Text size={4}>Heading</Text>
-                </Link>
-                <Link href={'/demo/text'}>
-                  <Text size={4}>text</Text>
-                </Link>
-                <Link href={'/demo/code'}>
-                  <Text size={4}>code</Text>
-                </Link>
-                <Link href={'/demo/em'}>
-                  <Text size={4}>em</Text>
-                </Link>
-                <Link href={'/demo/kbd'}>
-                  <Text size={4}>kbd</Text>
-                </Link>
-                <Link href={'/demo/strong'}>
-                  <Text size={4}>strong</Text>
-                </Link>
-                <Link href={'/demo/fancylist'}>
-                  <Text size={4}>fancylist</Text>
-                </Link>
-                <Link href={'/demo/segmented_control'}>
-                  <Text size={4}>segmented control</Text>
-                </Link>
-                <Link href={'/demo/popover'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Popover</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/dropdown_menu'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>DropdownMenu</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/select'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Select</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/slider'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Slider</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/spinner'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Spinner</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/progress'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Progress</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/tooltip'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Tooltip</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/context_menu'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Context Menu</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/datalist'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>DataList</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/inset'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Inset</Text>
-                  </Flex>
-                </Link>
-                <Link href={'/demo/toast'}>
-                  <Flex align={'center'} gap={8}>
-                    <Text size={4}>Toast</Text>
-                    <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
-                      New
-                    </Badge>
-                  </Flex>
-                </Link>
-              </Flex>
+            <Text color={'gray'} align={'center'} size={4}>
+              Check out all Copy Native UI Components here
+            </Text>
+          </Box>
+        </PageHeader>
+        <PageBody>
+          <ScrollView style={{ flex: 1 }}>
+            {/*<SafeAreaView>*/}
+            {/*<Flex direction={'column'} gap={4} paddingHorizontal={16} paddingVertical={16}>
+              <Heading align={'center'} size={7}>
+                Copy Native UI Playground
+              </Heading>
+              <Text color={'gray'} align={'center'} size={4}>
+                Check out all Copy Native UI Components here
+              </Text>
+            </Flex>*/}
+            <Flex direction={'column'} gap={16} paddingHorizontal={8} paddingVertical={4} style={{ paddingVertical: 8}}>
+              <Link href={'/demo/alert_dialog'}>
+                <Text size={4}>Alert Dialog</Text>
+              </Link>
+              <Link href={'/demo/accordion'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Accordion</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/aspect_ratio'}>
+                <Text size={4}>Aspect ratio</Text>
+              </Link>
+              <Link href={'/demo/avatars'}>
+                <Text size={4}>Avatars</Text>
+              </Link>
+              <Link href={'/demo/badge'}>
+                <Text size={4}>Badge</Text>
+              </Link>
+              <Link href={'/demo/buttons'}>
+                <Text size={4}>Buttons</Text>
+              </Link>
+              <Link href={'/demo/callout'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Callout</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/card'}>
+                <Text size={4}>Card</Text>
+              </Link>
+              <Link href={'/demo/checkbox'}>
+                <Text size={4}>Checkbox</Text>
+              </Link>
+              <Link href={'/demo/checkbox_cards'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Checkbox Cards</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/dialog'}>
+                <Text size={4}>Dialog</Text>
+              </Link>
+              <Link href={'/demo/switch'}>
+                <Text size={4}>Switch</Text>
+              </Link>
+              <Link href={'/demo/radio'}>
+                <Text size={4}>Radio</Text>
+              </Link>
+              <Link href={'/demo/radio_cards'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Radio Cards</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/text_fields'}>
+                <Text size={4}>Text Fields</Text>
+              </Link>
+              <Link href={'/demo/textarea'}>
+                <Text size={4}>Text Area</Text>
+              </Link>
+              <Link href={'/demo/heading'}>
+                <Text size={4}>Heading</Text>
+              </Link>
+              <Link href={'/demo/text'}>
+                <Text size={4}>text</Text>
+              </Link>
+              <Link href={'/demo/code'}>
+                <Text size={4}>code</Text>
+              </Link>
+              <Link href={'/demo/em'}>
+                <Text size={4}>em</Text>
+              </Link>
+              <Link href={'/demo/kbd'}>
+                <Text size={4}>kbd</Text>
+              </Link>
+              <Link href={'/demo/strong'}>
+                <Text size={4}>strong</Text>
+              </Link>
+              <Link href={'/demo/fancylist'}>
+                <Text size={4}>fancylist</Text>
+              </Link>
+              <Link href={'/demo/segmented_control'}>
+                <Text size={4}>segmented control</Text>
+              </Link>
+              <Link href={'/demo/popover'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Popover</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/dropdown_menu'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>DropdownMenu</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/select'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Select</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/slider'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Slider</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/spinner'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Spinner</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/progress'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Progress</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/tooltip'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Tooltip</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/context_menu'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Context Menu</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/datalist'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>DataList</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/inset'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Inset</Text>
+                </Flex>
+              </Link>
+              <Link href={'/demo/toast'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Toast</Text>
+                  <Badge color={'ruby'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+              {/* Layout Components */}
+              <Link href={'/demo/spacer'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Spacer</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+              <Link href={'/demo/stack'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Stack</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+              <Link href={'/demo/separator'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Separator</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+              <Link href={'/demo/center'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Center</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+            </Flex>
 
-              <ThemeProvider
-                // mode={'light'}
-                themeOptions={{ accentColor: 'indigo', radius: 'large', scaling: 0.9 }}
-              >
-                <SafeAreaView style={{ flex: 1, gap: 16 }}>
-                  <Flex direction={'column'} gap={16} paddingVertical={4} backgroundColor="gray.2">
-                    <AlertDialog.Root
-                      open={isOpen}
-                      onOpenChange={(open: boolean) => setIsOpen(open)}
-                    >
-                      <AlertDialog.Trigger>
-                        <Button variant={'soft'}>Show Alert</Button>
-                      </AlertDialog.Trigger>
-                      <AlertDialog.Portal>
-                        <AlertDialog.Overlay />
-                        <AlertDialog.Content size={3}>
-                          <AlertDialog.Title size={6}>Confirm Action</AlertDialog.Title>
-                          <AlertDialog.Description size={3}>
-                            Are you sure? This application will no longer be accessible and any
-                            existing sessions will be expired.
-                          </AlertDialog.Description>
-                          <Flex gap={12} justify="flex-end">
-                            <AlertDialog.Cancel color={'gray'} variant={'surface'}>
-                              Cancel
-                            </AlertDialog.Cancel>
-                            <AlertDialog.Action variant={'solid'}>Confirm</AlertDialog.Action>
-                          </Flex>
-                        </AlertDialog.Content>
-                      </AlertDialog.Portal>
-                    </AlertDialog.Root>
+            <ThemeProvider
+              // mode={'light'}
+              themeOptions={{ accentColor: 'indigo', radius: 'large', scaling: 0.9 }}
+            >
+              <SafeAreaView style={{ flex: 1, gap: 16 }}>
+                <Flex direction={'column'} gap={16} paddingVertical={4} backgroundColor="gray.2">
+                  <AlertDialog.Root open={isOpen} onOpenChange={(open: boolean) => setIsOpen(open)}>
+                    <AlertDialog.Trigger>
+                      <Button variant={'soft'}>Show Alert</Button>
+                    </AlertDialog.Trigger>
+                    <AlertDialog.Portal>
+                      <AlertDialog.Overlay />
+                      <AlertDialog.Content size={3}>
+                        <AlertDialog.Title size={6}>Confirm Action</AlertDialog.Title>
+                        <AlertDialog.Description size={3}>
+                          Are you sure? This application will no longer be accessible and any
+                          existing sessions will be expired.
+                        </AlertDialog.Description>
+                        <Flex gap={12} justify="flex-end">
+                          <AlertDialog.Cancel color={'gray'} variant={'surface'}>
+                            Cancel
+                          </AlertDialog.Cancel>
+                          <AlertDialog.Action variant={'solid'}>Confirm</AlertDialog.Action>
+                        </Flex>
+                      </AlertDialog.Content>
+                    </AlertDialog.Portal>
+                  </AlertDialog.Root>
 
-                    <Dialog.Root
-                      open={isDialogOpen}
-                      onOpenChange={(open: boolean) => setIsDialogOpen(open)}
-                    >
-                      <Dialog.Trigger>
-                        <Button variant={'soft'}>Show Dialog</Button>
-                      </Dialog.Trigger>
-                      <Dialog.Portal>
-                        <Dialog.Overlay />
-                        <Dialog.Content size={3}>
-                          <Dialog.Title size={6}>Action Dialog</Dialog.Title>
-                          <Dialog.Description size={3}>
-                            Are you sure? This application will no longer be accessible and any
-                            existing sessions will be expired.
-                          </Dialog.Description>
-                          <Flex gap={12} justify="flex-end">
-                            {/*<Dialog.Close>Cancel</Dialog.Close>*/}
-                            {/*<Dialog.Action variant={'solid'}>Confirm</Dialog.Action>*/}
-                          </Flex>
-                        </Dialog.Content>
-                      </Dialog.Portal>
-                    </Dialog.Root>
+                  <Dialog.Root
+                    open={isDialogOpen}
+                    onOpenChange={(open: boolean) => setIsDialogOpen(open)}
+                  >
+                    <Dialog.Trigger>
+                      <Button variant={'soft'}>Show Dialog</Button>
+                    </Dialog.Trigger>
+                    <Dialog.Portal>
+                      <Dialog.Overlay />
+                      <Dialog.Content size={3}>
+                        <Dialog.Title size={6}>Action Dialog</Dialog.Title>
+                        <Dialog.Description size={3}>
+                          Are you sure? This application will no longer be accessible and any
+                          existing sessions will be expired.
+                        </Dialog.Description>
+                        <Flex gap={12} justify="flex-end">
+                          {/*<Dialog.Close>Cancel</Dialog.Close>*/}
+                          {/*<Dialog.Action variant={'solid'}>Confirm</Dialog.Action>*/}
+                        </Flex>
+                      </Dialog.Content>
+                    </Dialog.Portal>
+                  </Dialog.Root>
 
-                    <Select.Root value={radioValue} onValueChange={setRadioValue}>
-                      <Select.Trigger asChild>
-                        <Button variant="solid">
-                          <Button.Label>
-                            <Select.Value placeholder="Select an option" />
-                          </Button.Label>
-                        </Button>
-                      </Select.Trigger>
-                      <Select.Portal>
-                        <Select.Overlay />
-                        <Select.Content size={3}>
-                          <Select.Item value="option1">Option 1</Select.Item>
-                          <Select.Item value="option2">Option 2</Select.Item>
-                        </Select.Content>
-                      </Select.Portal>
-                    </Select.Root>
+                  <Select.Root value={radioValue} onValueChange={setRadioValue}>
+                    <Select.Trigger asChild>
+                      <Button variant="solid">
+                        <Button.Label>
+                          <Select.Value placeholder="Select an option" />
+                        </Button.Label>
+                      </Button>
+                    </Select.Trigger>
+                    <Select.Portal>
+                      <Select.Overlay />
+                      <Select.Content size={3}>
+                        <Select.Item value="option1">Option 1</Select.Item>
+                        <Select.Item value="option2">Option 2</Select.Item>
+                      </Select.Content>
+                    </Select.Portal>
+                  </Select.Root>
 
-                    {/*<Slider value={sliderValue} onValueChange={setSliderValue} />*/}
-                  </Flex>
-                </SafeAreaView>
-              </ThemeProvider>
-              {/*</SafeAreaView>*/}
-            </ScrollView>
-          </PageBody>
-        </PageContainer>
+                  {/*<Slider value={sliderValue} onValueChange={setSliderValue} />*/}
+                </Flex>
+              </SafeAreaView>
+            </ThemeProvider>
+            {/*</SafeAreaView>*/}
+          </ScrollView>
+        </PageBody>
+      </PageContainer>
       {/*</ThemeProvider>*/}
     </Flex>
   );

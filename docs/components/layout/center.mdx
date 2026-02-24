@@ -1,0 +1,263 @@
+---
+title: Center
+description: Utility components for centering content horizontally, vertically, or both.
+---
+
+# Center
+
+`Center` is a utility component for centering content horizontally, vertically, or both. It also provides convenience wrappers (`HCenter`, `VCenter`, `AbsoluteCenter`) for common use cases.
+
+## Import
+
+```tsx
+import { Center, HCenter, VCenter, AbsoluteCenter } from '@radix-ui/themes-native';
+```
+
+## Usage
+
+### Center Both Axes (default)
+
+```tsx
+import { Center, Text } from '@radix-ui/themes-native';
+
+<Center style={{ height: 200 }}>
+  <Text>Centered content</Text>
+</Center>
+```
+
+### Center Horizontally Only
+
+```tsx
+<Center axis="horizontal">
+  <Text>Horizontally centered</Text>
+</Center>
+```
+
+### Center Vertically Only
+
+```tsx
+<Center axis="vertical" style={{ height: 200 }}>
+  <Text>Vertically centered</Text>
+</Center>
+```
+
+### Using HCenter and VCenter
+
+Convenience wrappers for common centering:
+
+```tsx
+// HCenter - Horizontal centering only
+<HCenter>
+  <Text>Horizontally centered</Text>
+</HCenter>
+
+// VCenter - Vertical centering only
+<VCenter style={{ height: 200 }}>
+  <Text>Vertically centered</Text>
+</VCenter>
+```
+
+### AbsoluteCenter
+
+For centering with absolute positioning:
+
+```tsx
+<Box style={{ position: 'relative', width: 200, height: 200 }}>
+  <AbsoluteCenter>
+    <Spinner />
+  </AbsoluteCenter>
+</Box>
+```
+
+## Props
+
+### Center Props
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Child components.
+  </Prop>
+
+  <Prop name="axis" type="'horizontal' | 'vertical' | 'both'" default="'both'">
+    Axis to center on:
+    - `horizontal`: center horizontally only
+    - `vertical`: center vertically only
+    - `both`: center on both axes
+  </Prop>
+
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto immediate child element.
+  </Prop>
+
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+
+  <Prop name="width" type="DimensionValue">
+    Width of the center container.
+  </Prop>
+
+  <Prop name="height" type="DimensionValue">
+    Height of the center container.
+  </Prop>
+
+  <Prop name="backgroundColor" type="string">
+    Background color.
+  </Prop>
+
+  <Prop name="radius" type="RadiusSize">
+    Border radius using theme radius scale.
+  </Prop>
+</PropTable>
+
+### AbsoluteCenter Props
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Child components.
+  </Prop>
+
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto immediate child element.
+  </Prop>
+
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+
+  <Prop name="width" type="DimensionValue">
+    Width of the center container.
+  </Prop>
+
+  <Prop name="height" type="DimensionValue">
+    Height of the center container.
+  </Prop>
+</PropTable>
+
+## Examples
+
+### Loading State
+
+```tsx
+<Center style={{ height: 200 }}>
+  <VStack align="center" gap={2}>
+    <Spinner size={24} />
+    <Text color="gray">Loading...</Text>
+  </VStack>
+</Center>
+```
+
+### Empty State
+
+```tsx
+<Center style={{ height: 300 }}>
+  <VStack align="center" gap={2}>
+    <Text size={6}>📭</Text>
+    <Text weight="bold">No items found</Text>
+    <Text color="gray" size={2}>Try adjusting your search</Text>
+  </VStack>
+</Center>
+```
+
+### Icon Buttons
+
+```tsx
+<HStack gap={2}>
+  <Center width={44} height={44} backgroundColor="#f0f0f0" radius="full">
+    <Text size={5}>🏠</Text>
+  </Center>
+  <Center width={44} height={44} backgroundColor="#f0f0f0" radius="full">
+    <Text size={5}>🔍</Text>
+  </Center>
+  <Center width={44} height={44} backgroundColor="#f0f0f0" radius="full">
+    <Text size={5}>❤️</Text>
+  </Center>
+</HStack>
+```
+
+### Full Screen Center
+
+```tsx
+<Center width="100%" height="100%">
+  <VStack align="center" gap={2}>
+    <Text size={8}>🎯</Text>
+    <Text weight="bold">Welcome</Text>
+    <Text color="gray">Centered on full screen</Text>
+  </VStack>
+</Center>
+```
+
+### Overlay with AbsoluteCenter
+
+```tsx
+<Box style={{ position: 'relative', height: 200 }}>
+  <VStack padding={3}>
+    <Text>Background content</Text>
+    <Text color="gray" size={2}>This is behind the overlay</Text>
+  </VStack>
+  <Box
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+    }}
+  >
+    <AbsoluteCenter>
+      <Box style={{ backgroundColor: 'white', padding: 16, borderRadius: 8 }}>
+        <Text>Overlay Content</Text>
+      </Box>
+    </AbsoluteCenter>
+  </Box>
+</Box>
+```
+
+### With Background and Radius
+
+```tsx
+<HStack gap={3}>
+  <Center width={60} height={60} backgroundColor="#3b82f6" radius="medium">
+    <Text style={{ color: 'white' }}>1</Text>
+  </Center>
+  <Center width={60} height={60} backgroundColor="#10b981" radius="large">
+    <Text style={{ color: 'white' }}>2</Text>
+  </Center>
+  <Center width={60} height={60} backgroundColor="#f59e0b" radius="full">
+    <Text style={{ color: 'white' }}>3</Text>
+  </Center>
+</HStack>
+```
+
+## Axis Values
+
+| Axis | Description | CSS Equivalent |
+|------|-------------|----------------|
+| `both` | Center horizontally and vertically | `align-items: center; justify-content: center` |
+| `horizontal` | Center horizontally only | `align-items: center` |
+| `vertical` | Center vertically only | `justify-content: center` |
+
+## Radius Values
+
+| Radius | Description |
+|--------|-------------|
+| `none` | No border radius |
+| `small` | Small border radius |
+| `medium` | Medium border radius |
+| `large` | Large border radius |
+| `full` | Fully rounded (circle) |
+
+## When to Use
+
+- **Center**: When you need to center content in a flex container
+- **HCenter**: When you only need horizontal centering
+- **VCenter**: When you only need vertical centering
+- **AbsoluteCenter**: When you need to center content using absolute positioning (overlays, positioned elements)
+
+## Related
+
+- [Spacer](/components/layout/spacer) - Space utility
+- [Stack](/components/layout/stack) - Stack layout component
+- [Separator](/components/layout/separator) - Visual divider
+- [Flex](/components/layout/flex) - Full flexbox layout

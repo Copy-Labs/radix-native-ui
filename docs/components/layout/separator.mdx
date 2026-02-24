@@ -1,0 +1,204 @@
+---
+title: Separator
+description: Visual divider between sections or groups of content.
+---
+
+# Separator
+
+`Separator` is a visual divider between sections or groups of content. It supports horizontal and vertical orientations, custom colors from the theme, and various sizes.
+
+## Import
+
+```tsx
+import { Separator } from '@radix-ui/themes-native';
+```
+
+## Usage
+
+### Horizontal Separator
+
+```tsx
+import { Separator, Text } from '@radix-ui/themes-native';
+
+<Text>Section 1</Text>
+<Separator />
+<Text>Section 2</Text>
+```
+
+### Vertical Separator
+
+```tsx
+import { Separator, HStack, Text } from '@radix-ui/themes-native';
+
+<HStack align="center">
+  <Text>Left</Text>
+  <Separator orientation="vertical" style={{ height: 20 }} />
+  <Text>Right</Text>
+</HStack>
+```
+
+### With Custom Color
+
+```tsx
+<Separator color="blue" />
+<Separator color="red" />
+<Separator color="green" />
+```
+
+## Props
+
+<PropTable>
+  <Prop name="orientation" type="'horizontal' | 'vertical'" default="'horizontal'">
+    Orientation of the separator.
+  </Prop>
+
+  <Prop name="size" type="number" default="1">
+    Size/thickness of the separator in pixels.
+  </Prop>
+
+  <Prop name="color" type="Color" default="'gray'">
+    Color using theme color system. Accepts any theme color like 'blue', 'red', 'green', etc.
+  </Prop>
+
+  <Prop name="decorative" type="boolean" default="true">
+    Whether the separator is purely decorative (no semantic meaning).
+    When false, adds accessibility role for screen readers.
+  </Prop>
+
+  <Prop name="margin" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Margin on the sides using theme.space scale.
+  </Prop>
+
+  <Prop name="marginVertical" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Vertical margin for horizontal separators.
+  </Prop>
+
+  <Prop name="marginHorizontal" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Horizontal margin for vertical separators.
+  </Prop>
+
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+## Examples
+
+### In Card
+
+```tsx
+<Card>
+  <VStack>
+    <Text weight="bold">Card Title</Text>
+    <Separator />
+    <Text color="gray">Card content goes here.</Text>
+    <Separator marginVertical={2} />
+    <HStack align="center" gap={2}>
+      <Text size={2} color="gray">Action 1</Text>
+      <Separator orientation="vertical" style={{ height: 16 }} />
+      <Text size={2} color="gray">Action 2</Text>
+    </HStack>
+  </VStack>
+</Card>
+```
+
+### In List
+
+```tsx
+<VStack>
+  <Box padding={3}><Text>Item 1</Text></Box>
+  <Separator />
+  <Box padding={3}><Text>Item 2</Text></Box>
+  <Separator />
+  <Box padding={3}><Text>Item 3</Text></Box>
+</VStack>
+```
+
+### In Settings
+
+```tsx
+<Card variant="surface">
+  <VStack gap={2}>
+    <Text weight="bold">Settings</Text>
+    <Separator marginVertical={2} />
+    <HStack justify="between">
+      <Text>Notifications</Text>
+      <Text color="gray">Enabled</Text>
+    </HStack>
+    <Separator />
+    <HStack justify="between">
+      <Text>Dark Mode</Text>
+      <Text color="gray">Disabled</Text>
+    </HStack>
+    <Separator />
+    <HStack justify="between">
+      <Text>Language</Text>
+      <Text color="gray">English</Text>
+    </HStack>
+  </VStack>
+</Card>
+```
+
+### Toolbar Separator
+
+```tsx
+<HStack align="center" gap={2}>
+  <Text size={2}>Bold</Text>
+  <Text size={2}>Italic</Text>
+  <Text size={2}>Underline</Text>
+  <Separator orientation="vertical" style={{ height: 20 }} />
+  <Text size={2}>Align Left</Text>
+  <Text size={2}>Align Center</Text>
+  <Text size={2}>Align Right</Text>
+</HStack>
+```
+
+### Section Divider
+
+```tsx
+<VStack gap={2}>
+  <Text weight="bold">Introduction</Text>
+  <Text color="gray">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  </Text>
+  <Separator marginVertical={3} color="blue" />
+  <Text weight="bold">Main Content</Text>
+  <Text color="gray">
+    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  </Text>
+</VStack>
+```
+
+### Thickness Variations
+
+```tsx
+<Separator size={1} />  {/* 1px - default */}
+<Separator size={2} />  {/* 2px */}
+<Separator size={3} />  {/* 3px */}
+<Separator size={4} />  {/* 4px */}
+```
+
+## Color Options
+
+Separator supports all theme colors:
+
+| Color | Description |
+|-------|-------------|
+| `gray` | Default gray color |
+| `blue` | Blue accent |
+| `green` | Green accent |
+| `red` | Red accent |
+| `orange` | Orange accent |
+| `purple` | Purple accent |
+| ... | Any theme color |
+
+## Accessibility
+
+- When `decorative={true}` (default), the separator is purely visual and has no accessibility role
+- When `decorative={false}`, the separator has a semantic role for screen readers
+
+## Related
+
+- [Spacer](/components/layout/spacer) - Space utility
+- [Stack](/components/layout/stack) - Stack layout component
+- [Center](/components/layout/center) - Centering utility

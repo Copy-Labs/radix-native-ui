@@ -1,0 +1,123 @@
+---
+title: Spacer
+description: Utility component for adding flexible or fixed space between elements.
+---
+
+# Spacer
+
+`Spacer` is a utility component that creates space between elements in flex containers. It can create flexible space that grows to fill available space, or fixed space using the theme's space scale.
+
+## Import
+
+```tsx
+import { Spacer } from '@radix-ui/themes-native';
+```
+
+## Usage
+
+### Flexible Spacer
+
+Creates flexible space that grows to fill available space:
+
+```tsx
+import { Flex, Spacer, Text } from '@radix-ui/themes-native';
+
+<Flex direction="row">
+  <Text>Left</Text>
+  <Spacer />
+  <Text>Right</Text>
+</Flex>
+```
+
+### Fixed Size Spacer
+
+Creates fixed space using the theme's space scale:
+
+```tsx
+<Flex direction="row">
+  <Text>Item 1</Text>
+  <Spacer size={4} />
+  <Text>Item 2</Text>
+</Flex>
+```
+
+### Direction-Specific Spacer
+
+Control which direction the spacer takes space:
+
+```tsx
+// Horizontal spacer
+<Spacer size={3} direction="horizontal" />
+
+// Vertical spacer
+<Spacer size={3} direction="vertical" />
+
+// Both directions
+<Spacer size={3} direction="both" />
+```
+
+## Props
+
+<PropTable>
+  <Prop name="flex" type="number" default="1">
+    Flex grow value for flexible spacing. Used when `size` is not provided.
+  </Prop>
+
+  <Prop name="size" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
+    Fixed size using theme.space scale. When provided, uses fixed dimensions instead of flexible.
+  </Prop>
+
+  <Prop name="direction" type="'horizontal' | 'vertical' | 'both'" default="'both'">
+    Direction of the spacer:
+    - `horizontal`: takes horizontal space (width)
+    - `vertical`: takes vertical space (height)
+    - `both`: takes space in both directions
+  </Prop>
+
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+## Examples
+
+### Proportional Spacing
+
+```tsx
+<Flex direction="row">
+  <Box>Item 1</Box>
+  <Spacer flex={1} />
+  <Box>Item 2</Box>
+  <Spacer flex={2} />
+  <Box>Item 3</Box>
+</Flex>
+```
+
+### In Toolbar
+```tsx
+<Flex direction="row" align="center">
+  <Button variant="outline">Undo</Button>
+  <Button variant="outline">Redo</Button>
+  <Spacer />
+  <Button>Save</Button>
+</Flex>
+```
+
+### In Card Footer
+```tsx
+<Card>
+  <Text>Card content...</Text>
+  <Flex direction="row">
+    <Text size={1} color="gray">Updated 2 hours ago</Text>
+    <Spacer />
+    <Button size={1} variant="soft">Action</Button>
+  </Flex>
+</Card>
+```
+
+## Related
+
+- [Stack](/components/layout/stack) - Stack layout component
+- [Separator](/components/layout/separator) - Visual divider
+- [Center](/components/layout/center) - Centering utility
+- [Flex](/components/layout/flex) - Flexbox layout
