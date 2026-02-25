@@ -326,9 +326,17 @@ export const BottomSheetContent = ({
   const { height: screenHeight } = Dimensions.get('window');
   const effectiveSnapPoints = localSnapPoints || contextSnapPoints;
 
-  // Animation values
-  const translateY = useRef(new Animated.Value(screenHeight)).current;
-  const [contentHeight, setContentHeight] = useState(0);
+  // Calculate snap heights first (before any animation)
+  const snapHeights = effectiveSnapPoints.map((sp) =>
+    parseSnapPoint(sp, screenHeight)
+  );
+
+  // Get the target height for the current snap point
+  const targetSnapHeight = snapHeights[currentSnapIndex] || snapHeights[0];
+
+  // Animation value - starts at targetSnapHeight (off-screen below)
+  // We use targetSnapHeight so the content is just below the visible area
+  const translateY = useRef(new Animated.Value(targetSnapHeight)).current;
 
   // Get size-specific styles
   const sizeStyles = getSizeStyles(size, theme.space, radii);
@@ -336,38 +344,33 @@ export const BottomSheetContent = ({
   // Get shadow for current theme mode
   const shadow = getShadow(6, isDark);
 
-  // Calculate snap heights
-  const snapHeights = effectiveSnapPoints.map((sp) =>
-    parseSnapPoint(sp, screenHeight)
-  );
-
-  // Animate to snap point
+  // Animate to snap point (slide up from bottom)
   const animateToSnapPoint = useCallback(
     (index: number) => {
-      const targetHeight = snapHeights[index] || snapHeights[0];
-      const targetY = screenHeight - targetHeight;
-
+      // Animate to 0 to bring content to bottom of screen (visible)
       Animated.spring(translateY, {
-        toValue: targetY,
+        toValue: 0,
         useNativeDriver: true,
         tension: 65,
         friction: 11,
       }).start();
     },
-    [snapHeights, screenHeight, translateY]
+    [translateY]
   );
 
-  // Animate open/close
+  // Animate open when component mounts
   useEffect(() => {
-    if (contentHeight > 0) {
+    // Small delay to ensure the modal is visible before animating
+    const timer = setTimeout(() => {
       animateToSnapPoint(currentSnapIndex);
-    }
-  }, [contentHeight, currentSnapIndex, animateToSnapPoint]);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [currentSnapIndex, animateToSnapPoint]);
 
   // Handle close animation
   const handleClose = () => {
     Animated.timing(translateY, {
-      toValue: screenHeight,
+      toValue: targetSnapHeight,
       duration: ANIMATION_DURATION,
       useNativeDriver: true,
     }).start(() => {
@@ -383,36 +386,36 @@ export const BottomSheetContent = ({
   const borderTopRightRadius = radii.large;
 
   return (
-    <Animated.View
-      style={[
-        styles.content,
-        {
-          backgroundColor,
-          borderTopLeftRadius,
-          borderTopRightRadius,
-          paddingHorizontal: sizeStyles.paddingHorizontal,
-          transform: [{ translateY }],
-          ...(shadow || {}),
-        },
-        style,
-      ]}
-      onLayout={(e) => {
-        setContentHeight(e.nativeEvent.layout.height);
-      }}
-    >
-      {/* Drag Handle */}
-      {!hideHandle && <BottomSheetHandle />}
-
-      {/* Content */}
-      <ScrollView
-        style={styles.scrollContent}
-        contentContainerStyle={styles.scrollContentContainer}
-        showsVerticalScrollIndicator={true}
-        bounces={true}
+    <TouchableWithoutFeedback onPress={() => {}}>
+      <Animated.View
+        style={[
+          styles.content,
+          {
+            backgroundColor,
+            borderTopLeftRadius,
+            borderTopRightRadius,
+            paddingHorizontal: sizeStyles.paddingHorizontal,
+            height: targetSnapHeight,
+            transform: [{ translateY }],
+            ...(shadow || {}),
+          },
+          style,
+        ]}
       >
-        {children}
-      </ScrollView>
-    </Animated.View>
+        {/* Drag Handle */}
+        {!hideHandle && <BottomSheetHandle />}
+
+        {/* Content */}
+        <ScrollView
+          style={styles.scrollContent}
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={true}
+          bounces={true}
+        >
+          {children}
+        </ScrollView>
+      </Animated.View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -643,7 +646,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    maxHeight: '90%',
     // Shadow
     elevation: 4,
   },
