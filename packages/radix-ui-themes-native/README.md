@@ -1,15 +1,15 @@
-# @radix-ui/themes-native
+# radix-native-ui
 
-Radix Themes for React Native and Expo. A port of the popular `@radix-ui/themes` component library to support mobile development with React Native.
+Radix Themes for React Native and Expo. A port of the popular `radix-native-ui` component library to support mobile development with React Native.
 
 ## Installation
 
 ```bash
-npm install @radix-ui/themes-native
+npm install radix-native-ui
 # or
-yarn add @radix-ui/themes-native
+yarn add radix-native-ui
 # or
-pnpm add @radix-ui/themes-native
+pnpm add radix-native-ui
 ```
 
 ## Peer Dependencies
@@ -28,7 +28,7 @@ This package requires the following peer dependencies:
 Wrap your app with the ThemeProvider to enable theming:
 
 ```tsx
-import { ThemeProvider, useTheme, useThemeMode, useThemeActions } from '@radix-ui/themes-native';
+import { ThemeProvider, useTheme, useThemeMode, useThemeActions } from 'radix-native-ui';
 
 export default function App() {
   return (
@@ -57,7 +57,7 @@ export default function App() {
 Access theme values using the `useTheme` hook:
 
 ```tsx
-import { useTheme, useThemeMode, useThemeActions } from '@radix-ui/themes-native';
+import { useTheme, useThemeMode, useThemeActions } from 'radix-native-ui';
 
 function MyComponent() {
   const theme = useTheme();
@@ -139,7 +139,7 @@ function MyComponent() {
 ## Example: Button Component
 
 ```tsx
-import { Button } from '@radix-ui/themes-native';
+import { Button } from 'radix-native-ui';
 
 // Variants
 <Button>Default (Classic)</Button>
@@ -167,7 +167,7 @@ import { Button } from '@radix-ui/themes-native';
 ## Example: Text and Typography
 
 ```tsx
-import { Text, Heading, Code, Kbd } from '@radix-ui/themes-native';
+import { Text, Heading, Code, Kbd } from 'radix-native-ui';
 
 // Text with size
 <Text size={1}>Small text</Text>
@@ -193,7 +193,7 @@ import { Text, Heading, Code, Kbd } from '@radix-ui/themes-native';
 ## Example: Layout with Box and Flex
 
 ```tsx
-import { Box, Flex, Grid, Container } from '@radix-ui/themes-native';
+import { Box, Flex, Grid, Container } from 'radix-native-ui';
 
 // Box with styling
 <Box backgroundColor="gray.2" padding={4} borderRadius={2}>

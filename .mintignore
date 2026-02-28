@@ -1,0 +1,16 @@
+# Exclude draft documents
+# drafts/
+# *.draft.mdx
+components/layout/inset.mdx
+components/layout/separator.mdx
+components/layout/spacer.mdx
+components/layout/stack.mdx
+components/navigation/tab-nav.mdx
+components/typography/link.mdx
+components/data-display/tab-nav.mdx
+
+# Exclude internal documentation
+internal/
+
+# Exclude specific files
+private-notes.md
