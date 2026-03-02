@@ -11,3 +11,4 @@ export { RnTextInput as TextInput, type TextInputProps } from './TextInput';
 export { RnScrollView as ScrollView, type ScrollViewProps } from './ScrollView';
 export { RnFlatList as FlatList, type FlatListProps } from './FlatList';
 export { RnActivityIndicator as ActivityIndicator, type ActivityIndicatorProps } from './ActivityIndicator';
+export { AnimatedPressable, type AnimatedPressableProps } from './AnimatedPressable';

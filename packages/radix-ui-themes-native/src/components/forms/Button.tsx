@@ -7,21 +7,17 @@ import {
   View,
   type TextStyle,
 } from 'react-native';
-import { TouchableOpacity } from '../primitives';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import {
-  getAccentColor,
-  getAccentAlpha,
   getGrayAlpha,
-  getFocusColor,
-  getContrast,
   getColorScale,
-  getColorAlpha, getVariantColors,
+  getColorAlpha,
+  getVariantColors,
+  getFocusColor,
 } from '../../theme/color-helpers';
-import RnTouchableOpacity from '../../components/primitives/TouchableOpacity';
 import { Color, RadiusSize } from '../../theme';
-import RnPressable from '../../components/primitives/Pressable';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 
 // ============================================================================
 // Types
@@ -89,6 +85,11 @@ interface ButtonProps {
    * High contrast mode for accessibility
    */
   highContrast?: boolean;
+  /**
+   * Enable haptic feedback on press
+   * @default true (inherited from AnimatedPressable)
+   */
+  hapticFeedback?: boolean;
 }
 
 interface ButtonIconProps {
@@ -205,14 +206,14 @@ interface ButtonCompoundComponent extends React.ForwardRefExoticComponent<Button
 }
 
 const Button = React.memo(
-  React.forwardRef<React.ComponentRef<typeof RnPressable>, ButtonProps>(
+  React.forwardRef<React.ElementRef<typeof AnimatedPressable>, ButtonProps>(
     (
       {
         children,
         style,
         variant = 'classic',
         color,
-        radius = 'medium',
+        radius,
         size = 2,
         disabled,
         loading,
@@ -220,6 +221,7 @@ const Button = React.memo(
         accessibilityLabel,
         width,
         highContrast,
+        hapticFeedback,
         ...rest
       },
       ref
@@ -233,7 +235,7 @@ const Button = React.memo(
       const accentScale = getColorScale(theme, activeColor, mode);
       const accentAlpha = getColorAlpha(theme, activeColor);
       const focusColor = getFocusColor(theme, mode);
-      const radii = theme.radii[radius] ?? theme.radii.medium;
+      const radii = theme.radii[radius || theme.radius] ?? theme.radii.medium;
       const selectedRadius = radius || theme.radius;
 
       const variantColors = useMemo(() => getVariantColors(theme, activeColor, mode, variant, highContrast), [getVariantColors, color, variant, highContrast, isDark, theme]);
@@ -411,7 +413,7 @@ const Button = React.memo(
       };
 
       return (
-        <RnPressable
+        <AnimatedPressable
           ref={ref}
           style={[buttonStyle, style]}
           onPress={handlePress}
@@ -421,6 +423,10 @@ const Button = React.memo(
             accessibilityLabel || (typeof children === 'string' ? children : undefined)
           }
           accessibilityState={{ disabled }}
+          pressedScale={0.97}
+          pressedOpacity={0.9}
+          animationDuration={100}
+          hapticFeedback={hapticFeedback}
           {...rest}
         >
           {loading ? (
@@ -440,7 +446,7 @@ const Button = React.memo(
               {rightIcons.map((icon, index) => renderIcon(icon, index))}
             </>
           )}
-        </RnPressable>
+        </AnimatedPressable>
       );
     }
   ),

@@ -24,9 +24,7 @@ const StarIcon = ({ size = 20, color = 'currentColor' }: { size?: number; color?
 
 export default function Buttons() {
   return (
-    <ThemeProvider
-      themeOptions={{ accentColor: 'blue', radius: 'large', scaling: 1 }}
-    >
+    <ThemeProvider themeOptions={{ accentColor: 'blue', radius: 'large', scaling: 1 }}>
       <PageContainer>
         <PageHeader showBackButton>
           <PageHeading>
@@ -45,8 +43,10 @@ export default function Buttons() {
 
                 {/* Basic Buttons */}
                 <Card>
-                  <Flex direction={'column'} gap={12} paddingHorizontal={4}>
-                    <Button>Basic Button</Button>
+                  <Flex direction={'column'} flex={1} gap={12} paddingHorizontal={4}>
+                    <Button width={'100%'} hapticFeedback>
+                      Basic Button
+                    </Button>
                     <Button variant={'ghost'}>Ghost Button</Button>
                     <Button variant={'outline'}>Outline Button</Button>
                     <Button variant={'soft'}>Soft Button</Button>
@@ -56,7 +56,7 @@ export default function Buttons() {
                   </Flex>
                 </Card>
 
-                <Flex gap={3} align="center">
+                <Flex gap={3}>
                   <Button size={1} variant="soft">
                     Edit profile
                   </Button>
@@ -132,24 +132,24 @@ export default function Buttons() {
                 {/* Different Sizes */}
                 <Flex direction={'column'} gap={12} paddingHorizontal={4}>
                   <Heading>Different Sizes</Heading>
-                  <Flex direction="row" gap={8} align="center">
+                  <Flex direction="row" gap={8} align={'baseline'}>
                     <Button size={1}>
                       <Button.Icon>
                         <Ionicons name={'add'} />
                       </Button.Icon>
-                      Small
+                      <Button.Label>Small</Button.Label>
                     </Button>
                     <Button size={2}>
                       <Button.Icon>
                         <Ionicons name={'add'} />
                       </Button.Icon>
-                      Medium
+                      <Button.Label>Medium</Button.Label>
                     </Button>
                     <Button size={3}>
                       <Button.Icon>
                         <Ionicons name={'add'} />
                       </Button.Icon>
-                      Large
+                      <Button.Label>Large</Button.Label>
                     </Button>
                   </Flex>
                 </Flex>
