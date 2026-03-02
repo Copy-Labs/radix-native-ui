@@ -33,6 +33,7 @@
     "react-native": ">=0.70"
   },
   "dependencies": {
+    "radix-native-ui": "file:.yalc/radix-native-ui",
     "react-native-modal": "^13.0.1"
   },
   "devDependencies": {

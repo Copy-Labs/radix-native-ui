@@ -86,10 +86,12 @@ export interface GrayScaleWithAlpha {
 }
 
 export interface ColorTokens {
+  white: ExtendedColorScale;
+  whiteAlpha: AlphaColorScale;
+  black: ExtendedColorScale;
+  blackAlpha: AlphaColorScale;
   gray: ExtendedColorScale;
   grayAlpha: AlphaColorScale;
-  blackAlpha: AlphaColorScale;
-  whiteAlpha: AlphaColorScale;
   // Accent colors - extended with alpha support
   amber: ExtendedColorScale;
   amberAlpha: AlphaColorScale;
@@ -284,6 +286,8 @@ export interface Theme extends ThemeTokens {
 export type ThemeMode = 'light' | 'dark';
 
 export type Color =
+  | 'white'
+  | 'black'
   | 'gray'
   | 'gold'
   | 'bronze'
