@@ -96,6 +96,8 @@ import {
   sage,
   sand,
   slate,
+  white,
+  black,
 } from './colors';
 import { typography } from '../theme/typography';
 import { shadows } from '../theme/shadows';
@@ -302,6 +304,8 @@ export const createTheme = (options: Partial<Theme> = {}): Theme => {
     accentColor,
     colors: {
       // Gray scale with alpha support
+      white: createExtendedColorScale(white, whiteAlpha),
+      black: createExtendedColorScale(black, blackAlpha),
       gray: {
         ...grayScale,
         alpha: grayAlpha,

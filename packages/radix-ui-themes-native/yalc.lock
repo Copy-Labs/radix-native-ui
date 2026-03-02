@@ -4,6 +4,11 @@
     "@radix-ui/themes-native": {
       "signature": "5a49b97be2d7e9b6082e9eeb084ba836",
       "file": true
+    },
+    "radix-native-ui": {
+      "version": "0.1.0-alpha.0",
+      "signature": "e03de0b3696d2dc80e42d2915e00ee1c",
+      "file": true
     }
   }
 }
