@@ -3,7 +3,7 @@ import { ThemeProvider } from 'radix-native-ui';
 
 export default function LayoutScreen() {
   return (
-    <ThemeProvider themeOptions={{ accentColor: 'grass', radius: 'full', scaling: 1 }}>
+    <ThemeProvider themeOptions={{ grayColor: 'sage', accentColor: 'lime', radius: 'full', scaling: 1 }}>
       <Stack
         screenOptions={{
           headerShown: false,

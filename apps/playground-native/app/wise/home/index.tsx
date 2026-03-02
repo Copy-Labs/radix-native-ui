@@ -18,7 +18,7 @@ export default function Home() {
             variant={'soft'}
           />
           <Flex align={'center'} gap={8}>
-            <Badge color="grass" radius={'full'} size={4} variant={'solid'}>
+            <Badge radius={'full'} size={4} variant={'solid'}>
               Earn SGD 100
             </Badge>
             <IconButton
@@ -37,7 +37,7 @@ export default function Home() {
           <Box padding={16}>
             <Flex direction={'column'} gap={16} paddingVertical={16}>
               <Heading size={8}>Welcome to Wise</Heading>
-              <Flex align={'center'} gap={8}>
+              <Flex gap={8}>
                 <Button radius={'full'} size={2}>
                   <Button.Label>Send</Button.Label>
                 </Button>
