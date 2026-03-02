@@ -1,15 +1,14 @@
 import React from 'react';
 import { type ViewStyle } from 'react-native';
-import { ActivityIndicator, TouchableOpacity } from '../primitives';
+import { ActivityIndicator } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import {
   getAccentColor,
   getAccentAlpha,
   getGrayAlpha,
-  getContrast,
   getVariantColors,
 } from '../../theme/color-helpers';
-import RnTouchableOpacity from '../../components/primitives/TouchableOpacity';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 import type { Color, RadiusSize } from '../../theme';
 
 interface IconButtonProps {
@@ -74,9 +73,14 @@ interface IconButtonProps {
    * High contrast mode for accessibility
    */
   highContrast?: boolean;
+  /**
+   * Enable haptic feedback on press
+   * @default true (inherited from AnimatedPressable)
+   */
+  hapticFeedback?: boolean;
 }
 
-const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, IconButtonProps>(
+const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, IconButtonProps>(
   (
     {
       children,
@@ -91,6 +95,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>,
       onPress,
       accessibilityLabel,
       highContrast,
+      hapticFeedback,
       ...rest
     },
     ref
@@ -112,52 +117,6 @@ const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>,
       }
       return undefined; // Will use size-based default
     };
-
-    /*// Get colors based on variant and mode
-    const getVariantColors = () => {
-      // Solid/high-contrast text color
-      // const solidTextColor = highContrast
-      //   ? (['sky', 'mint', 'lime', 'yellow', 'amber'].includes(theme.accentColor) ? '#0c0a09' : '#ffffff')
-      //   : accentScale.contrast;
-      const solidTextColor = getContrast(theme, activeColor, mode, highContrast);
-
-      // Icon color (uses alpha[11] for soft/outline/ghost)
-      const iconColor = highContrast ? accentScale[12] : accentAlpha['11'];
-
-      switch (variant) {
-        case 'solid':
-          return {
-            backgroundColor: accentScale[9],
-            iconColor: highContrast ? solidTextColor : accentScale[1],
-            borderColor: 'transparent',
-          };
-        case 'soft':
-          return {
-            backgroundColor: accentAlpha['3'],
-            iconColor: iconColor,
-            borderColor: 'transparent',
-          };
-        case 'outline':
-          return {
-            backgroundColor: 'transparent',
-            iconColor: iconColor,
-            borderColor: accentAlpha['8'],
-          };
-        case 'ghost':
-          return {
-            backgroundColor: 'transparent',
-            iconColor: iconColor,
-            borderColor: 'transparent',
-          };
-        case 'classic':
-        default:
-          return {
-            backgroundColor: isDark ? grayScale[3] : grayScale[2],
-            iconColor: grayScale[12],
-            borderColor: 'transparent',
-          };
-      }
-    };*/
 
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
 
@@ -224,7 +183,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>,
     }
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={[buttonStyle, style]}
         onPress={onPress}
@@ -232,6 +191,10 @@ const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>,
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         accessibilityState={{ disabled }}
+        pressedScale={0.9}
+        pressedOpacity={0.8}
+        animationDuration={100}
+        hapticFeedback={hapticFeedback}
         {...rest}
       >
         {loading ? (
@@ -244,7 +207,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>,
         ) : (
           children
         )}
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
