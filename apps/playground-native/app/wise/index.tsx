@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Pressable, TouchableOpacity, View } from 'react-native';
 import { Avatar, Box, Button, Flex, Heading, IconButton, Text } from 'radix-native-ui';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
@@ -31,8 +31,20 @@ export default function WiseScreen() {
             <Heading align={'center'} size={8}>
               ONE ACCOUNT FOR ALL THE MONEY IN THE WORLD
             </Heading>
-            <Box>
-              <Flex align={'center'} gap={16} justify={'space-between'} width={'100%'} padding={12}>
+            {/* For testing that our component implementation works similar to the native View, Pressable and TouchableOpacity */}
+            {/*<Pressable style={{ backgroundColor: 'green' }}>
+              <Text>Click here...</Text>
+            </Pressable>
+            <Flex align={'center'} gap={8}>
+              <TouchableOpacity style={{ backgroundColor: 'orange', flex: 1 }}><Text>Click orange</Text></TouchableOpacity>
+              <TouchableOpacity style={{ backgroundColor: 'purple' }}><Text>Click purple</Text></TouchableOpacity>
+            </Flex>
+            <Flex align={'center'} gap={8}>
+              <Button color={'orange'} style={{ flex: 1 }}>Click orange</Button>
+              <Button color={'purple'}>Click purple</Button>
+            </Flex>*/}
+            <Box maxWidth={'100%'}>
+              <Flex align={'center'} gap={16} justify={'space-between'} padding={12}>
                 <Link asChild href={'/wise/home'}>
                   <Button radius={'full'} size={4} style={{ flex: 1 }}>
                     <Button.Label>Log in</Button.Label>
@@ -45,9 +57,9 @@ export default function WiseScreen() {
                 </Link>
               </Flex>
               <Box padding={12}>
-                <Button radius={'full'} size={4} style={{ backgroundColor: 'black' }}>
+                <Button color={'black'} radius={'full'} size={4}>
                   <Button.Icon>
-                    <Ionicons name="logo-apple" size={16} style={{ color: 'white' }} />
+                    <Ionicons name="logo-apple" size={16} />
                   </Button.Icon>
                   <Button.Label>
                     Sign in With Apple

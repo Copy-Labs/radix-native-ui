@@ -74,7 +74,16 @@ export const getSelectionColor = (theme: Theme): string => {
  * Sky, Mint, Lime, Yellow, Amber require dark text on solid backgrounds
  */
 export const needsDarkText = (accentColor: Color): boolean => {
-  return ['sky', 'mint', 'lime', 'yellow', 'amber'].includes(accentColor);
+  return ['sky', 'mint', 'lime', 'yellow', 'amber', 'white'].includes(accentColor);
+};
+
+/**
+ * Get text color for a given color name
+ * Returns the dark/light text
+ */
+export const getForegroundColor = (theme: Theme, color: Color, mode: 'light' | 'dark', highContrast: boolean = false): string => {
+  // Use the appropriate text color based on the color name
+  return needsDarkText(color) ? '#0c0a09' : theme.colors.white['12'];
 };
 
 /**
@@ -205,7 +214,8 @@ export const getVariantColors = (
   }
 
   // Normal (non-highContrast) mode
-  const textColor = getContrast(theme, color, mode, false);
+  // const textColor = getContrast(theme, color, mode, false);
+  const textColor = getForegroundColor(theme, color, mode, false);
 
   switch (variant) {
     case 'solid':
