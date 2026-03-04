@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react';
-import { View, StyleSheet, Pressable, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback,
-  TextStyle
+import { View, StyleSheet, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback,
+  TextStyle, Vibration
 } from 'react-native';
+import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { BaseColorScale, type Color, ColorScale, getVariantColors, RadiusScale } from '../../theme';
@@ -109,15 +110,21 @@ export const DropdownMenuRoot = ({
 interface DropdownMenuTriggerProps {
   children: ReactNode;
   asChild?: boolean;
+  /** Enable haptic feedback on press */
+  hapticFeedback?: boolean;
 }
 
-export const DropdownMenuTrigger = ({ children, asChild = true }: DropdownMenuTriggerProps) => {
+export const DropdownMenuTrigger = ({ children, asChild = false, hapticFeedback = true }: DropdownMenuTriggerProps) => {
   const { onOpenChange, open, anchorRef, measureAnchor } = useDropdownMenu();
 
   const handlePress = () => {
     // Measure the anchor position before opening
     measureAnchor();
     onOpenChange(!open);
+    // Trigger haptic feedback
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -134,9 +141,16 @@ export const DropdownMenuTrigger = ({ children, asChild = true }: DropdownMenuTr
   }
 
   return (
-    <Pressable ref={anchorRef} onPress={handlePress}>
+    <AnimatedPressable
+      ref={anchorRef}
+      onPress={handlePress}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
+    >
       {children}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -457,6 +471,8 @@ interface DropdownMenuItemProps {
   disabled?: boolean;
   shortcut?: string;
   style?: StyleProp<ViewStyle>;
+  /** Enable haptic feedback on select */
+  hapticFeedback?: boolean;
 }
 
 export const DropdownMenuItem = ({
@@ -466,6 +482,7 @@ export const DropdownMenuItem = ({
   disabled = false,
   shortcut,
   style,
+  hapticFeedback = true,
 }: DropdownMenuItemProps) => {
   const { colors, onOpenChange, size } = useDropdownMenu();
   const theme = useTheme();
@@ -515,6 +532,10 @@ export const DropdownMenuItem = ({
     if (!disabled) {
       onSelect?.();
       onOpenChange(false);
+      // Trigger haptic feedback on selection
+      if (hapticFeedback) {
+        Vibration.vibrate(10);
+      }
     }
   };
 
@@ -522,7 +543,7 @@ export const DropdownMenuItem = ({
   const fontSize = getFontSize();
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
       style={[
@@ -534,6 +555,10 @@ export const DropdownMenuItem = ({
       ]}
       accessibilityRole="menuitem"
       accessibilityState={{ disabled }}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={hapticFeedback}
     >
       <Text
         color={color}
@@ -552,7 +577,7 @@ export const DropdownMenuItem = ({
           {shortcut}
         </Text>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -730,6 +755,8 @@ interface DropdownMenuRadioItemProps {
   checked: boolean;
   onCheckedChange: (value: string) => void;
   disabled?: boolean;
+  /** Enable haptic feedback on select */
+  hapticFeedback?: boolean;
 }
 
 export const DropdownMenuRadioItem = ({
@@ -738,6 +765,7 @@ export const DropdownMenuRadioItem = ({
   checked,
   onCheckedChange,
   disabled = false,
+  hapticFeedback = true,
 }: DropdownMenuRadioItemProps) => {
   const { colors, size } = useDropdownMenu();
   const theme = useTheme();
@@ -774,6 +802,10 @@ export const DropdownMenuRadioItem = ({
   const handlePress = () => {
     if (!disabled) {
       onCheckedChange(value);
+      // Trigger haptic feedback on selection
+      if (hapticFeedback) {
+        Vibration.vibrate(10);
+      }
     }
   };
 
@@ -793,7 +825,7 @@ export const DropdownMenuRadioItem = ({
   const itemPadding = getItemPadding();
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
       style={[
@@ -803,6 +835,10 @@ export const DropdownMenuRadioItem = ({
       ]}
       accessibilityRole="menuitem"
       accessibilityState={{ checked, disabled }}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={hapticFeedback}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
         <View
@@ -832,7 +868,7 @@ export const DropdownMenuRadioItem = ({
           {children}
         </Text>
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -850,9 +886,11 @@ export const DropdownMenuSub = ({ children }: DropdownMenuSubProps) => {
 
 interface DropdownMenuSubTriggerProps {
   children: ReactNode;
+  /** Enable haptic feedback on press */
+  hapticFeedback?: boolean;
 }
 
-export const DropdownMenuSubTrigger = ({ children }: DropdownMenuSubTriggerProps) => {
+export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: DropdownMenuSubTriggerProps) => {
   const { colors, openSubmenu, onOpenSubmenu, size } = useDropdownMenu();
   const theme = useTheme();
   const submenuId = 'submenu'; // In a real implementation, this would be unique
@@ -885,16 +923,27 @@ export const DropdownMenuSubTrigger = ({ children }: DropdownMenuSubTriggerProps
 
   const handlePress = () => {
     onOpenSubmenu(openSubmenu === submenuId ? null : submenuId);
+    // Trigger haptic feedback on press
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   const itemPadding = getItemPadding();
   const fontSize = getFontSize();
 
   return (
-    <Pressable onPress={handlePress} style={[styles.item, itemPadding]}>
+    <AnimatedPressable
+      onPress={handlePress}
+      style={[styles.item, itemPadding]}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={hapticFeedback}
+    >
       <Text style={{ color: colors[12], flex: 1, fontSize }}>{children}</Text>
       <Text style={{ color: colors[8], fontSize }}>›</Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
