@@ -31,9 +31,11 @@ export const getColorScale = (theme: Theme, color: Color, mode: 'light' | 'dark'
  * Get the alpha color scale for any color name
  * Returns the alpha color scale (1-12) for the specified color
  */
-export const getColorAlpha = (theme: Theme, color: Color) => {
+export const getColorAlpha = (theme: Theme, color: Color, mode?: 'light' | 'dark') => {
   // console.log("getColorAlpha", color);
-  return theme.colors[color].alpha;
+  return mode === 'dark'
+    ? theme.colors[color].alpha.dark
+    : theme.colors[color].alpha;
 };
 
 /**
@@ -174,7 +176,7 @@ export const getVariantColors = (
   highContrast: boolean = false
 ): { backgroundColor: string; textColor: string; borderColor: string } => {
   const colorScale = getColorScale(theme, color, mode);
-  const colorAlpha = getColorAlpha(theme, color);
+  const colorAlpha = getColorAlpha(theme, color, mode);
   const whiteAlpha = theme.colors.whiteAlpha;
 
   if (highContrast) {

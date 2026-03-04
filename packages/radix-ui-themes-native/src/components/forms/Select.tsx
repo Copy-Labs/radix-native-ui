@@ -18,10 +18,19 @@ import {
   TouchableWithoutFeedback,
   TextStyle,
   ScrollView,
+  Vibration,
 } from 'react-native';
+import { AnimatedPressable } from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
-import { BaseColorScale, type Color, ColorScale, getVariantColors, RadiusScale } from '../../theme';
+import {
+  BaseColorScale,
+  type Color,
+  ColorScale,
+  getGrayAlpha,
+  getVariantColors,
+  RadiusScale,
+} from '../../theme';
 import {
   useAnchorPosition,
   calculatePopoverPosition,
@@ -63,6 +72,9 @@ interface SelectContextValue {
   itemTexts: Map<string, string>;
   registerItem: (value: string, text: string) => void;
   unregisterItem: (value: string) => void;
+  // Accent color for selected items
+  color: Color;
+  variant: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
 }
 
 const SelectContext = createContext<SelectContextValue | null>(null);
@@ -111,6 +123,16 @@ interface SelectRootProps {
    */
   disabled?: boolean;
   /**
+   * Accent color for selected items
+   * @default theme.accentColor
+   */
+  color?: Color;
+  /**
+   * Button variant
+   * @default 'solid'
+   */
+  variant?: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
+  /**
    * Child components
    */
   children: ReactNode;
@@ -124,6 +146,8 @@ export const SelectRoot = ({
   onOpenChange,
   defaultOpen = false,
   disabled = false,
+  color = 'gray',
+  variant = 'soft',
   children,
 }: SelectRootProps) => {
   // Uncontrolled vs controlled state for open
@@ -232,6 +256,9 @@ export const SelectRoot = ({
     }
   }, [defaultValue, itemTexts, selectedItemText, setSelectedItemText]);
 
+  // Determine the accent color to use
+  const accentColor = color || theme.accentColor;
+
   return (
     <SelectContext.Provider value={{
       open,
@@ -250,6 +277,8 @@ export const SelectRoot = ({
       itemTexts: itemTexts,
       registerItem,
       unregisterItem,
+      color: accentColor,
+      variant,
     }}>
       {children}
     </SelectContext.Provider>
@@ -265,13 +294,14 @@ interface SelectTriggerProps {
   asChild?: boolean;
 }
 
-export const SelectTrigger = ({ children, asChild = true }: SelectTriggerProps) => {
+export const SelectTrigger = ({ children, asChild = false }: SelectTriggerProps) => {
   const { onOpenChange, open, anchorRef, measureAnchor, disabled } = useSelect();
 
   const handlePress = () => {
     // Measure the anchor position before opening
     measureAnchor();
     onOpenChange(!open);
+    Vibration.vibrate(10);
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -290,9 +320,9 @@ export const SelectTrigger = ({ children, asChild = true }: SelectTriggerProps) 
   }
 
   return (
-    <Pressable ref={anchorRef} onPress={handlePress} disabled={disabled}>
+    <AnimatedPressable ref={anchorRef} onPress={handlePress} disabled={disabled}>
       {children}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -306,7 +336,16 @@ interface SelectValueProps {
 }
 
 export const SelectValue = ({ placeholder = 'Select an option', style }: SelectValueProps) => {
-  const { value, itemTexts, selectedItemText, colors, size } = useSelect();
+  const { value, itemTexts, selectedItemText, colors, size, color, variant } = useSelect();
+  const theme = useTheme();
+  const mode = useThemeMode();
+  const selectedColor = color || theme.accentColor;
+
+  const grayAlpha = getGrayAlpha(theme, mode);
+  const variantColors = useMemo(
+    () => getVariantColors(theme, selectedColor, mode, variant, false),
+    [getVariantColors, selectedColor, theme]
+  );
 
   // Priority: selectedItemText > itemTexts lookup > placeholder
   // selectedItemText persists even when the dropdown closes (itemTexts gets cleared)
@@ -324,12 +363,23 @@ export const SelectValue = ({ placeholder = 'Select an option', style }: SelectV
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
       <Text style={[
-        { color: selectedText ? colors[12] : colors[9], flex: 1, flexShrink: 1 },
+        {
+          // color: selectedText ? colors[12] : colors[9],
+          color: selectedText ? variantColors.textColor : grayAlpha[9],
+          flex: 1,
+          flexShrink: 1
+        },
         style || {}
       ]}>
         {selectedText || placeholder}
       </Text>
-      <ChevronDownIcon color={selectedText ? colors[12] : colors[9]} width={sizeStyles()} height={sizeStyles()} style={{ justifyContent: 'center' }} />
+      <ChevronDownIcon
+        // color={selectedText ? colors[12] : colors[9]}
+        color={selectedText ? variantColors.textColor : grayAlpha[9]}
+        width={sizeStyles()}
+        height={sizeStyles()}
+        style={{ justifyContent: 'center' }}
+      />
     </View>
   );
 };
@@ -567,6 +617,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
     registerItem,
     unregisterItem,
     setSelectedItemText,
+    color,
   } = useSelect();
   const theme = useTheme();
   const mode = useThemeMode();
@@ -665,20 +716,21 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
       const text = extractText(children);
       setSelectedItemText(text);
       onValueChange(itemValue);
+      Vibration.vibrate(10);
     }
   };
 
   const itemPadding = getItemPadding();
   const fontSize = getFontSize();
-  const accentColor = theme.accentColor;
+  const selectedColor = color || theme.accentColor;
   // getVariantColors(theme, accentColor, mode, 'solid', false);
   const variantColors = useMemo(
-    () => getVariantColors(theme, accentColor, mode, 'solid', false),
-    [getVariantColors, accentColor, theme]
+    () => getVariantColors(theme, selectedColor, mode, 'solid', false),
+    [getVariantColors, selectedColor, theme]
   );
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
       style={[
@@ -686,7 +738,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
         disabled && styles.itemDisabled,
         itemPadding,
         style,
-        { backgroundColor: isSelected ? theme.colors[accentColor]['9'] : 'transparent', borderRadius: 8 },
+        { backgroundColor: isSelected ? theme.colors[selectedColor]['9'] : 'transparent', borderRadius: 8 },
       ]}
       accessibilityRole="menuitem"
       accessibilityState={{ selected: isSelected, disabled }}
@@ -753,7 +805,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
           </View>
         )}
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 

@@ -31,10 +31,10 @@ export default function SelectDemo() {
                   <Text size={3} weight="medium" style={styles.label}>
                     Basic Select
                   </Text>
-                  <Select.Root value={fruit} onValueChange={setFruit}>
+                  <Select.Root color={'green'} variant={'solid'} value={fruit} onValueChange={setFruit}>
                     <Flex width={160}>
                       <Select.Trigger asChild>
-                        <Button color={'gray'} variant="soft">
+                        <Button color={'green'} variant="solid">
                           <Button.Label>
                             <Select.Value placeholder="Select a fruit" />
                           </Button.Label>
@@ -63,9 +63,9 @@ export default function SelectDemo() {
                   <Text weight="medium" style={styles.label}>
                     With Default Value (Uncontrolled)
                   </Text>
-                  <Select.Root defaultValue="carrot">
+                  <Select.Root color={'indigo'} variant={'solid'} defaultValue="carrot">
                     <Select.Trigger asChild>
-                      <Button variant="solid" style={styles.trigger}>
+                      <Button style={styles.trigger}>
                         <Button.Label>
                           <Select.Value />
                         </Button.Label>
