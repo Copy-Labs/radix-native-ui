@@ -14,6 +14,7 @@ import {
   PanResponderGestureState,
   View as RNView,
   LayoutChangeEvent,
+  Vibration,
 } from 'react-native';
 import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -125,6 +126,11 @@ interface SliderProps {
    * Style prop
    */
   style?: ViewStyle;
+  /**
+   * Enable haptic feedback during drag
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
 type StyleProp<T> = T | T[];
@@ -175,6 +181,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
       accessibilityLabel,
       accessibilityHint,
       style,
+      hapticFeedback = true,
       ...rest
     },
     ref
@@ -394,6 +401,11 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
         const position = Math.max(0, Math.min(1, touchX / currentTrackLayout.width));
         const newValue = positionToValue(position);
 
+        // Trigger haptic feedback on track press
+        if (hapticFeedback) {
+          Vibration.vibrate(10);
+        }
+
         if (valuesRef.current.length === 1) {
           updateValue([newValue]);
           handleValueChangeEnd([newValue]);
@@ -417,7 +429,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           handleValueChangeEnd(newValues);
         }
       },
-      [positionToValue, getNearestThumbIndex, updateValue, handleValueChangeEnd]
+      [positionToValue, getNearestThumbIndex, updateValue, handleValueChangeEnd, hapticFeedback]
     );
 
     // Handle drag
@@ -479,6 +491,11 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
           setActiveThumbIndex(nearestIndex);
           activeThumbIndexRef.current = nearestIndex;
+
+          // Trigger haptic feedback when starting to drag
+          if (hapticFeedback) {
+            Vibration.vibrate(10);
+          }
         },
         onPanResponderMove: (
           _event: GestureResponderEvent,
@@ -492,11 +509,19 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
+          // Trigger haptic feedback when releasing the thumb
+          if (hapticFeedback) {
+            Vibration.vibrate(10);
+          }
         },
         onPanResponderTerminate: () => {
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
+          // Trigger haptic feedback when gesture is terminated
+          if (hapticFeedback) {
+            Vibration.vibrate(10);
+          }
         },
         // Prevent parent ScrollView from taking over the gesture
         onPanResponderTerminationRequest: () => false,
