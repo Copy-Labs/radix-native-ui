@@ -120,7 +120,7 @@ export const AnimatedPressable = React.memo(
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           disabled={disabled}
-          style={[style, animatedStyle]}
+          style={[animatedStyle, style]}
           {...rest}
         >
           {children}

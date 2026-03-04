@@ -121,10 +121,10 @@ const SegmentedControlItem = ({
 
   const textStyle = {
     color: isDisabled
-      ? grayAlpha['8']
+      ? grayScale['9']
       : color
         ? (isSelected ? solidVariantColors.textColor : softVariantColors.textColor)
-        : (isSelected ? grayScale[12] : grayAlpha[10]),
+        : (isSelected ? grayScale[12] : grayScale[10]),
     fontWeight: isSelected ? theme.typography.fontWeights.semibold : theme.typography.fontWeights.regular,
     fontSize: sizeValues.fontSize,
   };
@@ -209,7 +209,7 @@ const SegmentedControlRoot = ({
   onValueChange,
   disabled = false,
   color,
-  radius = 'medium',
+  radius,
   size = 3,
   style,
   highContrast = false,
@@ -222,7 +222,7 @@ const SegmentedControlRoot = ({
   const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
   const activeColor = color || theme.accentColor;
-  const radii = theme.radii[radius] ?? theme.radii.medium;
+  const radii = theme.radii[radius || theme.radius] ?? theme.radii.medium;
   const selectedRadius = radius || theme.radius;
   const solidVariant = 'solid';
   const softVariant = 'soft';
@@ -313,7 +313,7 @@ const SegmentedControlRoot = ({
   // Determine pill background color
   const pillBackgroundColor = color
     ? solidVariantColors.backgroundColor
-    : theme.colors.gray['1'];
+    : isDark ? theme.colors.gray.dark['4'] : theme.colors.gray['1'];
 
   const contextValue: SegmentedControlContextValue = {
     value: currentValue,
@@ -349,7 +349,7 @@ const SegmentedControlRoot = ({
         style={[
           styles.container,
           {
-            backgroundColor: color ? softVariantColors.backgroundColor : grayAlpha['3'],
+            backgroundColor: color ? softVariantColors.backgroundColor : isDark ? grayScale['3'] :grayAlpha['3'],
             borderRadius: radii,
             height: sizeValues.height,
           },
