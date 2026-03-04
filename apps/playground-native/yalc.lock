@@ -7,8 +7,7 @@
       "replaced": "link:.yalc/@radix-ui/themes-native"
     },
     "radix-native-ui": {
-      "version": "0.1.0-alpha.0",
-      "signature": "e0b4b4d5dc5ba30d31fe598103853e6d",
+      "signature": "4f31d138bb22d4c67dffe0e53c35c317",
       "file": true
     }
   }

@@ -14,8 +14,10 @@ import {
   type StyleProp,
   Animated,
   type LayoutChangeEvent,
+  Vibration,
 } from 'react-native';
-import { TouchableOpacity, View } from '../primitives';
+import { View } from '../primitives';
+import AnimatedPressable from '../primitives/AnimatedPressable';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { getGrayAlpha } from '../../theme/color-helpers';
@@ -294,12 +296,17 @@ interface AccordionTriggerProps {
    * Custom chevron icon
    */
   icon?: ReactNode;
+  /**
+   * Enable haptic feedback on toggle
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
 const AccordionTrigger = React.forwardRef<
-  ComponentRef<typeof TouchableOpacity>,
+  ComponentRef<typeof AnimatedPressable>,
   AccordionTriggerProps
->(({ children, style, icon }, ref) => {
+>(({ children, style, icon, hapticFeedback = true }, ref) => {
   const accordionContext = useAccordionContext();
   const itemContext = useAccordionItemContext();
   const theme = useTheme();
@@ -376,6 +383,11 @@ const AccordionTrigger = React.forwardRef<
         onValueChange([...currentValue, value]);
       }
     }
+
+    // Trigger haptic feedback on toggle
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   // RTL support for rotation
@@ -404,7 +416,7 @@ const AccordionTrigger = React.forwardRef<
   };
 
   return (
-    <TouchableOpacity
+    <AnimatedPressable
       ref={ref}
       style={[triggerStyle, style]}
       onPress={handlePress}
@@ -412,6 +424,10 @@ const AccordionTrigger = React.forwardRef<
       accessibilityRole="button"
       accessibilityState={{ expanded: open, disabled }}
       accessibilityLabel={`Toggle ${typeof children === 'string' ? children : 'accordion item'}`}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
     >
       {typeof children === 'string' ? (
         <Text
@@ -451,7 +467,7 @@ const AccordionTrigger = React.forwardRef<
           />
         </Animated.View>
       )}
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 });
 

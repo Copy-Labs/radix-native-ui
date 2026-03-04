@@ -40,7 +40,6 @@
     "react-native-worklets": "0.5.1"
   },
   "devDependencies": {
-    "@radix-ui/themes-native": "file:.yalc/@radix-ui/themes-native",
     "@types/react": "~19.1.17",
     "eslint": "^9.39.2",
     "eslint-config-expo": "~10.0.0",
