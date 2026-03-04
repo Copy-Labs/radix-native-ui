@@ -111,6 +111,7 @@ export const AnimatedPressable = React.memo(
       const animatedStyle = {
         transform: [{ scale: scaleAnim }],
         opacity: opacityAnim,
+        backgroundColor: 'transparent',
       };
 
       return (

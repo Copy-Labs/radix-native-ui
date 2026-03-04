@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, type ViewStyle, Animated, Easing } from 'react-native';
-import { View, TouchableOpacity } from '../primitives';
+import { StyleSheet, type ViewStyle, Animated, Easing, Vibration } from 'react-native';
+import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../../components';
 import {
   getAccentColor,
   getContrast,
+  getForegroundColor,
   getGrayAlpha,
   getVariantColors,
 } from '../../theme/color-helpers';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 import { Color, gray, RadiusSize } from '../../theme';
 
 interface SwitchProps {
@@ -30,17 +32,17 @@ interface SwitchProps {
   disabled?: boolean;
   /**
    * Radius variant mode for accessibility
-   * @default 'medium'
+   * @default 'full'
    */
   radius?: RadiusSize;
   /**
    * Size variant
-   * @default 2
+   * @default '2'
    */
   size?: '1' | '2' | '3';
   /**
    * Badge variant
-   * @default 'soft'
+   * @default 'solid'
    */
   variant?: 'solid' | 'soft' | 'surface';
   /**
@@ -67,9 +69,14 @@ interface SwitchProps {
    * Accessibility hint
    */
   accessibilityHint?: string;
+  /**
+   * Enable haptic feedback on toggle
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
-const Switch = React.forwardRef<unknown, SwitchProps>(
+const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, SwitchProps>(
   (
     {
       defaultChecked,
@@ -85,6 +92,7 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
       highContrast,
       accessibilityLabel,
       accessibilityHint,
+      hapticFeedback = true,
       ...rest
     },
     ref
@@ -96,23 +104,27 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
     const grayAlpha = getGrayAlpha(theme);
     const accentScale = getAccentColor(theme, mode);
     const switchColor = color || accentScale[9];
-    // const switchContrast = accentScale.contrast;
     const activeColor = color || theme.accentColor;
     const switchContrast = getContrast(theme, activeColor, mode, highContrast);
+    const switchForeground = getForegroundColor(theme, activeColor, mode, highContrast);
     const defaultThumbColor = isDark ? grayScale[4] : grayScale[1];
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
     const radii = theme.radii[radius] ?? theme.radii.medium;
     const selectedRadius = radius || theme.radius;
 
     const [internalChecked, setInternalChecked] = useState(defaultChecked ?? false);
-    // Use checked if provided, otherwise use internal state
     const isChecked = checked !== undefined ? checked : internalChecked;
+
     const setChecked = (value: boolean) => {
       if (checked === undefined) {
         setInternalChecked(value);
       }
       if (onCheckedChange) {
         onCheckedChange(value);
+      }
+      // Trigger haptic feedback on toggle
+      if (hapticFeedback && !disabled) {
+        Vibration.vibrate(10);
       }
     };
 
@@ -127,7 +139,6 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
       }).start();
     }, [isChecked]);
 
-    // Get size values
     const getSizeValues = () => {
       switch (size) {
         case '1':
@@ -162,7 +173,6 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
 
     const handlePress = () => {
       if (!disabled) {
-        // onCheckedChange(!checked);
         setChecked(!isChecked);
       }
     };
@@ -170,12 +180,9 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
     const trackStyle: ViewStyle = {
       width: sizeValues.trackWidth + 2,
       height: sizeValues.trackHeight,
-      // borderRadius: sizeValues.trackHeight / 2,
       borderRadius: selectedRadius === 'full' ? 9999 : radii,
-      // backgroundColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['6'],
-      backgroundColor: isChecked ? variantColors.backgroundColor : grayAlpha['6'],
+      backgroundColor: isChecked ? variantColors.backgroundColor : isDark ? grayAlpha['9'] : grayAlpha['6'],
       borderWidth: 1,
-      // borderColor: checked ? switchColor : isDark ? grayAlpha['8'] : grayAlpha['7'],
       borderColor: isChecked ? variantColors.borderColor : grayAlpha['7'],
       opacity: disabled ? 0.5 : 1,
     };
@@ -189,21 +196,14 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
       width: sizeValues.trackHeight,
       height: sizeValues.trackHeight,
       borderWidth: 1,
-      // borderColor: checked ? switchColor : isDark ? gray['9'] : gray['8'],
       borderColor: isChecked
         ? variant === 'surface'
           ? variantColors.borderColor
           : variantColors.backgroundColor
         : gray['8'],
-      // borderRadius: sizeValues.thumbSize + 5 / 2,
       borderRadius: selectedRadius === 'full' ? 9999 : radii,
-      backgroundColor: thumbColor || (isChecked ? switchContrast : defaultThumbColor),
+      backgroundColor: thumbColor || (isChecked ? switchForeground : defaultThumbColor),
       transform: [{ translateX: thumbTranslateX }],
-      /*shadowColor: '#000',
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.15,
-      shadowRadius: 1,
-      elevation: 0,*/
     };
 
     const labelStyle = {
@@ -212,23 +212,26 @@ const Switch = React.forwardRef<unknown, SwitchProps>(
     };
 
     return (
-      <TouchableOpacity
-        ref={ref as any}
+      <AnimatedPressable
+        ref={ref}
         style={styles.container}
         onPress={handlePress}
         disabled={disabled}
         accessibilityRole="switch"
         accessibilityLabel={accessibilityLabel || label}
         accessibilityHint={accessibilityHint || 'Toggle switch'}
-        accessibilityState={{ checked, disabled }}
-        accessibilityActions={[{ name: 'activate', label: 'Toggle' }]}
+        accessibilityState={{ checked: isChecked, disabled }}
+        pressedScale={0.975}
+        pressedOpacity={0.9}
+        animationDuration={100}
+        hapticFeedback={false}
         {...rest}
       >
         <View style={[styles.track, trackStyle]}>
           <Animated.View style={[styles.thumb, thumbStyle]} />
         </View>
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
