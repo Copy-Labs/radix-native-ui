@@ -1,10 +1,11 @@
 import React, { type ReactNode, createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { StyleSheet, type StyleProp, ViewStyle, type LayoutChangeEvent, Animated, Easing } from 'react-native';
-import { View, TouchableOpacity } from '../primitives';
+import { StyleSheet, type StyleProp, ViewStyle, type LayoutChangeEvent, Animated, Easing, Vibration } from 'react-native';
+import { View } from '../primitives';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
 import { BaseColorScale, Color, RadiusSize } from '../../theme';
+import AnimatedPressable from '../primitives/AnimatedPressable';
 
 // ============================================================================
 // Context
@@ -34,6 +35,7 @@ interface SegmentedControlContextValue {
   onItemLayout: (value: string, event: LayoutChangeEvent) => void;
   theme: ReturnType<typeof useTheme>;
   pillBackgroundColor: string;
+  hapticFeedback: boolean;
 }
 
 const SegmentedControlContext = createContext<SegmentedControlContextValue | null>(null);
@@ -87,6 +89,7 @@ const SegmentedControlItem = ({
     onItemLayout,
     theme,
     pillBackgroundColor,
+    hapticFeedback,
   } = useSegmentedControlContext();
 
   const isSelected = value === selectedValue;
@@ -95,8 +98,12 @@ const SegmentedControlItem = ({
   const handlePress = useCallback(() => {
     if (!isDisabled) {
       onValueChange(value);
+      // Trigger haptic feedback on selection
+      if (hapticFeedback) {
+        Vibration.vibrate(10);
+      }
     }
-  }, [isDisabled, onValueChange, value]);
+  }, [isDisabled, onValueChange, value, hapticFeedback]);
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     onItemLayout(value, event);
@@ -123,16 +130,20 @@ const SegmentedControlItem = ({
   };
 
   return (
-    <TouchableOpacity
+    <AnimatedPressable
       style={optionStyle}
       onPress={handlePress}
       onLayout={handleLayout}
       disabled={isDisabled}
       accessibilityRole="radio"
       accessibilityState={{ checked: isSelected, disabled: isDisabled }}
+      pressedScale={0.975}
+      pressedOpacity={0.9}
+      animationDuration={100}
+      hapticFeedback={false}
     >
       <Text style={textStyle}>{children}</Text>
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 };
 
@@ -185,6 +196,11 @@ interface SegmentedControlRootProps {
    * Child items
    */
   children: ReactNode;
+  /**
+   * Enable haptic feedback on segment selection
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
 const SegmentedControlRoot = ({
@@ -198,6 +214,7 @@ const SegmentedControlRoot = ({
   style,
   highContrast = false,
   children,
+  hapticFeedback = true,
 }: SegmentedControlRootProps) => {
   const theme = useTheme();
   const mode = useThemeMode();
@@ -318,6 +335,7 @@ const SegmentedControlRoot = ({
     onItemLayout: handleItemLayout,
     theme,
     pillBackgroundColor,
+    hapticFeedback,
   };
 
   // Calculate pill dimensions
