@@ -9,7 +9,7 @@ export default function SelectDemo() {
   const [country, setCountry] = useState<string>('');
 
   return (
-    <ThemeProvider themeOptions={{ accentColor: 'indigo', radius: 'medium', scaling: 1 }}>
+    <ThemeProvider themeOptions={{ accentColor: 'indigo', grayColor: 'gray', radius: 'medium', scaling: 1 }}>
       <PageContainer>
         <PageHeader showBackButton>
           <PageHeading>
@@ -34,7 +34,7 @@ export default function SelectDemo() {
                   <Select.Root value={fruit} onValueChange={setFruit}>
                     <Flex width={160}>
                       <Select.Trigger asChild>
-                        <Button variant="outline">
+                        <Button color={'gray'} variant="soft">
                           <Button.Label>
                             <Select.Value placeholder="Select a fruit" />
                           </Button.Label>
@@ -93,7 +93,7 @@ export default function SelectDemo() {
                   </Text>
                   <Select.Root value={vegetable} onValueChange={setVegetable}>
                     <Select.Trigger asChild>
-                      <Button variant="outline" style={styles.trigger}>
+                      <Button variant="soft" style={styles.trigger}>
                         <Button.Label>
                           <Select.Value placeholder="Select a vegetable" />
                         </Button.Label>
@@ -123,7 +123,7 @@ export default function SelectDemo() {
                   </Text>
                   <Select.Root value={country} onValueChange={setCountry}>
                     <Select.Trigger asChild>
-                      <Button variant="outline" style={styles.trigger}>
+                      <Button color={'gray'} variant="surface" style={styles.trigger}>
                         <Button.Label>
                           <Select.Value placeholder="Select a country" />
                         </Button.Label>
