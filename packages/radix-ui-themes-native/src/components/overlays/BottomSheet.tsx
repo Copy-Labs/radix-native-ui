@@ -23,7 +23,9 @@ import {
   Platform,
   type GestureResponderHandlers,
   TouchableOpacity,
+  Vibration,
 } from 'react-native';
+import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { type ButtonProps, Heading } from '../../components';
@@ -258,6 +260,8 @@ export const BottomSheetRoot = ({
 
         // Only close if swiped DOWN with enough distance or velocity
         if (gestureState.dy > threshold || gestureState.vy > velocityThreshold / 1000) {
+          // Trigger haptic feedback when dismissing via swipe
+          Vibration.vibrate(10);
           // Animate to closed position
           Animated.timing(translateY, {
             toValue: targetSnapHeight,
@@ -333,16 +337,23 @@ export const BottomSheetRoot = ({
 interface BottomSheetTriggerProps {
   children: ReactNode;
   asChild?: boolean;
+  /** Enable haptic feedback on press */
+  hapticFeedback?: boolean;
 }
 
 export const BottomSheetTrigger = ({
   children,
   asChild = true,
+  hapticFeedback = false,
 }: BottomSheetTriggerProps) => {
   const { onOpenChange, open } = useBottomSheet();
 
   const handlePress = () => {
     onOpenChange(true);
+    // Trigger haptic feedback when opening
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -354,7 +365,17 @@ export const BottomSheetTrigger = ({
     });
   }
 
-  return <Pressable onPress={handlePress}>{children}</Pressable>;
+  return (
+    <AnimatedPressable
+      onPress={handlePress}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
+    >
+      {children}
+    </AnimatedPressable>
+  );
 };
 
 // ============================================================================
@@ -392,9 +413,11 @@ export const BottomSheetPortal = ({
 interface BottomSheetOverlayProps {
   style?: StyleProp<ViewStyle>;
   blur?: boolean;
+  /** Enable haptic feedback when closing via overlay press */
+  hapticFeedback?: boolean;
 }
 
-export const BottomSheetOverlay = ({ style }: BottomSheetOverlayProps) => {
+export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheetOverlayProps) => {
   const { onOpenChange } = useBottomSheet();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -404,6 +427,10 @@ export const BottomSheetOverlay = ({ style }: BottomSheetOverlayProps) => {
 
   const handlePress = () => {
     onOpenChange(false);
+    // Trigger haptic feedback when closing via overlay
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   return (
@@ -687,17 +714,24 @@ export const BottomSheetFooter = ({
 interface BottomSheetCloseProps extends Omit<ButtonProps, 'children'> {
   children?: ReactNode;
   asChild?: boolean;
+  /** Enable haptic feedback on press */
+  hapticFeedback?: boolean;
 }
 
 export const BottomSheetClose = ({
   children,
   asChild = true,
+  hapticFeedback = false,
   ...buttonProps
 }: BottomSheetCloseProps) => {
   const { onOpenChange } = useBottomSheet();
 
   const handlePress = () => {
     onOpenChange(false);
+    // Trigger haptic feedback when closing
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   if (asChild && children && React.isValidElement(children)) {
@@ -723,11 +757,14 @@ export const BottomSheetClose = ({
 interface BottomSheetActionProps extends Omit<ButtonProps, 'children'> {
   children: ReactNode;
   onPress?: () => void;
+  /** Enable haptic feedback on press */
+  hapticFeedback?: boolean;
 }
 
 export const BottomSheetAction = ({
   children,
   onPress,
+  hapticFeedback = true,
   ...buttonProps
 }: BottomSheetActionProps) => {
   const { onOpenChange } = useBottomSheet();
@@ -735,6 +772,10 @@ export const BottomSheetAction = ({
   const handlePress = () => {
     onPress?.();
     onOpenChange(false);
+    // Trigger haptic feedback when action is pressed
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   return (
