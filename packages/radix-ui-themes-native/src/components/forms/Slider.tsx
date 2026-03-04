@@ -538,7 +538,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           return 'transparent';
         case 'solid':
         default:
-          return isDark ? grayAlpha['7'] : grayAlpha['6'];
+          return isDark ? grayScale['5'] : grayAlpha['6'];
       }
       /*if (variant === 'solid') {
         return isDark ? grayAlpha['7'] : grayAlpha['6'];
@@ -632,7 +632,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           width: sizeValues.thumbSize,
           height: sizeValues.thumbSize,
           borderRadius: borderRadius, // sizeValues.thumbSize / 2,
-          backgroundColor: grayScale[1],
+          backgroundColor: isDark ? grayScale[12] : grayScale[1],
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 1 },
           shadowOpacity: 0.15,
