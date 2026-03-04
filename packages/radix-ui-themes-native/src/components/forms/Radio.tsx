@@ -168,7 +168,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
     const innerStyle: ViewStyle = {
       width: sizeValues.innerSize,
       height: sizeValues.innerSize,
-      borderRadius: sizeValues.boxSize * 2,
+      borderRadius: 100, // sizeValues.boxSize * 2,
       // backgroundColor: 'transparent',
       backgroundColor: isSelected ? disabled ? (variant === 'solid' ? grayScale['2'] : grayScale['8']) : variantColors.textColor : 'transparent',
     };
