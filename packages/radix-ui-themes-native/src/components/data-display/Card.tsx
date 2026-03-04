@@ -150,7 +150,7 @@ const Card = React.forwardRef<any, CardProps>(
       borderWidth: variantStyles.borderWidth,
       borderRadius: selectedRadius === 'full' ? 9999 : radii, // radii.medium,
       padding: sizeValues.padding,
-      ...shadowStyle,
+      // ...shadowStyle,
     };
 
     if (asChild) {

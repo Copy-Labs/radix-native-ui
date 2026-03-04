@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  type ReactNode,
+  useMemo,
+} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,7 +21,7 @@ import {
 } from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
-import { BaseColorScale, type Color, ColorScale, RadiusScale } from '../../theme';
+import { BaseColorScale, type Color, ColorScale, getVariantColors, RadiusScale } from '../../theme';
 import {
   useAnchorPosition,
   calculatePopoverPosition,
@@ -398,6 +406,8 @@ export const SelectContent = ({
 }: SelectContentProps) => {
   const { colors, radii, anchorPosition } = useSelect();
   const theme = useTheme();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
   const contentRef = useRef<View>(null);
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
   const [position, setPosition] = useState<{ top?: number; left?: number }>({});
@@ -491,15 +501,16 @@ export const SelectContent = ({
             style={[
               styles.content,
               {
-                backgroundColor: colors[1],
+                backgroundColor: isDark ? colors[3] : colors[1],
                 borderRadius: radii.medium,
                 borderWidth: 1,
-                borderColor: colors[6],
+                borderColor: isDark ? colors[3] : colors[6],
                 // Apply size-based styles
                 paddingVertical: sizeStyles.paddingVertical,
                 paddingHorizontal: sizeStyles.paddingHorizontal,
                 minWidth: sizeStyles.minWidth,
                 maxWidth: sizeStyles.maxWidth,
+                maxHeight: 400,
                 // Only apply position styles when we have valid measurements
                 ...(hasValidPosition && hasContentSize ? {
                   position: 'absolute',
@@ -558,6 +569,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
     setSelectedItemText,
   } = useSelect();
   const theme = useTheme();
+  const mode = useThemeMode();
   const isSelected = value === itemValue;
 
   // Helper to extract text from children
@@ -659,20 +671,37 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
   const itemPadding = getItemPadding();
   const fontSize = getFontSize();
   const accentColor = theme.accentColor;
+  // getVariantColors(theme, accentColor, mode, 'solid', false);
+  const variantColors = useMemo(
+    () => getVariantColors(theme, accentColor, mode, 'solid', false),
+    [getVariantColors, accentColor, theme]
+  );
 
   return (
     <Pressable
       onPress={handlePress}
       disabled={disabled}
-      style={[styles.item, disabled && styles.itemDisabled, itemPadding, style]}
+      style={[
+        styles.item,
+        disabled && styles.itemDisabled,
+        itemPadding,
+        style,
+        { backgroundColor: isSelected ? theme.colors[accentColor]['9'] : 'transparent', borderRadius: 8 },
+      ]}
       accessibilityRole="menuitem"
       accessibilityState={{ selected: isSelected, disabled }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          flex: 1,
+        }}
+      >
         <Text
           style={[
             {
-              color: disabled ? colors[8] : isSelected ? accentColor : colors[12],
+              color: disabled ? colors[8] : isSelected ? variantColors.textColor : colors[12],
               fontSize,
               flex: 1,
             },
@@ -684,13 +713,21 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
           <Text style={{ color: accentColor, fontSize, marginLeft: theme.space[2] }}>✓</Text>
         )}*/}
         {isSelected && (
-          <View style={{ alignItems: 'center', justifyContent: 'center', position: 'relative', width: sizeValues.iconSize, height: sizeValues.iconSize }}>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              width: sizeValues.iconSize,
+              height: sizeValues.iconSize,
+            }}
+          >
             <View
               style={{
                 position: 'absolute',
                 width: sizeValues.iconSize * 0.46,
                 height: sizeValues.height,
-                backgroundColor: accentColor,
+                backgroundColor: variantColors.textColor, // colors[12], // accentColor,
                 borderRadius: 1,
                 transform: [
                   { translateX: sizeValues.iconSize * -0.36 },
@@ -704,7 +741,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
                 position: 'absolute',
                 width: sizeValues.iconSize * 1.1,
                 height: sizeValues.height,
-                backgroundColor: accentColor,
+                backgroundColor: variantColors.textColor, // colors[12], // accentColor,
                 borderRadius: 3,
                 transform: [
                   { translateX: sizeValues.iconSize * 0.1 },
