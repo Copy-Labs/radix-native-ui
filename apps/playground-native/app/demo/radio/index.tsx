@@ -163,35 +163,58 @@ export default function Radios() {
                   </Flex>
                 </Flex>
 
+                {/* New Compound Component API */}
                 <Box padding={12}>
                   <Text size={4} weight="bold">
-                    Radio Group
+                    Radio Group (Compound API)
                   </Text>
-                  <RadioGroup
+                  <RadioGroup.Root
                     gap={8}
                     size={'3'}
                     value={radioValue}
                     onValueChange={setRadioValue}
-                    items={[
-                      { value: 'option1', label: 'Option 1' },
-                      { value: 'option2', label: 'Option 2' },
-                    ]}
-                  />
+                  >
+                    <RadioGroup.Item value="option1" label="Option 1" />
+                    <RadioGroup.Item value="option2" label="Option 2" />
+                  </RadioGroup.Root>
                 </Box>
 
                 <Box padding={12}>
-                  <RadioGroup
+                  <RadioGroup.Root
                     gap={8}
+                    size={'2'}
+                    color="indigo"
+                    variant="solid"
+                    value={radioValue}
+                    onValueChange={setRadioValue}
+                  >
+                    <RadioGroup.Item value="option1" label="Option 1" />
+                    <RadioGroup.Item value="option2" label="Option 2" />
+                    <RadioGroup.Item value="option3" label="Option 3" />
+                  </RadioGroup.Root>
+                </Box>
+
+                {/* Custom content example */}
+                <Box padding={12}>
+                  <Text size={4} weight="bold">
+                    Radio Group with Custom Content
+                  </Text>
+                  <RadioGroup.Root
+                    gap={4}
                     size={'2'}
                     value={radioValue}
                     onValueChange={setRadioValue}
-                    items={[
-                      { value: 'option1', label: 'Option 1' },
-                      { value: 'option2', label: 'Option 2' },
-                      { value: 'option3', label: 'Option 3' },
-                    ]}
-                  />
+                  >
+                    <RadioGroup.Item value="option1">
+                      <Text>Custom content for Option 1</Text>
+                    </RadioGroup.Item>
+                    <RadioGroup.Item value="option2">
+                      <Text>Custom content for Option 2</Text>
+                    </RadioGroup.Item>
+                  </RadioGroup.Root>
                 </Box>
+
+
               </Flex>
             </View>
           </ScrollView>

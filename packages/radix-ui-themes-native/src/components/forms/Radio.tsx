@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ReactNode } from 'react';
 import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
 import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -45,6 +45,10 @@ interface RadioProps {
    */
   label?: string;
   /**
+   * Custom content displayed next to the radio (overrides label)
+   */
+  children?: ReactNode;
+  /**
    * High contrast mode for accessibility
    */
   highContrast?: boolean;
@@ -80,6 +84,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
       variant = 'solid',
       color,
       label,
+      children,
       highContrast = false,
       accessibilityLabel,
       accessibilityHint,
@@ -197,7 +202,11 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
         <View style={[styles.radioOuter, outerStyle]}>
           <View style={[styles.radioInner, innerStyle]} />
         </View>
-        {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
+        {children ? (
+          <View style={styles.content}>{children}</View>
+        ) : label ? (
+          <Text style={[styles.label, labelStyle]}>{label}</Text>
+        ) : null}
       </AnimatedPressable>
     );
   }
@@ -217,6 +226,10 @@ const styles = StyleSheet.create({
   radioInner: {borderRadius: 100},
   label: {
     marginLeft: 8,
+  },
+  content: {
+    marginLeft: 8,
+    flex: 1,
   },
 });
 
