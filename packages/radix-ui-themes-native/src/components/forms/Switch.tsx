@@ -181,7 +181,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
       width: sizeValues.trackWidth + 2,
       height: sizeValues.trackHeight,
       borderRadius: selectedRadius === 'full' ? 9999 : radii,
-      backgroundColor: isChecked ? variantColors.backgroundColor : isDark ? grayAlpha['9'] : grayAlpha['6'],
+      backgroundColor: isChecked ? variantColors.backgroundColor : isDark ? grayScale['7'] : grayAlpha['6'],
       borderWidth: 1,
       borderColor: isChecked ? variantColors.borderColor : grayAlpha['7'],
       opacity: disabled ? 0.5 : 1,
