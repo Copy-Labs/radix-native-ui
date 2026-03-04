@@ -47,19 +47,12 @@ export default function DropdownMenuDemo() {
                     <Heading>Anno-mark</Heading>
                     <DropdownMenu.Root>
                       <DropdownMenu.Trigger>
-                        <Button variant="ghost" size={1}>
-                          <Button.Label>
-                            <Avatar
-                              radius={'full'}
-                              size={2}
-                              src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
-                              fallback="A"
-                            />
-                          </Button.Label>
-                          <Button.Icon>
-                            <Ionicons name="caret-down" size={12} />
-                          </Button.Icon>
-                        </Button>
+                        <Avatar
+                          radius={'full'}
+                          size={2}
+                          src="https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?&w=256&h=256&q=70&crop=focalpoint&fp-x=0.5&fp-y=0.3&fp-z=1&fit=crop"
+                          fallback="A"
+                        />
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Portal>
                         <DropdownMenu.Overlay />
@@ -81,8 +74,8 @@ export default function DropdownMenuDemo() {
 
                 <Flex direction={'column'} gap={16}>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                      <Button variant="soft" size={2}>
+                    <DropdownMenu.Trigger asChild>
+                      <Button hapticFeedback={false} variant="soft" size={2}>
                         Options
                       </Button>
                     </DropdownMenu.Trigger>
@@ -107,7 +100,7 @@ export default function DropdownMenuDemo() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Basic DropdownMenu</Heading>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
+                    <DropdownMenu.Trigger asChild={true}>
                       <Button variant={'soft'} width={120}>
                         Open Menu
                       </Button>
@@ -138,7 +131,7 @@ export default function DropdownMenuDemo() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Menu with Groups</Heading>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
+                    <DropdownMenu.Trigger asChild>
                       <Button variant={'soft'} color={'indigo'} width={120}>
                         File Menu
                         <Button.Icon>
@@ -176,7 +169,7 @@ export default function DropdownMenuDemo() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Menu with Shortcuts</Heading>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
+                    <DropdownMenu.Trigger asChild>
                       <Button color={'crimson'} size={1} variant={'soft'} width={120}>
                         Edit Menu
                         <Button.Icon>
@@ -215,9 +208,12 @@ export default function DropdownMenuDemo() {
                     Current state: Bold: {isBold ? 'ON' : 'OFF'}, Italic: {isItalic ? 'ON' : 'OFF'}
                   </Text>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
+                    <DropdownMenu.Trigger asChild>
                       <Button variant={'soft'} color={'amber'}>
-                        Text Options ▾
+                        Text Options
+                        <Button.Icon>
+                          <Ionicons name={'caret-down'} />
+                        </Button.Icon>
                       </Button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
@@ -253,9 +249,12 @@ export default function DropdownMenuDemo() {
                     Selected size: {radioValue}
                   </Text>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
+                    <DropdownMenu.Trigger asChild>
                       <Button variant={'soft'} color={'green'}>
-                        Font Size ▾
+                        Font Size
+                        <Button.Icon>
+                          <Ionicons name={'caret-down'} />
+                        </Button.Icon>
                       </Button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
@@ -298,8 +297,8 @@ export default function DropdownMenuDemo() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Menu with Disabled Items</Heading>
                   <DropdownMenu.Root>
-                    <DropdownMenu.Trigger>
-                      <Button variant={'outline'}>Advanced Options ▾</Button>
+                    <DropdownMenu.Trigger asChild>
+                      <Button variant={'outline'}>Advanced Options</Button>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                       <DropdownMenu.Overlay />
@@ -324,7 +323,7 @@ export default function DropdownMenuDemo() {
                   <Heading size={4}>Menu Alignment</Heading>
                   <Flex gap={12} wrap="wrap">
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger>
+                      <DropdownMenu.Trigger asChild>
                         <Button variant={'soft'} color={'gray'}>
                           Align Start
                         </Button>
@@ -343,7 +342,7 @@ export default function DropdownMenuDemo() {
                     </DropdownMenu.Root>
 
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger>
+                      <DropdownMenu.Trigger asChild>
                         <Button variant={'soft'} color={'gray'}>
                           Align Center
                         </Button>
@@ -362,7 +361,7 @@ export default function DropdownMenuDemo() {
                     </DropdownMenu.Root>
 
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger>
+                      <DropdownMenu.Trigger asChild>
                         <Button variant={'soft'} color={'gray'}>
                           Align End
                         </Button>
@@ -387,7 +386,7 @@ export default function DropdownMenuDemo() {
                   <Heading size={4}>Different Menu Styles</Heading>
                   <Flex gap={12} wrap="wrap">
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger>
+                      <DropdownMenu.Trigger asChild>
                         <Button variant={'solid'} color="blue">
                           Primary Action ▾
                         </Button>
@@ -406,7 +405,7 @@ export default function DropdownMenuDemo() {
                     </DropdownMenu.Root>
 
                     <DropdownMenu.Root>
-                      <DropdownMenu.Trigger>
+                      <DropdownMenu.Trigger asChild>
                         <Button variant={'soft'} color="tomato">
                           Danger Actions ▾
                         </Button>
