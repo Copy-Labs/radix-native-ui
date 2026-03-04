@@ -29,8 +29,12 @@ export type { CheckboxCardsRootProps, CheckboxCardsItemProps, CheckboxCardsConte
 export { Radio } from './Radio';
 export type { RadioProps } from './Radio';
 
-export { RadioGroup } from './RadioGroup';
-export type { RadioGroupProps, RadioItem } from './RadioGroup';
+export { RadioGroup, RadioGroupRoot, RadioGroupItem } from './RadioGroup';
+export type {
+  RadioGroupRootProps,
+  RadioGroupItemProps,
+  RadioGroupContextValue,
+} from './RadioGroup';
 
 // RadioCards components
 export { RadioCards, RadioCardsRoot, RadioCardsItem } from './RadioCards';
