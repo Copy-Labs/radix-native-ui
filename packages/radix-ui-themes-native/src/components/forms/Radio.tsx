@@ -158,8 +158,8 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
       height: sizeValues.boxSize,
       borderRadius: sizeValues.boxSize / 2,
       borderWidth: 1.25,
-      borderColor: isSelected ? variantColors.borderColor : variant !== 'soft' ? grayAlpha['8'] : variantColors.borderColor,
-      backgroundColor: isSelected ? variantColors.backgroundColor : variant === 'soft' ? variantColors.backgroundColor : 'transparent',
+      borderColor: isSelected ? disabled ? grayScale['8'] : variantColors.borderColor : variant !== 'soft' ? grayScale['8'] : variantColors.borderColor,
+      backgroundColor: isSelected ? disabled ? (variant === 'solid' ? grayScale['8'] : grayScale['4']) : variantColors.backgroundColor : variant === 'soft' ? variantColors.backgroundColor : 'transparent',
       opacity: disabled ? 0.5 : 1,
       justifyContent: 'center',
       alignItems: 'center',
@@ -170,7 +170,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
       height: sizeValues.innerSize,
       borderRadius: sizeValues.boxSize * 2,
       // backgroundColor: 'transparent',
-      backgroundColor: isSelected ? variantColors.textColor : 'transparent',
+      backgroundColor: isSelected ? disabled ? (variant === 'solid' ? grayScale['2'] : grayScale['8']) : variantColors.textColor : 'transparent',
     };
 
     const labelStyle = {
