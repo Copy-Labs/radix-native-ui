@@ -46,16 +46,16 @@ export default function ContextMenuDemo() {
                 </Text>
                 <ContextMenu.Root>
                   <ContextMenu.Trigger>
-                    <Pressable>
-                      <Card>
-                        <Flex direction="column" gap={8}>
-                          <Heading size={3}>Long Press Me</Heading>
-                          <Text color="gray">
-                            Press and hold to see the context menu with basic options.
-                          </Text>
-                        </Flex>
-                      </Card>
-                    </Pressable>
+                    <Card>
+                      <Flex direction="column" gap={8}>
+                        <Heading size={3}>Long Press Me</Heading>
+                        <Text color="gray">
+                          Press and hold to see the context menu with basic options.
+                        </Text>
+                      </Flex>
+                    </Card>
+                    {/*<Pressable>*/}
+                    {/*</Pressable>*/}
                   </ContextMenu.Trigger>
                   <ContextMenu.Portal>
                     <ContextMenu.Overlay />

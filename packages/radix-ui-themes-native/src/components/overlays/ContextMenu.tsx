@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
-import { View, StyleSheet, Pressable, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback, GestureResponderEvent, type LayoutChangeEvent, TextStyle } from 'react-native';
+import { View, StyleSheet, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback, GestureResponderEvent, type LayoutChangeEvent, TextStyle, Vibration } from 'react-native';
+import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { BaseColorScale, type Color, ColorScale, RadiusScale } from '../../theme';
@@ -103,12 +104,15 @@ interface ContextMenuTriggerProps {
   onLongPress?: (event: GestureResponderEvent) => void;
   /** Whether to use child element as trigger (clones props to child) */
   asChild?: boolean;
+  /** Enable haptic feedback on long press */
+  hapticFeedback?: boolean;
 }
 
 export const ContextMenuTrigger = ({
   children,
   onLongPress,
   asChild = true,
+  hapticFeedback = true,
 }: ContextMenuTriggerProps) => {
   const { setPosition, onOpenChange } = useContextMenuContext();
 
@@ -117,6 +121,10 @@ export const ContextMenuTrigger = ({
     setPosition({ x: pageX, y: pageY });
     onOpenChange(true);
     onLongPress?.(event);
+    // Trigger haptic feedback
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -131,9 +139,15 @@ export const ContextMenuTrigger = ({
   }
 
   return (
-    <Pressable onLongPress={handleLongPress}>
+    <AnimatedPressable
+      onLongPress={handleLongPress}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
+    >
       {children}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -360,6 +374,8 @@ interface ContextMenuItemProps {
   /** Keyboard shortcut to display */
   shortcut?: string;
   style?: StyleProp<ViewStyle>;
+  /** Enable haptic feedback on select */
+  hapticFeedback?: boolean;
 }
 
 export const ContextMenuItem = ({
@@ -371,6 +387,7 @@ export const ContextMenuItem = ({
   icon,
   shortcut,
   style,
+  hapticFeedback = true,
 }: ContextMenuItemProps) => {
   const { colors, onOpenChange, size } = useContextMenuContext();
   const theme = useTheme();
@@ -379,6 +396,10 @@ export const ContextMenuItem = ({
     if (!disabled) {
       onSelect?.();
       onOpenChange(false);
+      // Trigger haptic feedback on selection
+      if (hapticFeedback) {
+        Vibration.vibrate(10);
+      }
     }
   };
 
@@ -420,12 +441,16 @@ export const ContextMenuItem = ({
   const textColor = disabled ? colors[8] : destructive ? destructiveColor : colors[12];
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
       style={[styles.item, disabled && styles.itemDisabled, itemPadding, style]}
       accessibilityRole="menuitem"
       accessibilityState={{ disabled }}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
     >
       {icon && <View style={{ marginRight: theme.space[2] }}>{icon}</View>}
       <Text style={{ color: textColor, flex: 1, fontSize }}>
@@ -436,7 +461,7 @@ export const ContextMenuItem = ({
           {shortcut}
         </Text>
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
@@ -650,6 +675,8 @@ export const ContextMenuRadioItem = ({
   const handlePress = () => {
     if (!disabled) {
       onCheckedChange(value);
+      // Trigger haptic feedback on selection
+      Vibration.vibrate(10);
     }
   };
 
@@ -669,12 +696,16 @@ export const ContextMenuRadioItem = ({
   const itemPadding = getItemPadding();
 
   return (
-    <Pressable
+    <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
       style={[styles.item, disabled && styles.itemDisabled, itemPadding]}
       accessibilityRole="menuitem"
       accessibilityState={{ checked, disabled }}
+      pressedScale={0.98}
+      pressedOpacity={0.95}
+      animationDuration={100}
+      hapticFeedback={false}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
         <View
@@ -704,7 +735,7 @@ export const ContextMenuRadioItem = ({
           {children}
         </Text>
       </View>
-    </Pressable>
+    </AnimatedPressable>
   );
 };
 
