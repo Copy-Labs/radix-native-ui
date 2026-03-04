@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, type ViewStyle, TouchableOpacity as RNTouchableOpacity } from 'react-native';
-import { TouchableOpacity, View } from '../primitives';
+import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
+import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../../components';
 import { Color, getContrast, getVariantColors } from '../../theme';
@@ -8,6 +8,7 @@ import {
   getAccentColor,
   getGrayAlpha,
 } from '../../theme/color-helpers';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 
 interface RadioProps {
   /**
@@ -60,11 +61,14 @@ interface RadioProps {
    * Accessibility hint
    */
   accessibilityHint?: string;
+  /**
+   * Enable haptic feedback on select
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
-type StyleProp<T> = T | T[];
-
-const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, RadioProps>(
+const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, RadioProps>(
   (
     {
       defaultChecked,
@@ -79,6 +83,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
       highContrast = false,
       accessibilityLabel,
       accessibilityHint,
+      hapticFeedback = true,
       ...rest
     },
     ref
@@ -90,7 +95,6 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
     const grayAlpha = getGrayAlpha(theme);
     const accentScale = getAccentColor(theme, mode);
     const selectedColor = color || accentScale[9];
-    // const radioContrast = accentScale.contrast;
     const activeColor = color || theme.accentColor;
     const radioContrast = getContrast(theme, activeColor, mode, highContrast);
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
@@ -142,6 +146,10 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
         if (selected === undefined) {
           setIsInternallySelected(true);
         }
+        // Trigger haptic feedback on select
+        if (hapticFeedback) {
+          Vibration.vibrate(10);
+        }
       }
     };
 
@@ -149,9 +157,9 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
       width: sizeValues.boxSize,
       height: sizeValues.boxSize,
       borderRadius: sizeValues.boxSize / 2,
-      borderWidth: 2,
-      borderColor: isSelected ? variantColors.borderColor : grayAlpha['8'],
-      backgroundColor: isSelected ? variantColors.backgroundColor : 'transparent',
+      borderWidth: 1.25,
+      borderColor: isSelected ? variantColors.borderColor : variant !== 'soft' ? grayAlpha['8'] : variantColors.borderColor,
+      backgroundColor: isSelected ? variantColors.backgroundColor : variant === 'soft' ? variantColors.backgroundColor : 'transparent',
       opacity: disabled ? 0.5 : 1,
       justifyContent: 'center',
       alignItems: 'center',
@@ -160,9 +168,9 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
     const innerStyle: ViewStyle = {
       width: sizeValues.innerSize,
       height: sizeValues.innerSize,
-      borderRadius: sizeValues.innerSize / 2,
+      borderRadius: sizeValues.boxSize * 2,
       // backgroundColor: 'transparent',
-      backgroundColor: variantColors.textColor,
+      backgroundColor: isSelected ? variantColors.textColor : 'transparent',
     };
 
     const labelStyle = {
@@ -171,7 +179,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
     };
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={styles.container}
         onPress={handlePress}
@@ -180,14 +188,17 @@ const Radio = React.forwardRef<React.ComponentRef<typeof RNTouchableOpacity>, Ra
         accessibilityLabel={accessibilityLabel || label}
         accessibilityHint={accessibilityHint || 'Select option'}
         accessibilityState={{ checked: isSelected, disabled }}
-        accessibilityActions={[{ name: 'activate', label: 'Select' }]}
+        pressedScale={0.975}
+        pressedOpacity={0.9}
+        animationDuration={100}
+        hapticFeedback={false}
         {...rest}
       >
         <View style={[styles.radioOuter, outerStyle]}>
           <View style={[styles.radioInner, innerStyle]} />
         </View>
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
@@ -203,7 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  radioInner: {},
+  radioInner: {borderRadius: 100},
   label: {
     marginLeft: 8,
   },
