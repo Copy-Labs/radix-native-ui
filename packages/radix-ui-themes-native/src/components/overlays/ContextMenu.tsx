@@ -111,7 +111,7 @@ interface ContextMenuTriggerProps {
 export const ContextMenuTrigger = ({
   children,
   onLongPress,
-  asChild = true,
+  asChild = false,
   hapticFeedback = true,
 }: ContextMenuTriggerProps) => {
   const { setPosition, onOpenChange } = useContextMenuContext();

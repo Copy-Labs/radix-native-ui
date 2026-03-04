@@ -85,7 +85,7 @@ export default function ContextMenuDemo() {
                   Context menu displaying keyboard shortcuts
                 </Text>
                 <ContextMenu.Root>
-                  <ContextMenu.Trigger>
+                  <ContextMenu.Trigger asChild>
                     <Pressable>
                       <Card>
                         <Flex direction="column" gap={8}>
@@ -126,7 +126,7 @@ export default function ContextMenuDemo() {
                   Bookmarked: {isBookmarked ? 'ON' : 'OFF'}, Favorite: {isFavorite ? 'ON' : 'OFF'}
                 </Text>
                 <ContextMenu.Root>
-                  <ContextMenu.Trigger>
+                  <ContextMenu.Trigger asChild>
                     <Pressable>
                       <Card>
                         <Flex direction="column" gap={8}>
@@ -171,7 +171,7 @@ export default function ContextMenuDemo() {
                   Current view mode: {viewMode}
                 </Text>
                 <ContextMenu.Root>
-                  <ContextMenu.Trigger>
+                  <ContextMenu.Trigger asChild>
                     <Pressable>
                       <Card>
                         <Flex direction="column" gap={8}>
@@ -216,14 +216,12 @@ export default function ContextMenuDemo() {
                 <Heading size={4}>Menu with Groups</Heading>
                 <ContextMenu.Root>
                   <ContextMenu.Trigger>
-                    <Pressable>
-                      <Card>
-                        <Flex direction="column" gap={8}>
-                          <Heading size={3}>File Actions</Heading>
-                          <Text color="gray">Long press to see grouped file actions.</Text>
-                        </Flex>
-                      </Card>
-                    </Pressable>
+                    <Card>
+                      <Flex direction="column" gap={8}>
+                        <Heading size={3}>File Actions</Heading>
+                        <Text color="gray">Long press to see grouped file actions.</Text>
+                      </Flex>
+                    </Card>
                   </ContextMenu.Trigger>
                   <ContextMenu.Portal>
                     <ContextMenu.Overlay />
@@ -259,7 +257,7 @@ export default function ContextMenuDemo() {
               <Flex direction={'column'} gap={16}>
                 <Heading size={4}>Menu with Disabled Items</Heading>
                 <ContextMenu.Root>
-                  <ContextMenu.Trigger>
+                  <ContextMenu.Trigger asChild>
                     <Pressable>
                       <Card asChild>
                         <Flex direction="column" gap={8}>
@@ -300,11 +298,9 @@ export default function ContextMenuDemo() {
                   {/* Size 1 - Small */}
                   <ContextMenu.Root>
                     <ContextMenu.Trigger>
-                      <Pressable>
-                        <Card style={{ minWidth: 100 }}>
-                          <Text size={2}>Size 1 (Small)</Text>
-                        </Card>
-                      </Pressable>
+                      <Card style={{ minWidth: 100 }}>
+                        <Text size={2}>Size 1 (Small)</Text>
+                      </Card>
                     </ContextMenu.Trigger>
                     <ContextMenu.Portal>
                       <ContextMenu.Overlay />
@@ -322,11 +318,9 @@ export default function ContextMenuDemo() {
                   {/* Size 2 - Medium (default) */}
                   <ContextMenu.Root>
                     <ContextMenu.Trigger>
-                      <Pressable>
-                        <Card style={{ minWidth: 100 }}>
-                          <Text size={2}>Size 2 (Medium)</Text>
-                        </Card>
-                      </Pressable>
+                      <Card style={{ minWidth: 100 }}>
+                        <Text size={2}>Size 2 (Medium)</Text>
+                      </Card>
                     </ContextMenu.Trigger>
                     <ContextMenu.Portal>
                       <ContextMenu.Overlay />
@@ -343,7 +337,7 @@ export default function ContextMenuDemo() {
 
                   {/* Size 3 - Large */}
                   <ContextMenu.Root>
-                    <ContextMenu.Trigger>
+                    <ContextMenu.Trigger asChild>
                       <Pressable>
                         <Card style={{ minWidth: 100 }}>
                           <Text size={2}>Size 3 (Large)</Text>
@@ -381,7 +375,7 @@ export default function ContextMenuDemo() {
                   Context menu with destructive action highlighted
                 </Text>
                 <ContextMenu.Root>
-                  <ContextMenu.Trigger>
+                  <ContextMenu.Trigger asChild>
                     <Pressable>
                       <Card>
                         <Flex direction="column" gap={8}>
@@ -426,7 +420,7 @@ function ControlledContextMenuDemo() {
         Menu is: {open ? 'OPEN' : 'CLOSED'}
       </Text>
       <ContextMenu.Root open={open} onOpenChange={setOpen}>
-        <ContextMenu.Trigger>
+        <ContextMenu.Trigger asChild>
           <Pressable>
             <Card>
               <Flex direction="column" gap={8}>
