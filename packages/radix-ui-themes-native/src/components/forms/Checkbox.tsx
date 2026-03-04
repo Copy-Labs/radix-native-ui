@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, type ViewStyle } from 'react-native';
-import { TouchableOpacity, View } from '../primitives';
+import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
+import { View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import {
   getAccentColor,
@@ -8,7 +8,7 @@ import {
   getGrayAlpha,
   getVariantColors,
 } from '../../theme/color-helpers';
-import RnTouchableOpacity from '../../components/primitives/TouchableOpacity';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 import type { Color } from '../../theme';
 import { Text } from '../../components';
 
@@ -63,11 +63,16 @@ interface CheckboxProps {
    * Accessibility hint
    */
   accessibilityHint?: string;
+  /**
+   * Enable haptic feedback on toggle
+   * @default true
+   */
+  hapticFeedback?: boolean;
 }
 
 type StyleProp<T> = T | T[];
 
-const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, CheckboxProps>(
+const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, CheckboxProps>(
   (
     {
       checked,
@@ -82,6 +87,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
       highContrast,
       accessibilityLabel,
       accessibilityHint,
+      hapticFeedback = true,
       ...rest
     },
     ref
@@ -100,7 +106,6 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
     const grayAlpha = getGrayAlpha(theme);
     const accentScale = getAccentColor(theme, mode);
     const checkboxColor = color || accentScale[9];
-    // const checkboxContrast = accentScale.contrast;
     const activeColor = color || theme.accentColor;
     const checkboxContrast = getContrast(theme, activeColor, mode, highContrast);
     // Get colors based on variant and mode using the helper function
@@ -144,12 +149,18 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
 
     const handlePress = () => {
       if (!disabled) {
+        const newChecked = isControlled ? !checked : !internalChecked;
+
         if (isControlled) {
           onCheckedChange?.(!checked);
         } else {
-          const newChecked = !internalChecked;
           setInternalChecked(newChecked);
           onCheckedChange?.(newChecked);
+        }
+
+        // Trigger haptic feedback on toggle
+        if (hapticFeedback) {
+          Vibration.vibrate(10);
         }
       }
     };
@@ -159,8 +170,8 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
       height: sizeValues.boxSize,
       borderRadius: 5,
       borderWidth: sizeValues.borderWidth,
-      borderColor: isChecked || indeterminate ? variantColors.borderColor : grayAlpha['8'],
-      backgroundColor: isChecked || indeterminate ? variantColors.backgroundColor : 'transparent',
+      borderColor: isChecked || indeterminate ? variantColors.borderColor : isDark ? grayScale['6'] : grayAlpha['8'],
+      backgroundColor: isChecked || indeterminate ? variantColors.backgroundColor : isDark ? grayScale['3'] : 'transparent',
       justifyContent: 'center',
       alignItems: 'center',
       opacity: disabled ? 0.5 : 1,
@@ -177,7 +188,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
     };
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={styles.container}
         onPress={handlePress}
@@ -188,7 +199,10 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
           accessibilityHint || (indeterminate ? 'Partially selected' : 'Toggle checkbox')
         }
         accessibilityState={{ checked: isChecked ? true : indeterminate ? 'mixed' : false, disabled }}
-        accessibilityActions={[{ name: 'activate', label: 'Toggle' }]}
+        pressedScale={0.975}
+        pressedOpacity={0.9}
+        animationDuration={100}
+        hapticFeedback={false}
         {...rest}
       >
         <View style={[styles.checkbox, boxStyle]}>
@@ -206,8 +220,6 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
                 />
               ) : (
                 // Checkmark - composed of two rotated lines
-                // Short stroke (down-right, 45deg) starts from left-middle
-                // Long stroke (up-right, -45deg) goes from bottom-left to top-right
                 <>
                   <View
                     style={{
@@ -243,7 +255,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof RnTouchableOpacity>, C
           )}
         </View>
         {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
