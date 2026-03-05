@@ -10,6 +10,7 @@ import {
   type ViewStyle,
   type StyleProp,
   TouchableOpacity as RNTouchableOpacity,
+  Vibration,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -21,6 +22,7 @@ import {
 } from '../../theme/color-helpers';
 import type { Color, RadiusSize } from '../../theme';
 import { Checkbox } from '../../components';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 
 // Context for CheckboxCards
 interface CheckboxCardsContextValue {
@@ -213,7 +215,7 @@ CheckboxCardsRoot.displayName = 'CheckboxCards.Root';
 
 // Item Component
 const CheckboxCardsItem = React.forwardRef<
-  ComponentRef<typeof RNTouchableOpacity>,
+  ComponentRef<typeof AnimatedPressable>,
   CheckboxCardsItemProps
 >(
   (
@@ -295,6 +297,7 @@ const CheckboxCardsItem = React.forwardRef<
         } else {
           onValueChange([...selectedValues, value]);
         }
+        Vibration.vibrate(10);
       }
     };
 
@@ -332,7 +335,7 @@ const CheckboxCardsItem = React.forwardRef<
     };
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={[styles.itemContainer, cardStyle, style]}
         onPress={handlePress}
@@ -342,6 +345,10 @@ const CheckboxCardsItem = React.forwardRef<
         accessibilityHint={accessibilityHint || 'Toggle selection'}
         accessibilityState={{ checked: isChecked, disabled: isDisabled }}
         accessibilityActions={[{ name: 'activate', label: 'Toggle' }]}
+        pressedScale={0.975}
+        pressedOpacity={0.95}
+        animationDuration={100}
+        hapticFeedback={false}
       >
         {/*<View style={indicatorStyle}>
           {isChecked && (
@@ -362,7 +369,7 @@ const CheckboxCardsItem = React.forwardRef<
           onCheckedChange={handlePress}
         />
         <View style={styles.content}>{children}</View>
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
