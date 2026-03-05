@@ -62,7 +62,20 @@ import { Button } from 'radix-native-ui';
   <Prop name="accessibilityLabel" type="string">
     Accessibility label for screen readers.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback on press.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+All buttons provide haptic feedback by default when pressed. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<Button hapticFeedback={false}>
+  No Haptic
+</Button>
+```
 
 ## Variants
 

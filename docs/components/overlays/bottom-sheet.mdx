@@ -66,6 +66,7 @@ The BottomSheet follows the Radix compound component pattern:
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Trigger element |
 | `asChild` | `boolean` | `true` | Merge props onto child element |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback on press |
 
 ### BottomSheet.Portal
 
@@ -80,6 +81,7 @@ The BottomSheet follows the Radix compound component pattern:
 |------|------|---------|-------------|
 | `style` | `StyleProp<ViewStyle>` | - | Custom styles |
 | `blur` | `boolean` | `false` | Future: backdrop blur effect |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when closing via overlay |
 
 ### BottomSheet.Content
 
@@ -131,8 +133,52 @@ Extends `Text` component props.
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Close trigger element |
 | `asChild` | `boolean` | `true` | Merge props onto child element |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when closing |
 
 ### BottomSheet.Action
+
+Extends `Button` component props.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Action button content |
+| `onPress` | `() => void` | - | Callback executed before closing |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when pressed |
+
+### Haptic Feedback
+
+Bottom sheet components provide haptic feedback by default during interactions:
+
+- **Trigger**: Haptic on open
+- **Overlay**: Haptic when closing via backdrop press
+- **Close**: Haptic when close button is pressed
+- **Action**: Haptic when action button is pressed
+- **Swipe**: Haptic when dismissing via swipe gesture
+
+You can disable haptic feedback on individual components:
+
+```tsx
+<BottomSheet.Root>
+  <BottomSheet.Trigger hapticFeedback={false}>
+    <Button>No haptic on open</Button>
+  </BottomSheet.Trigger>
+  <BottomSheet.Portal>
+    <BottomSheet.Overlay hapticFeedback={false} />
+    <BottomSheet.Content>
+      <BottomSheet.Footer>
+        <BottomSheet.Close hapticFeedback={false}>
+          <Button variant="soft">No haptic close</Button>
+        </BottomSheet.Close>
+        <BottomSheet.Action hapticFeedback={false}>
+          No haptic action
+        </BottomSheet.Action>
+      </BottomSheet.Footer>
+    </BottomSheet.Content>
+  </BottomSheet.Portal>
+</BottomSheet.Root>
+```
+
+## Examples
 
 Extends `Button` component props.
 
