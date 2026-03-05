@@ -15,7 +15,7 @@
   "navbar": {
     "links": [
       {
-        "href": "https://github.com/Copy-Labs/copy-native-ui",
+        "href": "https://github.com/Copy-Labs/radix-native-ui",
         "type": "github"
       }
     ],
@@ -31,7 +31,7 @@
         {
           "anchor": "GitHub",
           "icon": "github",
-          "href": "https://github.com/Copy-Labs/radix-ui-native-kilo"
+          "href": "https://github.com/Copy-Labs/radix-ui-native"
         },
         {
           "anchor": "npm",
@@ -204,7 +204,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/Copy-Labs/copy-native-ui",
+      "github": "https://github.com/Copy-Labs/radix-native-ui",
       "x": "https://x.com/thecopylabs"
     }
   },
@@ -215,7 +215,6 @@
       "chatgpt",
       "claude",
       "perplexity",
-      "mcp",
       "cursor",
       "vscode"
     ]
