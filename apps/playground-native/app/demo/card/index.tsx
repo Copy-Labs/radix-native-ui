@@ -35,7 +35,7 @@ export default function Cards() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Variants</Heading>
                   <Box maxWidth={240}>
-                    <Card radius={'large'} size={2} variant={'solid'}>
+                    <Card radius={'large'} size={2} variant={'soft'}>
                       <Flex style={{ backgroundColor: 'transparent' }} gap={12} align="center">
                         <Avatar
                           size={3}

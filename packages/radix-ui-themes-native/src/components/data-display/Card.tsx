@@ -76,7 +76,7 @@ const Card = React.forwardRef<any, CardProps>(
     const mode = useThemeMode();
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
-    const grayAlpha = getGrayAlpha(theme);
+    const grayAlpha = getGrayAlpha(theme, mode);
     const activeColor = color || theme.accentColor;
     // const radii = theme.radii;
     const radii = theme.radii[radius] ?? theme.radii.medium;
@@ -106,20 +106,20 @@ const Card = React.forwardRef<any, CardProps>(
       switch (variant) {
         case 'surface':
           return {
-            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['3'] : grayAlpha['2'],
-            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['7'] : grayAlpha['8'],
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['2'] : grayAlpha['2'],
+            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['6'] : grayAlpha['8'],
             borderWidth: 0.5,
           };
         case 'soft':
           return {
-            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['3'] : grayAlpha['2'],
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['2'] : grayAlpha['3'],
             borderColor: 'transparent',
             borderWidth: 0,
           };
         case 'outline':
           return {
             backgroundColor: 'transparent',
-            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['7'] : grayAlpha['8'],
+            borderColor: color ? variantColors.borderColor : isDark ? grayAlpha['6'] : grayAlpha['8'],
             borderWidth: 0.6,
           };
         case 'ghost':
@@ -131,7 +131,7 @@ const Card = React.forwardRef<any, CardProps>(
         case 'solid':
         default:
           return {
-            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['4'] : grayAlpha['3'],
+            backgroundColor: color ? variantColors.backgroundColor : isDark ? grayAlpha['3'] : grayAlpha['4'],
             borderColor: 'transparent',
             borderWidth: 0,
           };
