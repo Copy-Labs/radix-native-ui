@@ -32,11 +32,14 @@ import { Text, Kbd } from 'radix-native-ui';
   <Prop name="style" type="StyleProp<TextStyle>">
     Custom styles.
   </Prop>
-  <Prop name="color" type="string">
-    Text color.
+  <Prop name="color" type="Color">
+    Text color from theme.
   </Prop>
   <Prop name="backgroundColor" type="string">
     Background color.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9" default="1">
+    Size of the keyboard key.
   </Prop>
 </PropTable>
 
@@ -70,6 +73,18 @@ import { Text, Kbd } from 'radix-native-ui';
   <Text><Kbd>↓</Kbd> Move down</Text>
   <Text><Kbd>←</Kbd> Move left</Text>
   <Text><Kbd>→</Kbd> Move right</Text>
+</Flex>
+```
+
+### Sizes
+
+```tsx
+<Flex direction="column" gap={3}>
+  <Kbd size={1}>Shift + Tab</Kbd>
+  <Kbd size={2}>Shift + Tab</Kbd>
+  <Kbd size={3}>Shift + Tab</Kbd>
+  <Kbd size={4}>Shift + Tab</Kbd>
+  <Kbd size={5}>Shift + Tab</Kbd>
 </Flex>
 ```
 
