@@ -1,11 +1,11 @@
 ---
 title: Select
-description: Dropdown select component for single selections.
+description: Displays a list of options for the user to pick from—triggered by a button.
 ---
 
 # Select
 
-`Select` is a form component for selecting a single option from a dropdown list.
+`Select` displays a list of options for the user to pick from—triggered by a button.
 
 ## Import
 
@@ -13,55 +13,151 @@ description: Dropdown select component for single selections.
 import { Select } from 'radix-native-ui';
 ```
 
-## Usage
+## Anatomy
+
+The Select component is composed of the following parts:
 
 ```tsx
-import { Select } from 'radix-native-ui';
-
-<Select
-  value={selected}
-  onValueChange={setSelected}
-  items={[
-    { label: 'Option 1', value: '1' },
-    { label: 'Option 2', value: '2' },
-    { label: 'Option 3', value: '3' },
-  ]}
-  placeholder="Select an option"
-/>
+<Select.Root>
+  <Select.Trigger>
+    <Select.Value />
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Group>
+        <Select.Label />
+        <Select.Item />
+      </Select.Group>
+      <Select.Separator />
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
 ## Props
 
+### Root
+
 <PropTable>
   <Prop name="value" type="string">
-    Currently selected value.
+    Currently selected value (controlled mode).
+  </Prop>
+  <Prop name="defaultValue" type="string">
+    Default value (uncontrolled mode).
   </Prop>
   <Prop name="onValueChange" type="(value: string) => void">
     Called when selection changes.
   </Prop>
-  <Prop name="items" type="Array<{ label: string; value: string }>" required>
-    Options to display.
+  <Prop name="open" type="boolean">
+    Whether the select is open (controlled mode).
   </Prop>
-  <Prop name="placeholder" type="string">
-    Placeholder text when no selection.
+  <Prop name="defaultOpen" type="boolean" default="false">
+    Whether the select is open by default (uncontrolled mode).
+  </Prop>
+  <Prop name="onOpenChange" type="(open: boolean) => void">
+    Called when open state changes.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether the select is disabled.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
-    Size of the select.
+  <Prop name="color" type="Color" default="theme.accentColor">
+    Accent color for selected items.
   </Prop>
-  <Prop name="color" type="string">
-    Accent color.
+  <Prop name="variant" type="'solid' | 'soft' | 'outline' | 'surface' | 'ghost'" default="'soft'">
+    Visual style variant for the selected value.
   </Prop>
-  <Prop name="variant" type="'classic' | 'surface' | 'soft'" default="'surface'">
-    Visual style variant.
+</PropTable>
+
+### Trigger
+
+<PropTable>
+  <Prop name="asChild" type="boolean" default="false">
+    When true, the trigger will clone its child and inject the ref and onPress handler. When false, wraps children in an AnimatedPressable.
   </Prop>
-  <Prop name="highContrast" type="boolean" default="false">
-    Uses high contrast colors.
+  <Prop name="children" type="ReactNode" required>
+    The trigger content. Usually a Button or custom pressable component.
   </Prop>
-  <Prop name="accessibilityLabel" type="string">
-    Accessibility label.
+</PropTable>
+
+### Value
+
+<PropTable>
+  <Prop name="placeholder" type="string" default="'Select an option'">
+    Placeholder text when no option is selected.
+  </Prop>
+  <Prop name="style" type="TextStyle">
+    Custom styles for the value text.
+  </Prop>
+</PropTable>
+
+### Content
+
+<PropTable>
+  <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'bottom'">
+    Preferred side of the trigger to render on.
+  </Prop>
+  <Prop name="sideOffset" type="number" default="4">
+    Distance in pixels from the trigger.
+  </Prop>
+  <Prop name="align" type="'start' | 'center' | 'end'" default="'start'">
+    Preferred alignment against the trigger.
+  </Prop>
+  <Prop name="alignOffset" type="number" default="0">
+    Offset in pixels from the alignment.
+  </Prop>
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Whether to avoid collisions with the screen edges.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
+    Size of the content and items.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the content container.
+  </Prop>
+</PropTable>
+
+### Item
+
+<PropTable>
+  <Prop name="value" type="string" required>
+    The unique value of the item.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Whether the item is disabled.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the item.
+  </Prop>
+  <Prop name="children" type="ReactNode" required>
+    The item label content.
+  </Prop>
+</PropTable>
+
+### Group
+
+<PropTable>
+  <Prop name="children" type="ReactNode" required>
+    Group content - usually contains Label and Item components.
+  </Prop>
+</PropTable>
+
+### Label
+
+<PropTable>
+  <Prop name="children" type="ReactNode" required>
+    The label text.
+  </Prop>
+  <Prop name="style" type="TextStyle">
+    Custom styles for the label.
+  </Prop>
+</PropTable>
+
+### Separator
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the separator line.
   </Prop>
 </PropTable>
 
@@ -70,88 +166,181 @@ import { Select } from 'radix-native-ui';
 ### Basic Select
 
 ```tsx
-<Select
-  value={country}
-  onValueChange={setCountry}
-  items={[
-    { label: 'United States', value: 'us' },
-    { label: 'Canada', value: 'ca' },
-    { label: 'United Kingdom', value: 'uk' },
-  ]}
-  placeholder="Select country"
-/>
+import { Select, Button } from 'radix-native-ui';
+import { useState } from 'react';
+
+function BasicSelect() {
+  const [fruit, setFruit] = useState<string>('');
+
+  return (
+    <Select.Root value={fruit} onValueChange={setFruit}>
+      <Select.Trigger asChild>
+        <Button variant="solid">
+          <Button.Label>
+            <Select.Value placeholder="Select a fruit" />
+          </Button.Label>
+        </Button>
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Overlay />
+        <Select.Content>
+          <Select.Item value="apple">Apple</Select.Item>
+          <Select.Item value="banana">Banana</Select.Item>
+          <Select.Item value="orange">Orange</Select.Item>
+          <Select.Item value="grape">Grape</Select.Item>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
 ```
 
-### With Placeholder
+### With Default Value (Uncontrolled)
 
 ```tsx
-<Select
-  placeholder="Choose an option..."
-  items={items}
-  value={value}
-  onValueChange={setValue}
-/>
+<Select.Root color="indigo" variant="solid" defaultValue="carrot">
+  <Select.Trigger asChild>
+    <Button>
+      <Button.Label>
+        <Select.Value />
+      </Button.Label>
+    </Button>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Item value="carrot">Carrot</Select.Item>
+      <Select.Item value="broccoli">Broccoli</Select.Item>
+      <Select.Item value="spinach">Spinach</Select.Item>
+      <Select.Item value="potato">Potato</Select.Item>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
-### Sizes
+### With Groups
 
 ```tsx
-<Select size={1} placeholder="Small" items={items} />
-<Select size={2} placeholder="Medium (default)" items={items} />
-<Select size={3} placeholder="Large" items={items} />
+<Select.Root value={country} onValueChange={setCountry}>
+  <Select.Trigger asChild>
+    <Button variant="surface">
+      <Button.Label>
+        <Select.Value placeholder="Select a country" />
+      </Button.Label>
+    </Button>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Group>
+        <Select.Label>Africa</Select.Label>
+        <Select.Item value="nigeria">Nigeria</Select.Item>
+        <Select.Item value="ghana">Ghana</Select.Item>
+        <Select.Item value="kenya">Kenya</Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group>
+        <Select.Label>Europe</Select.Label>
+        <Select.Item value="uk">United Kingdom</Select.Item>
+        <Select.Item value="france">France</Select.Item>
+        <Select.Item value="germany">Germany</Select.Item>
+      </Select.Group>
+      <Select.Separator />
+      <Select.Group>
+        <Select.Label>Asia</Select.Label>
+        <Select.Item value="japan">Japan</Select.Item>
+        <Select.Item value="china">China</Select.Item>
+        <Select.Item value="india">India</Select.Item>
+      </Select.Group>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
-### Variants
+### With Disabled Items
 
 ```tsx
-<Select variant="classic" placeholder="Classic" items={items} />
-<Select variant="surface" placeholder="Surface" items={items} />
-<Select variant="soft" placeholder="Soft" items={items} />
+<Select.Root>
+  <Select.Trigger asChild>
+    <Button variant="outline">
+      <Button.Label>
+        <Select.Value placeholder="Some options disabled" />
+      </Button.Label>
+    </Button>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Item value="1">Option 1 (Available)</Select.Item>
+      <Select.Item value="2" disabled>
+        Option 2 (Disabled)
+      </Select.Item>
+      <Select.Item value="3">Option 3 (Available)</Select.Item>
+      <Select.Item value="4" disabled>
+        Option 4 (Disabled)
+      </Select.Item>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
-### With Color
+### Size Variants
 
 ```tsx
-<Select
-  color="blue"
-  placeholder="Blue select"
-  items={items}
-  value={value}
-  onValueChange={setValue}
-/>
+<Select.Root>
+  <Select.Trigger asChild>
+    <Button variant="outline" size={1}>
+      <Button.Label>
+        <Select.Value placeholder="Size 1" />
+      </Button.Label>
+    </Button>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content size={1}>
+      <Select.Item value="a">Option A</Select.Item>
+      <Select.Item value="b">Option B</Select.Item>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
-### Disabled
+### Custom Trigger
 
 ```tsx
-<Select
-  disabled
-  placeholder="Disabled select"
-  items={items}
-/>
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Trigger>
+    <View style={styles.customTrigger}>
+      <Text>Custom Trigger: {value || 'Select...'}</Text>
+      <ChevronDownIcon />
+    </View>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Item value="a">Option A</Select.Item>
+      <Select.Item value="b">Option B</Select.Item>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
 
-### Form Example
+## Animation & Haptics
 
-```tsx
-<Flex direction="column" gap={3}>
-  <Select
-    placeholder="Select country"
-    items={countries}
-    value={country}
-    onValueChange={setCountry}
-  />
-  <Select
-    placeholder="Select city"
-    items={cities}
-    value={city}
-    onValueChange={setCity}
-  />
-  <Button>Submit</Button>
-</Flex>
-```
+The Select component uses `AnimatedPressable` for enhanced interaction feedback:
+
+- **Trigger**: Provides press animation and haptic feedback when opening/closing the dropdown
+- **Items**: Each item has press animation and haptic feedback when selected
+
+## Accessibility
+
+- Supports screen readers with proper `accessibilityRole="menuitem"` on items
+- Disabled items announce as disabled via `accessibilityState`
+- Selected state is properly announced
+- Keyboard navigation support through modal presentation
 
 ## Related
 
-- [RadioGroup](/components/forms/radio-group) - Radio button group
-- [TextField](/components/forms/text-field) - Text input
+- [DropdownMenu](/components/overlays/dropdown-menu) - Menu with actions
+- [RadioGroup](/components/forms/radio-group) - Radio button group for inline selection
+- [TextField](/components/forms/text-field) - Text input for free-form text

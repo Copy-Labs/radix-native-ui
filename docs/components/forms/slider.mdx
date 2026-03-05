@@ -63,7 +63,22 @@ import { Slider } from 'radix-native-ui';
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback during drag.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+Sliders provide haptic feedback by default when dragging starts, ends, and when tapping on the track. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<Slider
+  value={[value]}
+  onValueChange={([v]) => setValue(v)}
+  hapticFeedback={false}
+/>
+```
 
 ## Examples
 

@@ -45,7 +45,21 @@ import { Radio, RadioGroup } from 'radix-native-ui';
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+Radio buttons provide haptic feedback by default when selected. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<RadioGroup value={value} onValueChange={setValue}>
+  <Radio value="1" hapticFeedback={false}>No haptic</Radio>
+  <Radio value="2">With haptic</Radio>
+</RadioGroup>
+```
 
 ## Examples
 

@@ -78,7 +78,21 @@ Individual option item.
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+Segmented control items provide haptic feedback by default when selected. You can disable this on the Root component with the `hapticFeedback` prop:
+
+```tsx
+<SegmentedControl.Root defaultValue="option1" hapticFeedback={false}>
+  <SegmentedControl.Item value="option1">No haptic</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">No haptic</SegmentedControl.Item>
+</SegmentedControl.Root>
+```
 
 ## Examples
 

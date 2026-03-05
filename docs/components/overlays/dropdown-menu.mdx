@@ -148,7 +148,40 @@ Content for a submenu.
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
+  </Prop>
 </PropTable>
+
+### DropdownMenu.Trigger
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Trigger element.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="true">
+    Whether to merge props onto child element.
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback on press.
+  </Prop>
+</PropTable>
+
+### Haptic Feedback
+
+Dropdown menu triggers and items provide haptic feedback by default. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<DropdownMenu.Root>
+  <DropdownMenu.Trigger hapticFeedback={false}>
+    <Button>No haptic on open</Button>
+  </DropdownMenu.Trigger>
+  <DropdownMenu.Content>
+    <DropdownMenu.Item hapticFeedback={false}>No haptic on select</DropdownMenu.Item>
+    <DropdownMenu.Item>With haptic</DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu.Root>
+```
 
 ## Examples
 

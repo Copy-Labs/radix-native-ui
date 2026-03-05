@@ -60,7 +60,20 @@ import { Icon } from './icons';
   <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
     Border radius override.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback on press.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+Icon buttons provide haptic feedback by default when pressed. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<IconButton hapticFeedback={false} accessibilityLabel="No haptic">
+  <Icon name="settings" />
+</IconButton>
+```
 
 ## Examples
 

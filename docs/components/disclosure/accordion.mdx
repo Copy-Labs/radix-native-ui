@@ -110,6 +110,36 @@ Content that is shown/hidden.
   </Prop>
 </PropTable>
 
+### Accordion.Trigger
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Trigger content.
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when expanding/collapsing.
+  </Prop>
+</PropTable>
+
+### Haptic Feedback
+
+Accordion triggers provide haptic feedback by default when expanded or collapsed. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<Accordion.Root type="single" collapsible>
+  <Accordion.Item value="item-1">
+    <Accordion.Header>
+      <Accordion.Trigger hapticFeedback={false}>
+        <Text>No haptic feedback</Text>
+      </Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content>
+      <Text>Content</Text>
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
 ## Examples
 
 ### Single Mode

@@ -48,7 +48,22 @@ import { Switch } from 'radix-native-ui';
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when toggling.
+  </Prop>
 </PropTable>
+
+### Haptic Feedback
+
+Switches provide haptic feedback by default when toggled. You can disable this with the `hapticFeedback` prop:
+
+```tsx
+<Switch
+  checked={enabled}
+  onCheckedChange={setEnabled}
+  hapticFeedback={false}
+/>
+```
 
 ## Examples
 

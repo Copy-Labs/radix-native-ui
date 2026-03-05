@@ -1,11 +1,11 @@
 ---
 title: RadioGroup
-description: Group of radio buttons for single selection.
+description: Group of radio buttons for single selection using compound components.
 ---
 
 # RadioGroup
 
-`RadioGroup` is a component for managing a group of radio buttons where only one can be selected.
+`RadioGroup` is a component for managing a group of radio buttons where only one can be selected. It uses the compound component pattern for better flexibility and consistency with other components.
 
 ## Import
 
@@ -13,44 +13,63 @@ description: Group of radio buttons for single selection.
 import { RadioGroup } from 'radix-native-ui';
 ```
 
-## Usage
+## Anatomy
 
 ```tsx
-import { RadioGroup, Radio } from 'radix-native-ui';
-
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="option1">Option 1</Radio>
-  <Radio value="option2">Option 2</Radio>
-  <Radio value="option3">Option 3</Radio>
-</RadioGroup>
+<RadioGroup.Root>
+  <RadioGroup.Item value="option1">Option 1</RadioGroup.Item>
+  <RadioGroup.Item value="option2">Option 2</RadioGroup.Item>
+</RadioGroup.Root>
 ```
 
 ## Props
 
+### Root
+
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Radio children.
-  </Prop>
   <Prop name="value" type="string">
-    Currently selected value.
+    Currently selected value (controlled mode).
+  </Prop>
+  <Prop name="defaultValue" type="string">
+    Default selected value (uncontrolled mode).
   </Prop>
   <Prop name="onValueChange" type="(value: string) => void">
     Called when selection changes.
   </Prop>
-  <Prop name="defaultValue" type="string">
-    Default selected value (uncontrolled).
-  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether all radios are disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color for all radios.
   </Prop>
   <Prop name="size" type="1 | 2 | 3" default="2">
     Size of all radios.
   </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'soft'">
+    Visual variant for all radios.
+  </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
+  </Prop>
+  <Prop name="direction" type="'row' | 'column'" default="'column'">
+    Direction of radio items.
+  </Prop>
+  <Prop name="gap" type="number">
+    Gap between radio items.
+  </Prop>
+</PropTable>
+
+### Item
+
+<PropTable>
+  <Prop name="value" type="string" required>
+    Unique value for this radio item.
+  </Prop>
+  <Prop name="label" type="string">
+    Label text displayed next to the radio.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Whether this specific item is disabled.
   </Prop>
 </PropTable>
 
@@ -59,11 +78,11 @@ import { RadioGroup, Radio } from 'radix-native-ui';
 ### Basic Group
 
 ```tsx
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="apple">Apple</Radio>
-  <Radio value="banana">Banana</Radio>
-  <Radio value="orange">Orange</Radio>
-</RadioGroup>
+<RadioGroup.Root value={value} onValueChange={setValue}>
+  <RadioGroup.Item value="apple" label="Apple" />
+  <RadioGroup.Item value="banana" label="Banana" />
+  <RadioGroup.Item value="orange" label="Orange" />
+</RadioGroup.Root>
 ```
 
 ### With Label
@@ -71,55 +90,71 @@ import { RadioGroup, Radio } from 'radix-native-ui';
 ```tsx
 <Flex direction="column" gap={2}>
   <Text weight="medium">Select your favorite fruit:</Text>
-  <RadioGroup value={value} onValueChange={setValue}>
-    <Radio value="apple">Apple</Radio>
-    <Radio value="banana">Banana</Radio>
-    <Radio value="orange">Orange</Radio>
-  </RadioGroup>
+  <RadioGroup.Root value={value} onValueChange={setValue}>
+    <RadioGroup.Item value="apple" label="Apple" />
+    <RadioGroup.Item value="banana" label="Banana" />
+    <RadioGroup.Item value="orange" label="Orange" />
+  </RadioGroup.Root>
 </Flex>
 ```
 
-### Payment Method Selection
+### Custom Content
 
 ```tsx
-<Card>
-  <Flex direction="column" gap={3}>
-    <Heading size={3}>Payment Method</Heading>
-    <RadioGroup value={method} onValueChange={setMethod}>
-      <Radio value="card">
-        <Flex direction="row" gap={2} align="center">
-          <Icon name="credit-card" />
-          <Text>Credit Card</Text>
-        </Flex>
-      </Radio>
-      <Radio value="paypal">
-        <Flex direction="row" gap={2} align="center">
-          <Icon name="paypal" />
-          <Text>PayPal</Text>
-        </Flex>
-      </Radio>
-      <Radio value="bank">
-        <Flex direction="row" gap={2} align="center">
-          <Icon name="bank" />
-          <Text>Bank Transfer</Text>
-        </Flex>
-      </Radio>
-    </RadioGroup>
-  </Flex>
-</Card>
+<RadioGroup.Root value={method} onValueChange={setMethod}>
+  <RadioGroup.Item value="card">
+    <Flex direction="row" gap={2} align="center">
+      <Icon name="credit-card" />
+      <Text>Credit Card</Text>
+    </Flex>
+  </RadioGroup.Item>
+  <RadioGroup.Item value="paypal">
+    <Flex direction="row" gap={2} align="center">
+      <Icon name="paypal" />
+      <Text>PayPal</Text>
+    </Flex>
+  </RadioGroup.Item>
+</RadioGroup.Root>
 ```
 
 ### Disabled Group
 
 ```tsx
-<RadioGroup disabled defaultValue="1">
-  <Radio value="1">Option 1</Radio>
-  <Radio value="2">Option 2</Radio>
-</RadioGroup>
+<RadioGroup.Root disabled defaultValue="1">
+  <RadioGroup.Item value="1" label="Option 1" />
+  <RadioGroup.Item value="2" label="Option 2" />
+</RadioGroup.Root>
+```
+
+### Disabled Item
+
+```tsx
+<RadioGroup.Root value={value} onValueChange={setValue}>
+  <RadioGroup.Item value="1" label="Option 1" />
+  <RadioGroup.Item value="2" label="Option 2" disabled />
+  <RadioGroup.Item value="3" label="Option 3" />
+</RadioGroup.Root>
+```
+
+### With Styling
+
+```tsx
+<RadioGroup.Root
+  value={value}
+  onValueChange={setValue}
+  color="indigo"
+  variant="surface"
+  size="3"
+  gap={12}
+>
+  <RadioGroup.Item value="1" label="Surface Indigo" />
+  <RadioGroup.Item value="2" label="Another Option" />
+</RadioGroup.Root>
 ```
 
 ## Related
 
-- [Radio](/components/forms/radio) - Individual radio button
+- [Radio](/components/forms/radio) - Individual radio button (standalone)
 - [RadioCards](/components/forms/radio-cards) - Card-style radio selection
+- [Select](/components/forms/select) - Dropdown selection
 - [CheckboxGroup](/components/forms/checkbox-group) - Checkbox group
