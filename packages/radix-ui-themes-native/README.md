@@ -1,6 +1,8 @@
 # radix-native-ui
 
-Radix Themes for React Native and Expo. A port of the popular `radix-native-ui` component library to support mobile development with React Native.
+Radix Themes for React Native and Expo. A port of the popular Radix Themes component library to support mobile development with React Native.
+
+> **Documentation**: https://copylabs.mintlify.app
 
 ## Installation
 
@@ -16,10 +18,9 @@ pnpm add radix-native-ui
 
 This package requires the following peer dependencies:
 
+- `expo` >= 48
 - `react` >= 18
 - `react-native` >= 0.70
-- `@radix-ui/react-slot` >= 1.0.0
-- `react-native-safe-area-context` >= 4.0.0 (optional, for safe area support)
 
 ## Usage
 
@@ -91,24 +92,28 @@ function MyComponent() {
 ### Typography Components
 
 - **Text** - Versatile text component with size, weight, color props
-- **Heading** - Semantic heading component (h1-h5)
+- **Heading** - Semantic heading component (h1-h6)
 - **Strong** - Bold text
 - **Em** - Italic text
 - **Code** - Inline code styling
-- **Kbd** - Keyboard shortcut styling
+- **Kbd** - Keyboard shortcut styling with size support (1-9)
 - **Blockquote** - Quote block styling
 - **Link** - Pressable link component
 
 ### Form Components
 
-- **Button** - Interactive button with variants (classic, solid, soft, outline, ghost)
-- **IconButton** - Button with icon support
+- **Button** - Interactive button with variants (classic, solid, soft, outline, ghost) and haptic feedback
+- **IconButton** - Button with icon support and haptic feedback
 - **TextField** - Text input component
 - **TextArea** - Multi-line text input
-- **Switch** - Toggle switch component
-- **Radio** - Radio button component
-- **RadioGroup** - Group of radio buttons
-- **Select** - Dropdown select component
+- **Switch** - Toggle switch component with haptic feedback
+- **Radio** - Radio button component with haptic feedback
+- **RadioGroup** - Compound component pattern (RadioGroup.Root, RadioGroup.Item)
+- **RadioCards** - Card-style radio selection with haptic feedback and press animations
+- **Checkbox** - Checkbox component with haptic feedback
+- **CheckboxCards** - Card-style checkbox selection with haptic feedback and press animations
+- **Select** - Dropdown select component with haptic feedback
+- **Slider** - Slider component
 
 ### Data Display Components
 
@@ -188,6 +193,11 @@ import { Text, Heading, Code, Kbd } from 'radix-native-ui';
 // Code and Kbd
 <Code>const value = 42;</Code>
 <Kbd>Cmd + C</Kbd>
+
+// Kbd with sizes
+<Kbd size={1}>Small</Kbd>
+<Kbd size={3}>Medium</Kbd>
+<Kbd size={5}>Large</Kbd>
 ```
 
 ## Example: Layout with Box and Flex
@@ -212,11 +222,6 @@ import { Box, Flex, Grid, Container } from 'radix-native-ui';
   <Box>Item 2</Box>
   <Box>Item 3</Box>
 </Grid>
-
-// Responsive container
-<Container size={3} responsive>
-  <Text>Centered content with max-width</Text>
-</Container>
 ```
 
 ## Theming Guide
@@ -283,45 +288,45 @@ const typography = {
 };
 ```
 
-## Migration Guide from Web Radix Themes
+## Documentation
+
+For full documentation, examples, and API references, visit:
+
+**https://copylabs.mintlify.app**
+
+## Migration from Web Radix Themes
+
+If you're familiar with Radix Themes for web, here are the key differences for React Native:
 
 ### Key Differences
 
 1. **No CSS-in-JS** - React Native uses StyleSheet instead of CSS
-2. **Box Model** - Use `padding` and `margin` props instead of CSS shorthand
-3. **Colors** - Color scales are arrays, not CSS variables
-4. **Responsive** - Media queries work differently in React Native
+2. **Box Model** - Use `padding` and `margin` props with theme scale values
+3. **Colors** - Color scales are arrays (e.g., `gray[5]`), not CSS variables
+4. **Event Handlers** - Use `onPress` instead of `onClick`
 
-### Web to Native Mapping
+### API Differences
+
+| Web Radix Themes | React Native (radix-native-ui) |
+|------------------|-------------------------------|
+| `css={{ p: '$4' }}` | `padding={4}` |
+| `variant="solid"` | `variant="solid"` (same) |
+| `size="2"` | `size={2}` (number, not string) |
+| `onClick` | `onPress` |
+| `color="red"` | `color="red"` (same) |
+
+### Usage Example
 
 ```tsx
 // Web Radix Themes
-<Box css={{ p: '$4', bg: '$gray2' }} />
+<Button variant="solid" size="2" onClick={handleClick}>
+  Click me
+</Button>
 
-// React Native (our package)
-<Box padding={4} backgroundColor="gray.2" />
-```
-
-### Common Props Mapping
-
-| Web CSS | React Native |
-|---------|-------------|
-| `display: flex` | `display="flex"` |
-| `flexDirection: row` | `flexDirection="row"` |
-| `justifyContent: center` | `justifyContent="center"` |
-| `alignItems: center` | `alignItems="center"` |
-| `gap: 16` | `gap={4}` (uses theme scale) |
-| `padding: 20` | `padding={5}` (uses theme scale) |
-| `backgroundColor: #fff` | `backgroundColor="#ffffff"` or `backgroundColor="gray.1"` |
-
-### Event Handlers
-
-```tsx
-// Web: onClick
-<Button onClick={handleClick} />
-
-// React Native: onPress
-<Button onPress={handlePress} />
+// React Native (radix-native-ui)
+<Button variant="solid" size={2} onPress={handlePress}>
+  Click me
+</Button>
 ```
 
 ## Testing
@@ -339,9 +344,43 @@ npm test -- --coverage
 npm test -- Box.test.tsx
 ```
 
+## Haptics & Animations
+
+Many interactive components include built-in haptic feedback and press animations for a native feel:
+
+### Components with Haptic Feedback
+
+- **Button** - Haptic feedback on press (configurable via `hapticFeedback` prop)
+- **IconButton** - Haptic feedback on press
+- **Switch** - Haptic feedback when toggled
+- **Radio** - Haptic feedback when selected
+- **RadioCards** - Haptic feedback when selection changes
+- **Checkbox** - Haptic feedback when toggled
+- **CheckboxCards** - Haptic feedback when selection changes
+- **Select** - Haptic feedback on item selection
+
+### Press Animations
+
+Interactive components use `AnimatedPressable` for consistent press animations:
+- Scale down to 0.97x on press
+- Opacity change to 0.9 on press
+- 100ms animation duration
+- Native driver for 60fps performance
+
+```tsx
+// Disable haptic feedback if needed
+<Button hapticFeedback={false}>No Haptic</Button>
+
+// RadioCards with haptics
+<RadioCards.Root value={value} onValueChange={setValue}>
+  <RadioCards.Item value="1">Option 1</RadioCards.Item>
+  <RadioCards.Item value="2" hapticFeedback={false}>No Haptic</RadioCards.Item>
+</RadioCards.Root>
+```
+
 ## Performance
 
-All components are optimized with React.memo() and useMemo/useCallback hooks to minimize unnecessary re-renders. Custom areEqual functions are provided for complex components to ensure optimal performance.
+All components are optimized to minimize unnecessary re-renders.
 
 ## Contributing
 
@@ -350,3 +389,7 @@ Contributions are welcome! Please read our contributing guidelines in the main r
 ## License
 
 MIT
+
+---
+
+**[View Documentation](https://copylabs.mintlify.app)** | **[GitHub](https://github.com/Copy-Labs/radix-native-ui)**
