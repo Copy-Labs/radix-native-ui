@@ -77,7 +77,30 @@ import { CheckboxCards } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether this item is disabled.
   </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
+  </Prop>
 </PropTable>
+
+### Animation & Haptics
+
+Checkbox card items include subtle press animations and haptic feedback for a tactile feel:
+
+- **Press Animation**: Cards scale down slightly (0.97x) when pressed
+- **Haptic Feedback**: 10ms vibration when an item is selected (enabled by default)
+
+Disable haptic feedback on individual items:
+
+```tsx
+<CheckboxCards.Root value={selected} onValueChange={setSelected}>
+  <CheckboxCards.Item value="email" hapticFeedback={false}>
+    <Text>No haptic feedback</Text>
+  </CheckboxCards.Item>
+  <CheckboxCards.Item value="sms">
+    <Text>With haptic feedback</Text>
+  </CheckboxCards.Item>
+</CheckboxCards.Root>
+```
 
 ## Examples
 
