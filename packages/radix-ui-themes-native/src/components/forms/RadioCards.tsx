@@ -10,6 +10,7 @@ import {
   type ViewStyle,
   type StyleProp,
   TouchableOpacity as RNTouchableOpacity,
+  Vibration,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -20,6 +21,7 @@ import {
 } from '../../theme/color-helpers';
 import type { Color, RadiusSize } from '../../theme';
 import { Radio } from '../../components';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 
 // Context for RadioCards
 interface RadioCardsContextValue {
@@ -155,7 +157,7 @@ const RadioCardsRoot = React.forwardRef<
       size = '2',
       color,
       highContrast = false,
-      radius = 'medium',
+      radius,
       direction = 'column',
       gap,
       side = 'right',
@@ -184,7 +186,7 @@ const RadioCardsRoot = React.forwardRef<
       size,
       color,
       highContrast,
-      radius,
+      radius: 'medium',
       side,
       disabled,
     };
@@ -212,7 +214,7 @@ RadioCardsRoot.displayName = 'RadioCards.Root';
 
 // Item Component
 const RadioCardsItem = React.forwardRef<
-  ComponentRef<typeof RNTouchableOpacity>,
+  ComponentRef<typeof AnimatedPressable>,
   RadioCardsItemProps
 >(
   (
@@ -248,7 +250,7 @@ const RadioCardsItem = React.forwardRef<
     const isDisabled = rootDisabled || itemDisabled;
     const indicatorSide = itemSide || rootSide;
 
-    const grayAlpha = getGrayAlpha(theme);
+    const grayAlpha = getGrayAlpha(theme, mode);
     const accentScale = getAccentColor(theme, mode);
     const activeColor = color || theme.accentColor;
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
@@ -282,11 +284,12 @@ const RadioCardsItem = React.forwardRef<
     };
 
     const sizeValues = getSizeValues();
-    const radii = theme.radii[radius] ?? theme.radii.medium;
+    const radii = theme.radii[radius || theme.radius] ?? theme.radii.medium;
 
     const handlePress = () => {
       if (!isDisabled) {
         onValueChange(value);
+        Vibration.vibrate(10);
       }
     };
 
@@ -298,12 +301,12 @@ const RadioCardsItem = React.forwardRef<
       borderColor: isSelected
         ? variantColors.borderColor
         : isDark
-          ? grayAlpha['7']
-          : grayAlpha['8'],
+          ? grayAlpha['6']
+          : grayAlpha['6'],
       backgroundColor: isSelected
         ? variantColors.backgroundColor
         : isDark
-          ? grayAlpha['3']
+          ? grayAlpha['2']
           : grayAlpha['2'],
       opacity: isDisabled ? 0.5 : 1,
       flexDirection: indicatorSide === 'left' ? 'row' : 'row-reverse',
@@ -332,7 +335,7 @@ const RadioCardsItem = React.forwardRef<
     };
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={[styles.itemContainer, cardStyle, style]}
         onPress={handlePress}
@@ -342,13 +345,17 @@ const RadioCardsItem = React.forwardRef<
         accessibilityHint={accessibilityHint || 'Select option'}
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
         accessibilityActions={[{ name: 'activate', label: 'Select' }]}
+        pressedScale={0.975}
+        pressedOpacity={0.95}
+        animationDuration={100}
+        hapticFeedback={false}
       >
         <View style={indicatorStyle}>
           {isSelected && <View style={innerDotStyle} />}
         </View>
         {/*<Radio size={size} value={value} variant={'surface'} color={color} selected={isSelected} disabled={isDisabled} onSelect={handlePress} />*/}
         <View style={styles.content}>{children}</View>
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
