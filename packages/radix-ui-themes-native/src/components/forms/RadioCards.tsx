@@ -10,6 +10,7 @@ import {
   type ViewStyle,
   type StyleProp,
   TouchableOpacity as RNTouchableOpacity,
+  Vibration,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -20,6 +21,7 @@ import {
 } from '../../theme/color-helpers';
 import type { Color, RadiusSize } from '../../theme';
 import { Radio } from '../../components';
+import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 
 // Context for RadioCards
 interface RadioCardsContextValue {
@@ -212,7 +214,7 @@ RadioCardsRoot.displayName = 'RadioCards.Root';
 
 // Item Component
 const RadioCardsItem = React.forwardRef<
-  ComponentRef<typeof RNTouchableOpacity>,
+  ComponentRef<typeof AnimatedPressable>,
   RadioCardsItemProps
 >(
   (
@@ -287,6 +289,7 @@ const RadioCardsItem = React.forwardRef<
     const handlePress = () => {
       if (!isDisabled) {
         onValueChange(value);
+        Vibration.vibrate(10);
       }
     };
 
@@ -332,7 +335,7 @@ const RadioCardsItem = React.forwardRef<
     };
 
     return (
-      <TouchableOpacity
+      <AnimatedPressable
         ref={ref}
         style={[styles.itemContainer, cardStyle, style]}
         onPress={handlePress}
@@ -342,13 +345,17 @@ const RadioCardsItem = React.forwardRef<
         accessibilityHint={accessibilityHint || 'Select option'}
         accessibilityState={{ checked: isSelected, disabled: isDisabled }}
         accessibilityActions={[{ name: 'activate', label: 'Select' }]}
+        pressedScale={0.975}
+        pressedOpacity={0.95}
+        animationDuration={100}
+        hapticFeedback={false}
       >
         <View style={indicatorStyle}>
           {isSelected && <View style={innerDotStyle} />}
         </View>
         {/*<Radio size={size} value={value} variant={'surface'} color={color} selected={isSelected} disabled={isDisabled} onSelect={handlePress} />*/}
         <View style={styles.content}>{children}</View>
-      </TouchableOpacity>
+      </AnimatedPressable>
     );
   }
 );
