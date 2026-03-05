@@ -249,7 +249,7 @@ const CheckboxCardsItem = React.forwardRef<
     const isDisabled = rootDisabled || itemDisabled;
     const indicatorSide = itemSide || rootSide;
 
-    const grayAlpha = getGrayAlpha(theme);
+    const grayAlpha = getGrayAlpha(theme, mode);
     const accentScale = getAccentColor(theme, mode);
     const activeColor = color || theme.accentColor;
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
@@ -306,12 +306,12 @@ const CheckboxCardsItem = React.forwardRef<
       borderColor: isChecked
         ? variantColors.borderColor
         : isDark
-          ? grayAlpha['7']
-          : grayAlpha['8'],
+          ? grayAlpha['6']
+          : grayAlpha['6'],
       backgroundColor: isChecked
         ? variantColors.backgroundColor
         : isDark
-          ? grayAlpha['3']
+          ? grayAlpha['2']
           : grayAlpha['2'],
       opacity: isDisabled ? 0.5 : 1,
       flexDirection: indicatorSide === 'left' ? 'row' : 'row-reverse',
