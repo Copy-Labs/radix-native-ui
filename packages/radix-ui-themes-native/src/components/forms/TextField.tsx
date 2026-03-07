@@ -370,7 +370,7 @@ const TextFieldRoot = React.forwardRef<
 
   const inputContainerStyle: ViewStyle = {
     width: '100%',
-    flex: 1,
+    // flex: 1, // Don't use this flex
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -398,6 +398,7 @@ const TextFieldRoot = React.forwardRef<
     minHeight: multiline ? sizeValues.height : undefined,
     height: multiline ? undefined : sizeValues.height,
     textAlignVertical: multiline ? ('top' as const) : ('center' as const),
+    borderRadius: sizeValues.borderRadius,
   };
 
   const errorStyle = {
@@ -525,7 +526,7 @@ TextField.Slot = TextFieldSlot;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1, // Don't use this flex
     width: '100%',
   },
   leftSlots: {
@@ -540,7 +541,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     minWidth: '100%',
-    flex: 1,
+    // flex: 1, // Don't use this flex
   },
 });
 

@@ -5,7 +5,7 @@ import { useTheme } from '../../hooks/useTheme';
 export interface TextInputProps extends RNTextInputProps {}
 
 export const RnTextInput = React.memo(
-  React.forwardRef<React.ElementRef<typeof RNTextInput>, TextInputProps>(
+  React.forwardRef<React.ComponentRef<typeof RNTextInput>, TextInputProps>(
     ({ style, placeholderTextColor, editable = true, ...rest }, ref) => {
       const theme = useTheme();
       const mode = theme.name === 'dark' ? 'dark' : 'light';

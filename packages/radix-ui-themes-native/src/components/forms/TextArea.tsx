@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { TextInput as RadixTextInputPrimitive, PrimitiveText } from '../primitives';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
+import { getColorScale, getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
 import { Color, RadiusSize } from '../../theme';
 
 // ============================================================================
@@ -121,6 +121,7 @@ const TextAreaRoot = React.forwardRef<
   const radii = theme.radii[radius] ?? theme.radii.medium;
   const selectedRadius = radius || theme.radius;
   const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
+  const accentColorScale = getColorScale(theme, activeColor, mode);
 
   // Size values (fixed height for textarea)
   const getSizeValues = () => {
@@ -163,13 +164,13 @@ const TextAreaRoot = React.forwardRef<
     if (error) {
       return theme.colors.ruby[9];
     } else {
-      return isFocused ? theme.colors[activeColor]['8'] : 'transparent';
+      return isFocused ? accentColorScale['8'] : 'transparent';
     }
   };
 
   const inputContainerBackgroundColor = () => {
     if (disabled) {
-      return isDark ? grayAlpha['3'] : grayAlpha['2'];
+      return isDark ? grayAlpha['2'] : grayAlpha['2'];
     } else {
       return variantColors.backgroundColor;
     }
@@ -185,7 +186,7 @@ const TextAreaRoot = React.forwardRef<
 
   const inputContainerStyle: ViewStyle = {
     width: '100%',
-    borderWidth: 2,
+    borderWidth: variant === 'soft' ? 1.4 : 2,
     borderColor: inputContainerBorderColor(),
     backgroundColor: inputContainerBackgroundColor(),
     borderRadius: selectedRadius === 'full' ? theme.radii.large : radii,
