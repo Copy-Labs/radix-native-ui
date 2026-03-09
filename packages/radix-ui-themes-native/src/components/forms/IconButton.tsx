@@ -107,16 +107,18 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
     const grayAlpha = getGrayAlpha(theme);
     const accentScale = getAccentColor(theme, mode);
     const accentAlpha = getAccentAlpha(theme);
-    const radii = theme.radii;
+    // const radii = theme.radii;
+    const radii = theme.radii[radius || theme.radius] ?? theme.radii.medium;
+    const selectedRadius = radius || theme.radius;
     const activeColor = color || theme.accentColor;
 
     // Get border radius based on radius prop or default
-    const getBorderRadius = () => {
+    /*const getBorderRadius = () => {
       if (radius) {
         return radius === 'full' ? 9999 : radii[radius];
       }
       return undefined; // Will use size-based default
-    };
+    };*/
 
     const variantColors = getVariantColors(theme, activeColor, mode, variant, highContrast);
 
@@ -127,32 +129,36 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
           return {
             size: 32,
             iconSize: 16,
-            borderRadius: radii.small,
+            // borderRadius: radii.small,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
         case 3:
           return {
             size: 56,
             iconSize: 24,
-            borderRadius: radii.medium,
+            // borderRadius: radii.medium,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
         case 4:
           return {
             size: 64,
             iconSize: 28,
-            borderRadius: radii.large,
+            // borderRadius: radii.large,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
         case 2:
         default:
           return {
             size: 40,
             iconSize: 20,
-            borderRadius: radii.medium,
+            // borderRadius: radii.medium,
+            borderRadius: selectedRadius === 'full' ? 9999 : radii,
           };
       }
     };
 
     const sizeValues = getSizeValues();
-    const customBorderRadius = getBorderRadius();
+    // const customBorderRadius = getBorderRadius();
 
     const buttonStyle: ViewStyle = {
       width: sizeValues.size,
@@ -160,7 +166,8 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
       backgroundColor: disabled ? grayAlpha['3'] : variantColors.backgroundColor,
       borderColor: variantColors.borderColor,
       borderWidth: variant === 'outline' ? 1 : 0,
-      borderRadius: customBorderRadius !== undefined ? customBorderRadius : sizeValues.borderRadius,
+      // borderRadius: customBorderRadius !== undefined ? customBorderRadius : sizeValues.borderRadius,
+      borderRadius: sizeValues.borderRadius,
       opacity: disabled ? 0.5 : 1,
       alignItems: 'center',
       justifyContent: 'center',

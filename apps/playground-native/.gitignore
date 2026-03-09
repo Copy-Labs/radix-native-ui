@@ -44,3 +44,6 @@ app-example
 
 # Don't push the yalc copied files. Since we are using this for local dev.
 *.yalc
+
+# Ignore afrib
+app/afrib
