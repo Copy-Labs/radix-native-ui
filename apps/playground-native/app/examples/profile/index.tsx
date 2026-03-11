@@ -32,7 +32,7 @@ export default function ProfileScreen() {
     >
       <PageContainer>
         <PageHeader showBackButton>
-          <PageHeading>Profile page</PageHeading>
+          <PageHeading>Twitter Profile page</PageHeading>
         </PageHeader>
         <PageBody>
           <ScrollView style={{ flex: 1 }}>
