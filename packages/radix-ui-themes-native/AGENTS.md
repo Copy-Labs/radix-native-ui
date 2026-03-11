@@ -9,8 +9,7 @@ AI coding agents should use this guide when generating UI code.
 
 # Overview
 
-Radix Native UI provides reusable mobile UI primitives inspired by Radix UI
-and shadcn-style component registries.
+Radix Native UI provides reusable mobile UI primitives inspired by Radix UI.
 
 The framework focuses on:
 
@@ -29,19 +28,27 @@ React Native components.
 
 Install the library:
 
+```bash
 npm install radix-native-ui
+```
 
 or
 
+```bash
 yarn add radix-native-ui
+```
 
 or
 
+```bash
 bun add radix-native-ui
+```
 
 For Expo projects:
 
+```bash
 npx expo install radix-native-ui
+```
 
 ---
 
@@ -54,8 +61,8 @@ Radix Native UI supports:
 
 Ensure the environment includes:
 
-React Native >= 0.72  
-Expo >= 49
+- **React Native** >= 0.70
+- **Expo** >= 48
 
 ---
 
@@ -63,7 +70,9 @@ Expo >= 49
 
 Components must always be imported from the package:
 
-import { Button, Text, View } from "radix-native-ui"
+```tsx
+import { Button, Text, Box } from 'radix-native-ui';
+```
 
 Do NOT import primitives from react-native when equivalents exist in the library.
 
@@ -77,14 +86,13 @@ Agents should follow these principles when generating UI.
 
 Build interfaces using primitives instead of complex monolithic components.
 
-Preferred:
+**Preferred:**
 
-```
-
-<View>
+```tsx
+<Box>
   <Text>Title</Text>
   <Button>Submit</Button>
-</View>
+</Box>
 ```
 
 Avoid deeply nested custom components unless necessary.
@@ -95,18 +103,17 @@ Avoid deeply nested custom components unless necessary.
 
 If a component exists in the library, use it instead of React Native equivalents.
 
-Preferred:
+**Preferred:**
 
-Button
-Input
-Avatar
-Tabs
+- Button, TextField, Avatar, Tabs
+- Box, Stack, Center, Flex
+- Switch, Checkbox, Radio
 
-Avoid:
+**Avoid:**
 
-TouchableOpacity
-TextInput
-Custom navigation wrappers
+- TouchableOpacity (use Button or IconButton)
+- TextInput (use TextField or TextArea)
+- Custom navigation wrappers
 
 ---
 
@@ -116,10 +123,10 @@ Generated layouts should be mobile-friendly.
 
 Common patterns:
 
-* centered login forms
-* stacked vertical layouts
-* consistent padding
-* accessible spacing
+- centered login forms
+- stacked vertical layouts
+- consistent padding using theme space values
+- accessible spacing
 
 ---
 
@@ -129,58 +136,90 @@ Generated UI should be clean and readable.
 
 Avoid:
 
-* unnecessary abstraction
-* deeply nested wrappers
-* complex logic inside UI components
+- unnecessary abstraction
+- deeply nested wrappers
+- complex logic inside UI components
 
 ---
 
-# Available Primitives
+# Styling
 
-Agents should prefer these components.
+⚠️ **IMPORTANT**: Radix Native UI does NOT support className or Tailwind-style classes.
+
+Use these approaches instead:
+
+### 1. Style Prop
+
+```tsx
+<Box style={{ backgroundColor: 'white', padding: 16 }}>
+  <Text style={{ color: 'black', fontSize: 16 }}>Hello</Text>
+</Box>
+```
+
+### 2. Semantic Props
+
+Most components have built-in props for common styling:
+
+```tsx
+// Box has layout props
+<Box padding={4} marginTop={2} flexDirection="row" justifyContent="center">
+
+// Button has variant props
+<Button variant="solid" size={2} color="blue">Submit</Button>
+
+// Text has variant props
+<Text variant="title">Welcome</Text>
+```
+
+### Available Semantic Props
+
+**Box/Layout:**
+- `padding`, `margin` (0-9 maps to theme space)
+- `flexDirection`: 'row' | 'column'
+- `justifyContent`: 'flex-start' | 'center' | 'flex-end' | 'space-between'
+- `alignItems`: 'flex-start' | 'center' | 'flex-end'
+- `radius`: 'none' | 'small' | 'medium' | 'large' | 'full'
+
+**Button:**
+- `variant`: 'classic' | 'solid' | 'soft' | 'outline' | 'surface' | 'ghost'
+- `size`: 1 | 2 | 3 | 4
+
+**Text:**
+- `variant`: 'title' | 'body' | 'caption' | etc.
+- `weight`: 'normal' | 'bold'
+- `align`: 'left' | 'center' | 'right'
+
+---
+
+# Available Components
 
 ## Layout
 
-View
-Container
-Stack
-Spacer
-Divider
+Box, Center, Container, Flex, Grid, Inset, Separator, Spacer, Stack
 
 ## Typography
 
-Text
+Text, Heading, Blockquote, Code, Em, Kbd, Link, Strong
 
-## Input
+## Forms & Inputs
 
-Input
-Textarea
-Checkbox
-Radio
-Switch
-
-## Buttons
-
-Button
-IconButton
+Button, IconButton, TextField, TextArea, Checkbox, CheckboxCards, Radio, RadioCards, Switch, Select, Slider
 
 ## Navigation
 
-Tabs
-Sheet
-Dialog
+Tabs, TabNav, SegmentedControl, BottomSheet (NOT Sheet), Dialog, DropdownMenu, ContextMenu, Popover, Tooltip
 
-## Display
+## Overlays
 
-Avatar
-Badge
-Card
+AlertDialog, Toast, Portal
 
-## Feedback
+## Data Display
 
-Alert
-Toast
-Progress
+Avatar, Badge, Card, Callout, DataList, FancyList, Progress, Spinner, Table
+
+## Disclosure
+
+Accordion
 
 ---
 
@@ -188,32 +227,25 @@ Progress
 
 Agents should generate screens using primitives.
 
-Example:
+**Example:**
 
-```
-import { View, Text, Input, Button } from "radix-native-ui"
+```tsx
+import { Box, Text, TextField, Button, Stack, Center } from 'radix-native-ui';
 
 export default function LoginScreen() {
   return (
-    <View className="flex-1 justify-center px-6">
-
-      <Text variant="title">
-        Login
-      </Text>
-
-      <Input placeholder="Email" />
-
-      <Input
-        placeholder="Password"
-        secureTextEntry
-      />
-
-      <Button>
-        Sign In
-      </Button>
-
-    </View>
-  )
+    <Flex align={'center'} direction={'column'} flex={1} gap={8} justify={'center'} maxWidth={400} padding={4}>
+        <Text variant="title">Welcome Back</Text>
+        
+        <TextField placeholder="Email" />
+        
+        <TextField placeholder="Password" secureTextEntry />
+        
+        <Button variant="solid" size={3}>
+          Sign In
+        </Button>
+    </Flex>
+  );
 }
 ```
 
@@ -221,25 +253,25 @@ export default function LoginScreen() {
 
 # Example: Profile Screen
 
-```
-import { View, Text, Avatar, Button } from "radix-native-ui"
+```tsx
+import { Box, Text, Avatar, Button, Stack, Center } from 'radix-native-ui';
 
 export default function ProfileScreen() {
   return (
-    <View className="flex-1 items-center justify-center">
-
-      <Avatar src="https://example.com/avatar.png" />
-
-      <Text variant="title">
-        John Doe
-      </Text>
-
-      <Button>
-        Edit Profile
-      </Button>
-
-    </View>
-  )
+    <Flex align={'center'} direction={'column'} gap={12} justify={'center'} padding={4}>
+        <Avatar 
+          src="https://example.com/avatar.png" 
+          size={4} 
+          radius="full" 
+        />
+        
+        <Text variant="title">John Doe</Text>
+        
+        <Button variant="outline">
+          Edit Profile
+        </Button>
+    </Flex>
+  );
 }
 ```
 
@@ -254,24 +286,7 @@ When generating UI code:
 3. Prefer composable primitives
 4. Avoid unnecessary dependencies
 5. Maintain mobile-friendly layouts
-
----
-
-# Styling
-
-Agents may use:
-
-* Tailwind-style class names
-* inline styles
-* style props
-
-Prefer consistent spacing and mobile layout conventions.
-
-Example:
-
-```
-<View className="flex-1 px-6 py-8">
-```
+6. DO NOT use className (not supported)
 
 ---
 
@@ -279,9 +294,9 @@ Example:
 
 Generated components should:
 
-* include readable text labels
-* support touch targets
-* avoid overly dense UI
+- include readable text labels
+- support touch targets (minimum 44x44 points)
+- avoid overly dense UI
 
 ---
 
@@ -289,10 +304,11 @@ Generated components should:
 
 Agents should NOT:
 
-* mix multiple UI frameworks
-* recreate primitives that already exist
-* rely heavily on raw React Native components
-* generate web-only UI code
+- mix multiple UI frameworks
+- recreate primitives that already exist
+- rely heavily on raw React Native components
+- generate web-only UI code
+- use className or Tailwind-style classes
 
 ---
 
@@ -300,12 +316,12 @@ Agents should NOT:
 
 Common screens agents may generate:
 
-* login screens
-* onboarding flows
-* settings pages
-* profile pages
-* dashboards
-* chat interfaces
+- login screens
+- onboarding flows
+- settings pages
+- profile pages
+- dashboards
+- chat interfaces
 
 All should use Radix Native UI primitives.
 
@@ -328,6 +344,7 @@ and Expo applications.
 
 When generating UI code:
 
-* use primitives from radix-native-ui
-* follow mobile layout patterns
-* keep components simple and readable
+- use primitives from radix-native-ui
+- use style props and semantic props (NOT className)
+- follow mobile layout patterns
+- keep components simple and readable
