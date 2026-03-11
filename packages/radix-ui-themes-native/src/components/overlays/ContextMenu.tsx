@@ -266,6 +266,7 @@ export const ContextMenuContent = ({
 }: ContextMenuContentProps) => {
   const { colors, radii, position } = useContextMenuContext();
   const theme = useTheme();
+  const mode = useThemeMode();
   const contentRef = useRef<View>(null);
   const [contentSize, setContentSize] = useState({ width: 0, height: 0 });
   const [calculatedPosition, setCalculatedPosition] = useState<ContextMenuPosition | null>(null);
@@ -313,10 +314,10 @@ export const ContextMenuContent = ({
           style={[
             styles.content,
             {
-              backgroundColor: colors[1],
-              borderRadius: radii.medium,
-              borderWidth: 1,
-              borderColor: colors[6],
+              backgroundColor: mode === 'dark' ? colors[3] : colors[1],
+              borderRadius: theme.radii[theme.radius] || radii.medium,
+              // borderWidth: 1,
+              borderColor: colors[2],
               paddingVertical: sizeStyles.paddingVertical,
               paddingHorizontal: sizeStyles.paddingHorizontal,
               minWidth: sizeStyles.minWidth,
