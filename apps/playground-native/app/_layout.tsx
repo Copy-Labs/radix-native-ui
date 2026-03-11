@@ -19,6 +19,7 @@ function AppContent() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor }}>
       <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="demo" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen name="tabs" options={{ headerShown: false }} />

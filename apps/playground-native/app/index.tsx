@@ -62,6 +62,24 @@ export default function App() {
               </Flex>
             </Card>
             <Flex direction={'column'} gap={12} paddingVertical={12}>
+              <Card color={'black'} radius={'large'} size={3}>
+                <Flex direction={'column'} gap={16}>
+                  <Text color={'white'} size={5} weight={'regular'}>
+                    AFriB Prototype
+                  </Text>
+                  <Text color={'gray'}>
+                    Look out for AFriB
+                  </Text>
+                  <Link asChild href={'/afrib'}>
+                    <Button color={'white'} variant={'soft'}>
+                      Visit AFriB
+                      <Button.Icon>
+                        <Ionicons name={'arrow-forward'} />
+                      </Button.Icon>
+                    </Button>
+                  </Link>
+                </Flex>
+              </Card>
               <Card radius={'large'} size={3}>
                 <Flex direction={'column'} gap={16}>
                   <Text color={'gray'} size={5} weight={'regular'}>
