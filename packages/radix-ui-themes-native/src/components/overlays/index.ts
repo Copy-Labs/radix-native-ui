@@ -149,3 +149,18 @@ export type {
   BottomSheetCloseProps,
   BottomSheetActionProps,
 } from './BottomSheet';
+
+// Sidebar / Navigation Drawer
+export { Sidebar } from './Sidebar';
+export type {
+  SidePosition,
+  SidebarVariant,
+  SidebarRootProps,
+  SidebarTriggerProps,
+  SidebarPortalProps,
+  SidebarOverlayProps,
+  SidebarContentProps,
+  SidebarHeaderProps,
+  SidebarItemProps,
+  SidebarSeparatorProps,
+} from './Sidebar';
