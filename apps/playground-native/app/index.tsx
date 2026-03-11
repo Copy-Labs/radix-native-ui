@@ -83,14 +83,14 @@ export default function App() {
               <Card radius={'large'} size={3}>
                 <Flex direction={'column'} gap={16}>
                   <Text color={'gray'} size={5} weight={'regular'}>
-                    Twitter Profile Demo Example
+                    Examples
                   </Text>
                   <Text color={'gray'}>
-                    Check out a twitter profile demo built using Copy Native UI.
+                    Ready to Copy Examples that you can use in your app.
                   </Text>
-                  <Link asChild href={'/profile'}>
+                  <Link asChild href={'/examples'}>
                     <Button variant={'ghost'}>
-                      Twitter Profile Demo
+                      Examples page
                       <Button.Icon>
                         <Ionicons name={'arrow-forward'} />
                       </Button.Icon>

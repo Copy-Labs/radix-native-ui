@@ -100,7 +100,7 @@ export const PageHeader = ({ showBackButton = false, className, children }: { sh
             variant={'ghost'}
             onPress={() => router.back()}
           >
-            <Ionicons name={'arrow-back'} size={32} style={{ color: themedBackIconColor }} />
+            <Ionicons name={'arrow-back'} size={24} style={{ color: themedBackIconColor }} />
           </IconButton>
           {children}
         </Flex>

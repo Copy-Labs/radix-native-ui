@@ -24,7 +24,7 @@ interface IconButtonProps {
    * Button variant
    * @default 'classic'
    */
-  variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'ghost';
+  variant?: 'surface' | 'solid' | 'soft' | 'outline' | 'ghost';
   /**
    * Color scheme for the button
    * @default undefined (uses theme's accentColor)
@@ -208,7 +208,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
           <ActivityIndicator size="small" color={variantColors.textColor} />
         ) : React.isValidElement(children) ? (
           React.cloneElement(children as React.ReactElement<any>, {
-            size: sizeValues.iconSize,
+            size: children.props?.size || sizeValues.iconSize,
             color: variantColors.textColor,
           })
         ) : (
