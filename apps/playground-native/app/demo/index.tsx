@@ -231,6 +231,22 @@ export default function App() {
                   </Badge>
                 </Flex>
               </Link>
+              <Link href={'/demo/sidebar'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Side Bar</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
+              <Link href={'/demo/sidebar/push_variant'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Side Bar (Push variant)</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
             </Flex>
 
             <ThemeProvider
