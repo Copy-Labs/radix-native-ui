@@ -690,10 +690,24 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         // Only respond to horizontal swipes
-        return (
-          Math.abs(gestureState.dx) > 10 &&
-          Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
-        );
+        if (Math.abs(gestureState.dx) <= 10 || Math.abs(gestureState.dx) <= Math.abs(gestureState.dy)) {
+          return false;
+        }
+
+        // When sidebar is CLOSED: only respond to swipe in direction that opens it
+        // When sidebar is OPEN: respond to both directions
+        if (!open) {
+          if (side === 'left') {
+            // Left sidebar: only respond to swipe RIGHT (to open)
+            return gestureState.dx > 10;
+          } else {
+            // Right sidebar: only respond to swipe LEFT (to open)
+            return gestureState.dx < -10;
+          }
+        }
+
+        // When open, allow swipe in both directions
+        return true;
       },
       onPanResponderGrant: () => {
         // Could add haptic feedback here
