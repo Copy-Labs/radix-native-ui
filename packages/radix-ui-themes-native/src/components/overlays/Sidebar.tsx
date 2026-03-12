@@ -180,13 +180,12 @@ export const SidebarRoot = ({
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
             // Close - swipe left
             Vibration.vibrate(10);
+            onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
               duration: ANIMATION_DURATION,
               useNativeDriver: true,
-            }).start(() => {
-              handleOpenChange(false, true); // skipAnimation=true
-            });
+            }).start();
           } else {
             // Snap back to current state
             Animated.spring(translateX, {
@@ -208,13 +207,12 @@ export const SidebarRoot = ({
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
             // Close - swipe right
             Vibration.vibrate(10);
+            onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
               duration: ANIMATION_DURATION,
               useNativeDriver: true,
-            }).start(() => {
-              handleOpenChange(false, true); // skipAnimation=true
-            });
+            }).start();
           } else {
             // Snap back to current state
             Animated.spring(translateX, {
@@ -778,13 +776,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
             if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
               // Close - swipe left
               Vibration.vibrate(10);
+              onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: -width,
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
-              }).start(() => {
-                onOpenChange(false, true); // skipAnimation=true
-              });
+              }).start();
               Animated.timing(mainTranslateX, {
                 toValue: 0,
                 duration: ANIMATION_DURATION,
@@ -843,13 +840,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
             if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
               // Close - swipe right
               Vibration.vibrate(10);
+              onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: width,
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
-              }).start(() => {
-                onOpenChange(false, true); // skipAnimation=true
-              });
+              }).start();
               Animated.timing(mainTranslateX, {
                 toValue: 0,
                 duration: ANIMATION_DURATION,
@@ -880,7 +876,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
                 useNativeDriver: true,
               }).start();
               Animated.timing(mainTranslateX, {
-                toValue: -width,
+                toValue: -width, // For right sidebar, main content moves LEFT (negative) to make room
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
               }).start();
@@ -904,7 +900,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
         }
       },
     });
-  }, [side, width, open, onOpenChange, translateX]);
+  }, [side, width, open, onOpenChange, translateX, mainTranslateX]);
 
   // For push variant, we need to reorder children based on side
   // For LEFT sidebar: Content (sidebar) first, then Main (content)
