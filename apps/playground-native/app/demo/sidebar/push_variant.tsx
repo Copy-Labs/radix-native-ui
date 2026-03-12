@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function SidebarPushVariant() {
   return (
     <PageContainer>
-      <Sidebar.Root side="right" variant="push" width={280}>
+      <Sidebar.Root animationDuration={150} side="left" variant="push" width={280}>
         <PageHeader showBackButton>
           <Flex direction={'row-reverse'} align={'center'} flex={1} gap={8} justify={'space-between'} paddingRight={12}>
             <Sidebar.Trigger>

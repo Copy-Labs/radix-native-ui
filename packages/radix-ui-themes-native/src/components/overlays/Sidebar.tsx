@@ -49,6 +49,7 @@ interface SidebarContextValue {
   side: SidePosition;
   variant: SidebarVariant;
   width: number;
+  animationDuration: number;
   colors: ColorScale | BaseColorScale;
   grayAlpha: ReturnType<typeof getGrayAlpha>;
   radii: RadiusScale;
@@ -73,7 +74,7 @@ const useSidebar = () => {
 // ============================================================================
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const ANIMATION_DURATION = 300;
+const DEFAULT_ANIMATION_DURATION = 300;
 
 // ============================================================================
 // Sidebar.Root - Main component that manages state
@@ -86,6 +87,7 @@ interface SidebarRootProps {
   side?: SidePosition;
   variant?: SidebarVariant;
   width?: number;
+  animationDuration?: number;
 }
 
 export const SidebarRoot = ({
@@ -95,6 +97,7 @@ export const SidebarRoot = ({
   side = 'left',
   variant = 'overlay',
   width = 280,
+  animationDuration = 300,
 }: SidebarRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
@@ -174,7 +177,7 @@ export const SidebarRoot = ({
             // Open - swipe right
             Animated.timing(translateX, {
               toValue: 0,
-              duration: ANIMATION_DURATION,
+              duration: animationDuration,
               useNativeDriver: true,
             }).start();
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
@@ -183,7 +186,7 @@ export const SidebarRoot = ({
             onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
-              duration: ANIMATION_DURATION,
+              duration: animationDuration,
               useNativeDriver: true,
             }).start();
           } else {
@@ -201,7 +204,7 @@ export const SidebarRoot = ({
             // Open - swipe left
             Animated.timing(translateX, {
               toValue: 0,
-              duration: ANIMATION_DURATION,
+              duration: animationDuration,
               useNativeDriver: true,
             }).start();
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
@@ -210,7 +213,7 @@ export const SidebarRoot = ({
             onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
-              duration: ANIMATION_DURATION,
+              duration: animationDuration,
               useNativeDriver: true,
             }).start();
           } else {
@@ -240,17 +243,17 @@ export const SidebarRoot = ({
       translateX.setValue(side === 'left' ? -width : width);
       Animated.timing(translateX, {
         toValue: 0,
-        duration: ANIMATION_DURATION,
+        duration: animationDuration,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(translateX, {
         toValue: side === 'left' ? -width : width,
-        duration: ANIMATION_DURATION,
+        duration: animationDuration,
         useNativeDriver: true,
       }).start();
     }
-  }, [open, width, side, translateX]);
+  }, [open, width, side, translateX, animationDuration]);
 
   // Also animate mainTranslateX for push variant
   useEffect(() => {
@@ -263,18 +266,18 @@ export const SidebarRoot = ({
       if (open) {
         Animated.timing(mainTranslateX, {
           toValue: side === 'left' ? width : -width,
-          duration: ANIMATION_DURATION,
+          duration: animationDuration,
           useNativeDriver: true,
         }).start();
       } else {
         Animated.timing(mainTranslateX, {
           toValue: 0,
-          duration: ANIMATION_DURATION,
+          duration: animationDuration,
           useNativeDriver: true,
         }).start();
       }
     }
-  }, [open, width, side, variant, mainTranslateX]);
+  }, [open, width, side, variant, mainTranslateX, animationDuration]);
 
   const theme = useTheme();
   const mode = useThemeMode();
@@ -290,6 +293,7 @@ export const SidebarRoot = ({
         side,
         variant,
         width,
+        animationDuration,
         colors,
         grayAlpha,
         radii,
@@ -690,7 +694,7 @@ interface SidebarContainerProps {
 }
 
 export const SidebarContainer = ({ children }: SidebarContainerProps) => {
-  const { variant, side, width, open, onOpenChange, translateX, mainTranslateX } = useSidebar();
+  const { animationDuration, variant, side, width, open, onOpenChange, translateX, mainTranslateX } = useSidebar();
 
   // Only use container layout for push variant
   if (variant !== 'push') {
@@ -779,12 +783,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
               onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: -width,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               Animated.timing(mainTranslateX, {
                 toValue: 0,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
             } else {
@@ -808,12 +812,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
               // Open - swipe right
               Animated.timing(translateX, {
                 toValue: 0,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               Animated.timing(mainTranslateX, {
                 toValue: width,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               onOpenChange(true, true); // skipAnimation=true
@@ -843,12 +847,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
               onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: width,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               Animated.timing(mainTranslateX, {
                 toValue: 0,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
             } else {
@@ -872,12 +876,12 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
               // Open - swipe left
               Animated.timing(translateX, {
                 toValue: 0,
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               Animated.timing(mainTranslateX, {
                 toValue: -width, // For right sidebar, main content moves LEFT (negative) to make room
-                duration: ANIMATION_DURATION,
+                duration: animationDuration,
                 useNativeDriver: true,
               }).start();
               onOpenChange(true, true); // skipAnimation=true
@@ -900,7 +904,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
         }
       },
     });
-  }, [side, width, open, onOpenChange, translateX, mainTranslateX]);
+  }, [side, width, open, onOpenChange, translateX, mainTranslateX, animationDuration]);
 
   // For push variant, we need to reorder children based on side
   // For LEFT sidebar: Content (sidebar) first, then Main (content)
