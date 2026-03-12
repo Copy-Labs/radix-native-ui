@@ -45,7 +45,7 @@ export type SidebarVariant = 'overlay' | 'push';
 
 interface SidebarContextValue {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: (open: boolean, skipAnimation?: boolean) => void;
   side: SidePosition;
   variant: SidebarVariant;
   width: number;
@@ -108,13 +108,17 @@ export const SidebarRoot = ({
   // Animation value for main content (push variant)
   const mainTranslateX = useRef(new Animated.Value(0)).current;
 
+  // Ref to skip animation in useEffect (used by swipe gestures)
+  const skipAnimationRef = useRef(false);
+
   // Swipe state refs
   const swipeDistance = useRef(0);
   const isSwiping = useRef(false);
   const startX = useRef(0);
 
   const handleOpenChange = useCallback(
-    (newOpen: boolean) => {
+    (newOpen: boolean, skipAnimation = false) => {
+      skipAnimationRef.current = skipAnimation;
       if (controlledOpen === undefined) {
         setInternalOpen(newOpen);
       }
@@ -181,7 +185,7 @@ export const SidebarRoot = ({
               duration: ANIMATION_DURATION,
               useNativeDriver: true,
             }).start(() => {
-              handleOpenChange(false);
+              handleOpenChange(false, true); // skipAnimation=true
             });
           } else {
             // Snap back to current state
@@ -209,7 +213,7 @@ export const SidebarRoot = ({
               duration: ANIMATION_DURATION,
               useNativeDriver: true,
             }).start(() => {
-              handleOpenChange(false);
+              handleOpenChange(false, true); // skipAnimation=true
             });
           } else {
             // Snap back to current state
@@ -228,6 +232,12 @@ export const SidebarRoot = ({
 
   // Handle open/close state changes
   useEffect(() => {
+    // Skip animation if triggered by swipe gesture (animation already completed in swipe handler)
+    if (skipAnimationRef.current) {
+      skipAnimationRef.current = false;
+      return;
+    }
+
     if (open) {
       translateX.setValue(side === 'left' ? -width : width);
       Animated.timing(translateX, {
@@ -246,6 +256,11 @@ export const SidebarRoot = ({
 
   // Also animate mainTranslateX for push variant
   useEffect(() => {
+    // Skip animation if triggered by swipe gesture
+    if (skipAnimationRef.current) {
+      return;
+    }
+
     if (variant === 'push') {
       if (open) {
         Animated.timing(mainTranslateX, {
@@ -768,7 +783,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
               }).start(() => {
-                onOpenChange(false);
+                onOpenChange(false, true); // skipAnimation=true
               });
               Animated.timing(mainTranslateX, {
                 toValue: 0,
@@ -804,7 +819,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
               }).start();
-              onOpenChange(true);
+              onOpenChange(true, true); // skipAnimation=true
             } else {
               // Snap back to closed
               Animated.spring(translateX, {
@@ -833,7 +848,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
               }).start(() => {
-                onOpenChange(false);
+                onOpenChange(false, true); // skipAnimation=true
               });
               Animated.timing(mainTranslateX, {
                 toValue: 0,
@@ -869,7 +884,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
                 duration: ANIMATION_DURATION,
                 useNativeDriver: true,
               }).start();
-              onOpenChange(true);
+              onOpenChange(true, true); // skipAnimation=true
             } else {
               // Snap back to closed
               Animated.spring(translateX, {
