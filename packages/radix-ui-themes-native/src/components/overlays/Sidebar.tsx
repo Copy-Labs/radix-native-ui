@@ -54,6 +54,7 @@ interface SidebarContextValue {
   radii: RadiusScale;
   // Animation and gesture state
   translateX: Animated.Value;
+  mainTranslateX: Animated.Value;
   panHandlers: any;
 }
 
@@ -103,6 +104,9 @@ export const SidebarRoot = ({
   // For right sidebar: closed = width, open = 0
   const initialTranslateX = side === 'left' ? -width : width;
   const translateX = useRef(new Animated.Value(open ? 0 : initialTranslateX)).current;
+
+  // Animation value for main content (push variant)
+  const mainTranslateX = useRef(new Animated.Value(0)).current;
 
   // Swipe state refs
   const swipeDistance = useRef(0);
@@ -240,6 +244,25 @@ export const SidebarRoot = ({
     }
   }, [open, width, side, translateX]);
 
+  // Also animate mainTranslateX for push variant
+  useEffect(() => {
+    if (variant === 'push') {
+      if (open) {
+        Animated.timing(mainTranslateX, {
+          toValue: side === 'left' ? width : -width,
+          duration: ANIMATION_DURATION,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        Animated.timing(mainTranslateX, {
+          toValue: 0,
+          duration: ANIMATION_DURATION,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  }, [open, width, side, variant, mainTranslateX]);
+
   const theme = useTheme();
   const mode = useThemeMode();
   const colors = mode === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
@@ -258,6 +281,7 @@ export const SidebarRoot = ({
         grayAlpha,
         radii,
         translateX,
+        mainTranslateX,
         panHandlers: panResponder.panHandlers,
       }}
     >
@@ -645,6 +669,7 @@ export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdro
 
 // ============================================================================
 // Sidebar.Container - Container for push variant that renders sidebar and main side by side
+// Also handles swipe gestures for the entire container area
 // ============================================================================
 
 interface SidebarContainerProps {
@@ -652,12 +677,205 @@ interface SidebarContainerProps {
 }
 
 export const SidebarContainer = ({ children }: SidebarContainerProps) => {
-  const { variant, side, width } = useSidebar();
+  const { variant, side, width, open, onOpenChange, translateX, mainTranslateX } = useSidebar();
 
   // Only use container layout for push variant
   if (variant !== 'push') {
     return <>{children}</>;
   }
+
+  // Create pan responder for swipe gestures on the entire container
+  const containerPanResponder = useMemo(() => {
+    return PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        // Only respond to horizontal swipes
+        return (
+          Math.abs(gestureState.dx) > 10 &&
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
+        );
+      },
+      onPanResponderGrant: () => {
+        // Could add haptic feedback here
+      },
+      onPanResponderMove: (_, gestureState) => {
+        if (side === 'left') {
+          // For left sidebar:
+          // Positive dx = swipe right (open)
+          // Negative dx = swipe left (close)
+          if (open) {
+            // Currently open - swiping left should close
+            const newTranslateX = gestureState.dx; // Going negative closes
+            const clampedValue = Math.max(-width, Math.min(0, newTranslateX));
+            translateX.setValue(clampedValue);
+            // Also animate main content in opposite direction
+            mainTranslateX.setValue(clampedValue + width);
+          } else {
+            // Currently closed - swiping right should open
+            const newTranslateX = -width + gestureState.dx;
+            const clampedValue = Math.max(-width, Math.min(0, newTranslateX));
+            translateX.setValue(clampedValue);
+            // Also animate main content
+            mainTranslateX.setValue(gestureState.dx);
+          }
+        } else {
+          // For right sidebar:
+          // Negative dx = swipe left (open)
+          // Positive dx = swipe right (close)
+          if (open) {
+            // Currently open - swiping right should close
+            const newTranslateX = width + gestureState.dx;
+            const clampedValue = Math.max(0, Math.min(width, newTranslateX));
+            translateX.setValue(clampedValue);
+            // Also animate main content
+            mainTranslateX.setValue(clampedValue - width);
+          } else {
+            // Currently closed - swiping left should open
+            const newTranslateX = width + gestureState.dx;
+            const clampedValue = Math.max(0, Math.min(width, newTranslateX));
+            translateX.setValue(clampedValue);
+            // Also animate main content
+            mainTranslateX.setValue(gestureState.dx);
+          }
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        const threshold = width * 0.25;
+        const velocityThreshold = 500;
+
+        if (side === 'left') {
+          if (open) {
+            // Closing
+            if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
+              // Close - swipe left
+              Vibration.vibrate(10);
+              Animated.timing(translateX, {
+                toValue: -width,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start(() => {
+                onOpenChange(false);
+              });
+              Animated.timing(mainTranslateX, {
+                toValue: 0,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+            } else {
+              // Snap back to open
+              Animated.spring(translateX, {
+                toValue: 0,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+              Animated.spring(mainTranslateX, {
+                toValue: width,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+            }
+          } else {
+            // Opening
+            if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
+              // Open - swipe right
+              Animated.timing(translateX, {
+                toValue: 0,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+              Animated.timing(mainTranslateX, {
+                toValue: width,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+              onOpenChange(true);
+            } else {
+              // Snap back to closed
+              Animated.spring(translateX, {
+                toValue: -width,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+              Animated.spring(mainTranslateX, {
+                toValue: 0,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+            }
+          }
+        } else {
+          // Right side
+          if (open) {
+            // Closing
+            if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
+              // Close - swipe right
+              Vibration.vibrate(10);
+              Animated.timing(translateX, {
+                toValue: width,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start(() => {
+                onOpenChange(false);
+              });
+              Animated.timing(mainTranslateX, {
+                toValue: 0,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+            } else {
+              // Snap back to open
+              Animated.spring(translateX, {
+                toValue: 0,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+              Animated.spring(mainTranslateX, {
+                toValue: -width,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+            }
+          } else {
+            // Opening
+            if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
+              // Open - swipe left
+              Animated.timing(translateX, {
+                toValue: 0,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+              Animated.timing(mainTranslateX, {
+                toValue: -width,
+                duration: ANIMATION_DURATION,
+                useNativeDriver: true,
+              }).start();
+              onOpenChange(true);
+            } else {
+              // Snap back to closed
+              Animated.spring(translateX, {
+                toValue: width,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+              Animated.spring(mainTranslateX, {
+                toValue: 0,
+                tension: 65,
+                friction: 11,
+                useNativeDriver: true,
+              }).start();
+            }
+          }
+        }
+      },
+    });
+  }, [side, width, open, onOpenChange, translateX]);
 
   // For push variant, we need to reorder children based on side
   // For LEFT sidebar: Content (sidebar) first, then Main (content)
@@ -680,7 +898,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
   // For left sidebar, render Content first (sidebar on left), then Main
   if (side === 'right' && mainChild && contentChild) {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} {...containerPanResponder.panHandlers}>
         {mainChild}
         {contentChild}
       </View>
@@ -688,7 +906,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} {...containerPanResponder.panHandlers}>
       {children}
     </View>
   );
@@ -700,51 +918,30 @@ interface SidebarMainProps {
 }
 
 export const SidebarMain = ({ children, style }: SidebarMainProps) => {
-  const { side, variant, width, open } = useSidebar();
+  const { side, variant, width, open, mainTranslateX } = useSidebar();
   const theme = useTheme();
 
-  // For push variant, the main content needs to animate
-  // For left side: translateX from 0 to width (slide right to reveal sidebar behind)
-  // For right side: translateX from 0 to -width (slide left to reveal sidebar behind)
-  const mainTranslateX = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (variant === 'push') {
-      if (open) {
-        Animated.timing(mainTranslateX, {
-          toValue: side === 'left' ? width : -width,
-          duration: ANIMATION_DURATION,
-          useNativeDriver: true,
-        }).start();
-      } else {
-        Animated.timing(mainTranslateX, {
-          toValue: 0,
-          duration: ANIMATION_DURATION,
-          useNativeDriver: true,
-        }).start();
-      }
-    }
-  }, [open, width, side, variant, mainTranslateX]);
-
-  if (variant !== 'push') {
-    // For overlay variant, no transformation needed
-    return <>{children}</>;
+  // For push variant, use the shared mainTranslateX from context
+  // This is animated by both the Root (when using Trigger) and Container (when swiping)
+  if (variant === 'push') {
+    return (
+      <Animated.View
+        style={[
+          styles.mainContent,
+          {
+            flex: 1,
+            transform: [{ translateX: mainTranslateX }],
+          },
+          style,
+        ]}
+      >
+        {children}
+      </Animated.View>
+    );
   }
 
-  return (
-    <Animated.View
-      style={[
-        styles.mainContent,
-        {
-          flex: 1,
-          transform: [{ translateX: mainTranslateX }],
-        },
-        style,
-      ]}
-    >
-      {children}
-    </Animated.View>
-  );
+  // For overlay variant, no transformation needed
+  return <>{children}</>;
 };
 
 // ============================================================================
