@@ -66,10 +66,10 @@ export default function SidebarDemo() {
             {/* Right Sidebar (Push) */}
             <Card>
               <Heading size={4} style={{ marginBottom: 12 }}>
-                Right Sidebar
+                Right Sidebar (Push)
               </Heading>
               <Text size={2} color="gray" style={{ marginBottom: 16 }}>
-                A sidebar that slides in from the right side.
+                A sidebar that pushes content from the right side.
               </Text>
 
               <BasicPushRightSidebar />
@@ -218,18 +218,12 @@ function PushLeftSidebarDemo() {
 // Basic Right Sidebar (Push) Demo
 function BasicPushRightSidebar() {
   return (
-    <Sidebar.Root side="left" variant="push">
+    <Sidebar.Root side="right" variant="push">
       <Sidebar.Trigger>
         <Button>Open Right Sidebar (Push)</Button>
       </Sidebar.Trigger>
-      {/* Use Container for push variant */}
+      {/* Use Container for push variant - automatically handles ordering */}
       <Sidebar.Container>
-        <Sidebar.Main>
-          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
-            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content</Text>
-            <Text size={2} color="gray">Content slides left</Text>
-          </View>
-        </Sidebar.Main>
         <Sidebar.Content>
           <Sidebar.Header>
             <Heading size={4}>Settings</Heading>
@@ -244,6 +238,12 @@ function BasicPushRightSidebar() {
             <Text>Privacy</Text>
           </Sidebar.Item>
         </Sidebar.Content>
+        <Sidebar.Main>
+          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
+            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content</Text>
+            <Text size={2} color="gray">Content slides left</Text>
+          </View>
+        </Sidebar.Main>
       </Sidebar.Container>
     </Sidebar.Root>
   );

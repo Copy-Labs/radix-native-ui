@@ -415,14 +415,16 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
   // For push variant: render inline (no absolute positioning)
   // The sidebar appears beside the main content
   if (variant === 'push') {
+    // For LEFT sidebar: marginRight = -width (overlaps main content on right)
+    // For RIGHT sidebar: marginLeft = -width (overlaps main content on left)
+    // AND we need to position it on the correct side
     const positionStyle = side === 'left'
-      ? { marginRight: -width } // Overlap slightly to avoid gaps during animation
-      : { marginLeft: -width };
+      ? { marginRight: -width }  // Content on left, overlaps main from right
+      : { marginLeft: -width }; // Content on right, overlaps main from left
 
     return (
       <Animated.View
         style={[
-          styles.content,
           {
             backgroundColor,
             width,
@@ -650,11 +652,39 @@ interface SidebarContainerProps {
 }
 
 export const SidebarContainer = ({ children }: SidebarContainerProps) => {
-  const { variant } = useSidebar();
+  const { variant, side, width } = useSidebar();
 
   // Only use container layout for push variant
   if (variant !== 'push') {
     return <>{children}</>;
+  }
+
+  // For push variant, we need to reorder children based on side
+  // For LEFT sidebar: Content (sidebar) first, then Main (content)
+  // For RIGHT sidebar: Main first, then Content (sidebar)
+  const childArray = React.Children.toArray(children);
+
+  // Find Content and Main children
+  let contentChild: React.ReactNode | null = null;
+  let mainChild: React.ReactNode | null = null;
+
+  childArray.forEach((child) => {
+    if (React.isValidElement(child) && child.type === SidebarContent) {
+      contentChild = child;
+    } else if (React.isValidElement(child) && child.type === SidebarMain) {
+      mainChild = child;
+    }
+  });
+
+  // For right sidebar, render Main first (it will be on the left), then Content (sidebar on right)
+  // For left sidebar, render Content first (sidebar on left), then Main
+  if (side === 'right' && mainChild && contentChild) {
+    return (
+      <View style={styles.container}>
+        {mainChild}
+        {contentChild}
+      </View>
+    );
   }
 
   return (
