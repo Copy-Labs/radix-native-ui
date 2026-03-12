@@ -51,6 +51,30 @@ export default function SidebarDemo() {
               <BasicRightSidebar />
             </Card>
 
+            {/* Left Sidebar (Push) */}
+            <Card>
+              <Heading size={4} style={{ marginBottom: 12 }}>
+                Left Sidebar (Push)
+              </Heading>
+              <Text size={2} color="gray" style={{ marginBottom: 16 }}>
+                The main content slides with the sidebar (revealing from behind).
+              </Text>
+
+              <PushLeftSidebarDemo />
+            </Card>
+
+            {/* Right Sidebar (Push) */}
+            <Card>
+              <Heading size={4} style={{ marginBottom: 12 }}>
+                Right Sidebar
+              </Heading>
+              <Text size={2} color="gray" style={{ marginBottom: 16 }}>
+                A sidebar that slides in from the right side.
+              </Text>
+
+              <BasicPushRightSidebar />
+            </Card>
+
             {/* Custom Width */}
             <Card>
               <Heading size={4} style={{ marginBottom: 12 }}>
@@ -150,6 +174,77 @@ function BasicRightSidebar() {
           </Sidebar.Item>
         </Sidebar.Content>
       </Sidebar.Portal>
+    </Sidebar.Root>
+  );
+}
+
+// Push Left Sidebar Demo - Main content slides with sidebar
+function PushLeftSidebarDemo() {
+  return (
+    <Sidebar.Root side="left" variant="push" width={280}>
+      <Sidebar.Trigger>
+        <Button>Open (Push)</Button>
+      </Sidebar.Trigger>
+      {/* Use Container for push variant - renders sidebar and main side by side */}
+      <Sidebar.Container>
+        <Sidebar.Content>
+          <Sidebar.Header>
+            <Heading size={4}>Menu</Heading>
+          </Sidebar.Header>
+          <Sidebar.Item>
+            <Text>Home</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Search</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Profile</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Settings</Text>
+          </Sidebar.Item>
+        </Sidebar.Content>
+        <Sidebar.Main>
+          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
+            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content Area</Text>
+            <Text size={2} color="gray">This content slides when sidebar opens</Text>
+          </View>
+        </Sidebar.Main>
+      </Sidebar.Container>
+    </Sidebar.Root>
+  );
+}
+
+// Basic Right Sidebar (Push) Demo
+function BasicPushRightSidebar() {
+  return (
+    <Sidebar.Root side="left" variant="push">
+      <Sidebar.Trigger>
+        <Button>Open Right Sidebar (Push)</Button>
+      </Sidebar.Trigger>
+      {/* Use Container for push variant */}
+      <Sidebar.Container>
+        <Sidebar.Main>
+          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
+            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content</Text>
+            <Text size={2} color="gray">Content slides left</Text>
+          </View>
+        </Sidebar.Main>
+        <Sidebar.Content>
+          <Sidebar.Header>
+            <Heading size={4}>Settings</Heading>
+          </Sidebar.Header>
+          <Sidebar.Item>
+            <Text>Account</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Notifications</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Privacy</Text>
+          </Sidebar.Item>
+        </Sidebar.Content>
+      </Sidebar.Container>
     </Sidebar.Root>
   );
 }

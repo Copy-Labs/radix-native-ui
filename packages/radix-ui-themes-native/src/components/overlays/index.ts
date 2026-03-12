@@ -163,4 +163,7 @@ export type {
   SidebarHeaderProps,
   SidebarItemProps,
   SidebarSeparatorProps,
+  SidebarMainProps,
+  SidebarBackdropProps,
+  SidebarContainerProps,
 } from './Sidebar';

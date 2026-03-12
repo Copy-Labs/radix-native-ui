@@ -322,7 +322,12 @@ interface SidebarPortalProps {
 }
 
 export const SidebarPortal = ({ children }: SidebarPortalProps) => {
-  const { open } = useSidebar();
+  const { open, variant } = useSidebar();
+
+  // For push variant, don't use Portal - render inline instead
+  if (variant === 'push') {
+    return null;
+  }
 
   return (
     <Modal
@@ -407,7 +412,42 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
     ? { borderTopRightRadius: radii.large, borderBottomRightRadius: radii.large }
     : { borderTopLeftRadius: radii.large, borderBottomLeftRadius: radii.large };
 
-  // Position styles based on side
+  // For push variant: render inline (no absolute positioning)
+  // The sidebar appears beside the main content
+  if (variant === 'push') {
+    const positionStyle = side === 'left'
+      ? { marginRight: -width } // Overlap slightly to avoid gaps during animation
+      : { marginLeft: -width };
+
+    return (
+      <Animated.View
+        style={[
+          styles.content,
+          {
+            backgroundColor,
+            width,
+            ...borderRadius,
+            transform: [{ translateX }],
+            ...(shadow || {}),
+            ...positionStyle,
+          },
+          style,
+        ]}
+        {...panHandlers}
+      >
+        <ScrollView
+          style={styles.scrollContent}
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={true}
+          bounces={true}
+        >
+          {children}
+        </ScrollView>
+      </Animated.View>
+    );
+  }
+
+  // For overlay variant: use absolute positioning
   const positionStyle = side === 'left'
     ? { left: 0 }
     : { right: 0 };
@@ -559,11 +599,138 @@ export const SidebarSeparator = ({ style }: SidebarSeparatorProps) => {
 };
 
 // ============================================================================
+// Sidebar.Backdrop - Optional backdrop for push variant (to close when tapping outside)
+// ============================================================================
+
+interface SidebarBackdropProps {
+  style?: StyleProp<ViewStyle>;
+  hapticFeedback?: boolean;
+}
+
+export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdropProps) => {
+  const { onOpenChange, variant } = useSidebar();
+  const mode = useThemeMode();
+  const isDark = mode === 'dark';
+
+  // Only show backdrop for push variant
+  if (variant === 'overlay') {
+    return null;
+  }
+
+  const overlayColor = isDark ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.2)';
+
+  const handlePress = () => {
+    onOpenChange(false);
+    if (hapticFeedback) {
+      Vibration.vibrate(10);
+    }
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={handlePress}>
+      <Animated.View
+        style={[
+          styles.backdrop,
+          {
+            backgroundColor: overlayColor,
+          },
+          style,
+        ]}
+      />
+    </TouchableWithoutFeedback>
+  );
+};
+
+// ============================================================================
+// Sidebar.Container - Container for push variant that renders sidebar and main side by side
+// ============================================================================
+
+interface SidebarContainerProps {
+  children: ReactNode;
+}
+
+export const SidebarContainer = ({ children }: SidebarContainerProps) => {
+  const { variant } = useSidebar();
+
+  // Only use container layout for push variant
+  if (variant !== 'push') {
+    return <>{children}</>;
+  }
+
+  return (
+    <View style={styles.container}>
+      {children}
+    </View>
+  );
+};
+
+interface SidebarMainProps {
+  children: ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+
+export const SidebarMain = ({ children, style }: SidebarMainProps) => {
+  const { side, variant, width, open } = useSidebar();
+  const theme = useTheme();
+
+  // For push variant, the main content needs to animate
+  // For left side: translateX from 0 to width (slide right to reveal sidebar behind)
+  // For right side: translateX from 0 to -width (slide left to reveal sidebar behind)
+  const mainTranslateX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (variant === 'push') {
+      if (open) {
+        Animated.timing(mainTranslateX, {
+          toValue: side === 'left' ? width : -width,
+          duration: ANIMATION_DURATION,
+          useNativeDriver: true,
+        }).start();
+      } else {
+        Animated.timing(mainTranslateX, {
+          toValue: 0,
+          duration: ANIMATION_DURATION,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  }, [open, width, side, variant, mainTranslateX]);
+
+  if (variant !== 'push') {
+    // For overlay variant, no transformation needed
+    return <>{children}</>;
+  }
+
+  return (
+    <Animated.View
+      style={[
+        styles.mainContent,
+        {
+          flex: 1,
+          transform: [{ translateX: mainTranslateX }],
+        },
+        style,
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+};
+
+// ============================================================================
 // Styles
 // ============================================================================
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    flex: 1,
+  },
   overlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 1,
+  },
+  backdrop: {
     ...StyleSheet.absoluteFillObject,
     zIndex: 1,
   },
@@ -590,6 +757,9 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
   },
+  mainContent: {
+    // Main content wrapper for push variant
+  },
 });
 
 // ============================================================================
@@ -605,6 +775,9 @@ export const Sidebar = {
   Header: SidebarHeader,
   Item: SidebarItem,
   Separator: SidebarSeparator,
+  Main: SidebarMain,
+  Backdrop: SidebarBackdrop,
+  Container: SidebarContainer,
 };
 
 export type {
@@ -616,4 +789,7 @@ export type {
   SidebarHeaderProps,
   SidebarItemProps,
   SidebarSeparatorProps,
+  SidebarMainProps,
+  SidebarBackdropProps,
+  SidebarContainerProps,
 };
