@@ -41,6 +41,10 @@ export type { ProgressProps } from './Progress';
 export { Spinner } from './Spinner';
 export type { SpinnerProps } from './Spinner';
 
+// Skeleton
+export { Skeleton } from './Skeleton';
+export type { SkeletonProps } from './Skeleton';
+
 // Table
 export { Table } from './Table';
 export type { TableProps, TableColumn, TheadProps, TbodyProps, TrProps, ThProps, TdProps } from './Table';

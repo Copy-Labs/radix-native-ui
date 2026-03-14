@@ -29,11 +29,11 @@
   },
   "peerDependencies": {
     "expo": ">=48",
+    "expo-haptics": "^15.0.8",
     "react": ">=18",
     "react-native": ">=0.70"
   },
   "dependencies": {
-    "radix-native-ui": "file:.yalc/radix-native-ui",
     "react-native-modal": "^13.0.1"
   },
   "devDependencies": {
