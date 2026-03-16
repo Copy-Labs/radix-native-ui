@@ -1,12 +1,7 @@
 import React, { useRef, useCallback } from 'react';
-import {
-  Animated,
-  GestureResponderEvent,
-  StyleProp,
-  ViewStyle,
-  Vibration,
-} from 'react-native';
+import { Animated, GestureResponderEvent, StyleProp, Vibration, ViewStyle } from 'react-native';
 import RnPressable, { PressableProps } from './Pressable';
+import { triggerHaptic } from '../../utils/haptics';
 
 // Create an animated version of Pressable
 const AnimatedPressableComponent = Animated.createAnimatedComponent(RnPressable);
@@ -90,7 +85,7 @@ export const AnimatedPressable = React.memo(
         (event: GestureResponderEvent) => {
           // Trigger haptic feedback if enabled and not disabled
           if (hapticFeedback && !disabled) {
-            Vibration.vibrate(10);
+            triggerHaptic('press');
           }
           animatePressIn();
           onPressIn?.(event);

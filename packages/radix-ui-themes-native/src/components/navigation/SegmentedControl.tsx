@@ -6,6 +6,7 @@ import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
 import { BaseColorScale, Color, RadiusSize } from '../../theme';
 import AnimatedPressable from '../primitives/AnimatedPressable';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // Context
@@ -100,7 +101,7 @@ const SegmentedControlItem = ({
       onValueChange(value);
       // Trigger haptic feedback on selection
       if (hapticFeedback) {
-        Vibration.vibrate(10);
+        triggerHaptic('press')
       }
     }
   }, [isDisabled, onValueChange, value, hapticFeedback]);

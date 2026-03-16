@@ -247,6 +247,14 @@ export default function App() {
                   </Badge>
                 </Flex>
               </Link>
+              <Link href={'/demo/skeleton'}>
+                <Flex align={'center'} gap={8}>
+                  <Text size={4}>Skeleton</Text>
+                  <Badge color={'green'} radius={'full'} size={2} variant={'solid'}>
+                    New
+                  </Badge>
+                </Flex>
+              </Link>
             </Flex>
 
             <ThemeProvider

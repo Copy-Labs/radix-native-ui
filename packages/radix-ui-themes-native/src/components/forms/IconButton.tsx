@@ -85,7 +85,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
     {
       children,
       style = {},
-      variant = 'classic',
+      variant = 'solid',
       color,
       size = 2,
       radius,

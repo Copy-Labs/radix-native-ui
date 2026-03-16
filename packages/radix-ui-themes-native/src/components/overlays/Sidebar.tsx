@@ -20,7 +20,6 @@ import {
   ViewStyle,
   Pressable,
   ScrollView,
-  Vibration,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -31,6 +30,7 @@ import type { TextProps } from '../typography/Text';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../theme';
 import { getShadow } from '../../theme/shadows';
+import { triggerHaptic } from '../../utils/haptics';
 
 // ============================================================================
 // Types
@@ -132,6 +132,8 @@ export const SidebarRoot = ({
 
   // Pan responder for swipe/drag gestures
   const panResponder = useMemo(() => {
+    const { onOpenChange } = useSidebar();
+
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
@@ -182,7 +184,7 @@ export const SidebarRoot = ({
             }).start();
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
             // Close - swipe left
-            Vibration.vibrate(10);
+            triggerHaptic('selection');
             onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
@@ -209,7 +211,7 @@ export const SidebarRoot = ({
             }).start();
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
             // Close - swipe right
-            Vibration.vibrate(10);
+            triggerHaptic('selection');
             onOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
@@ -327,7 +329,7 @@ export const SidebarTrigger = ({
   const handlePress = () => {
     onOpenChange(true);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -408,7 +410,7 @@ export const SidebarOverlay = ({ style, hapticFeedback = true }: SidebarOverlayP
   const handlePress = () => {
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 
@@ -478,14 +480,14 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
         ]}
         {...panHandlers}
       >
-        <ScrollView
+        {/*<ScrollView
           style={styles.scrollContent}
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={true}
           bounces={true}
-        >
+        >*/}
           {children}
-        </ScrollView>
+        {/*</ScrollView>*/}
       </Animated.View>
     );
   }
@@ -511,14 +513,14 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
       ]}
       {...panHandlers}
     >
-      <ScrollView
+      {/*<ScrollView
         style={styles.scrollContent}
         contentContainerStyle={styles.scrollContentContainer}
         showsVerticalScrollIndicator={true}
         bounces={true}
-      >
+      >*/}
         {children}
-      </ScrollView>
+      {/*</ScrollView>*/}
     </Animated.View>
   );
 };
@@ -585,7 +587,7 @@ export const SidebarItem = ({
     onPress?.();
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -665,7 +667,7 @@ export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdro
   const handlePress = () => {
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -779,7 +781,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
             // Closing
             if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
               // Close - swipe left
-              Vibration.vibrate(10);
+              triggerHaptic('selection');
               onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: -width,
@@ -843,7 +845,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
             // Closing
             if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
               // Close - swipe right
-              Vibration.vibrate(10);
+              triggerHaptic('selection');
               onOpenChange(false, true); // Call immediately to trigger smooth animation
               Animated.timing(translateX, {
                 toValue: width,

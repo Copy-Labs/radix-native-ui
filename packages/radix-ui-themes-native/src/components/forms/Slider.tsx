@@ -26,6 +26,7 @@ import {
   getColorAlpha,
 } from '../../theme/color-helpers';
 import { Color, RadiusSize } from '../../theme';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // Types
@@ -403,7 +404,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
         // Trigger haptic feedback on track press
         if (hapticFeedback) {
-          Vibration.vibrate(10);
+          triggerHaptic('press')
         }
 
         if (valuesRef.current.length === 1) {
@@ -494,7 +495,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
           // Trigger haptic feedback when starting to drag
           if (hapticFeedback) {
-            Vibration.vibrate(10);
+            triggerHaptic('selection')
           }
         },
         onPanResponderMove: (
@@ -511,7 +512,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           handleValueChangeEnd(valuesRef.current);
           // Trigger haptic feedback when releasing the thumb
           if (hapticFeedback) {
-            Vibration.vibrate(10);
+            triggerHaptic('selection');
           }
         },
         onPanResponderTerminate: () => {
@@ -520,7 +521,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           handleValueChangeEnd(valuesRef.current);
           // Trigger haptic feedback when gesture is terminated
           if (hapticFeedback) {
-            Vibration.vibrate(10);
+            triggerHaptic('selection');
           }
         },
         // Prevent parent ScrollView from taking over the gesture

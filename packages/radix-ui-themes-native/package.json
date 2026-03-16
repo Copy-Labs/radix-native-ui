@@ -33,8 +33,7 @@
     "react-native": ">=0.70"
   },
   "dependencies": {
-    "radix-native-ui": "file:.yalc/radix-native-ui",
-    "react-native-modal": "^13.0.1"
+    "expo-haptics": "^55.0.8"
   },
   "devDependencies": {
     "@testing-library/jest-native": "^5.4.3",

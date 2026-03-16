@@ -10,6 +10,7 @@ import {
   type ContextMenuAlign,
   type ContextMenuPosition,
 } from '../../hooks/useAnchorPosition';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // ContextMenu Types
@@ -123,7 +124,7 @@ export const ContextMenuTrigger = ({
     onLongPress?.(event);
     // Trigger haptic feedback
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 
@@ -399,7 +400,7 @@ export const ContextMenuItem = ({
       onOpenChange(false);
       // Trigger haptic feedback on selection
       if (hapticFeedback) {
-        Vibration.vibrate(10);
+        triggerHaptic('press');
       }
     }
   };
@@ -677,7 +678,7 @@ export const ContextMenuRadioItem = ({
     if (!disabled) {
       onCheckedChange(value);
       // Trigger haptic feedback on selection
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 

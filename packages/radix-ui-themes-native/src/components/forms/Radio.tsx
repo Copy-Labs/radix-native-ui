@@ -9,6 +9,7 @@ import {
   getGrayAlpha,
 } from '../../theme/color-helpers';
 import AnimatedPressable from '../../components/primitives/AnimatedPressable';
+import { triggerHaptic } from '../../utils';
 
 interface RadioProps {
   /**
@@ -153,7 +154,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
         }
         // Trigger haptic feedback on select
         if (hapticFeedback) {
-          Vibration.vibrate(10);
+          triggerHaptic('press')
         }
       }
     };

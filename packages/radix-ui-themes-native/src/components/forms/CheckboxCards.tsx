@@ -23,6 +23,7 @@ import {
 import type { Color, RadiusSize } from '../../theme';
 import { Checkbox } from '../../components';
 import AnimatedPressable from '../../components/primitives/AnimatedPressable';
+import { triggerHaptic } from '../../utils';
 
 // Context for CheckboxCards
 interface CheckboxCardsContextValue {
@@ -297,7 +298,7 @@ const CheckboxCardsItem = React.forwardRef<
         } else {
           onValueChange([...selectedValues, value]);
         }
-        Vibration.vibrate(10);
+        triggerHaptic('press')
       }
     };
 

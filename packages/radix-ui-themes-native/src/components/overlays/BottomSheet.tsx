@@ -35,6 +35,7 @@ import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../
 import { getShadow } from '../../theme/shadows';
 import type { HeadingProps } from '../typography/Heading';
 import type { TextProps } from '../typography/Text';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // Types
@@ -261,7 +262,7 @@ export const BottomSheetRoot = ({
         // Only close if swiped DOWN with enough distance or velocity
         if (gestureState.dy > threshold || gestureState.vy > velocityThreshold / 1000) {
           // Trigger haptic feedback when dismissing via swipe
-          Vibration.vibrate(10);
+          triggerHaptic('selection')
           // Animate to closed position
           Animated.timing(translateY, {
             toValue: targetSnapHeight,
@@ -352,7 +353,7 @@ export const BottomSheetTrigger = ({
     onOpenChange(true);
     // Trigger haptic feedback when opening
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 
@@ -429,7 +430,7 @@ export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheet
     onOpenChange(false);
     // Trigger haptic feedback when closing via overlay
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -730,7 +731,7 @@ export const BottomSheetClose = ({
     onOpenChange(false);
     // Trigger haptic feedback when closing
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -774,7 +775,7 @@ export const BottomSheetAction = ({
     onOpenChange(false);
     // Trigger haptic feedback when action is pressed
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
