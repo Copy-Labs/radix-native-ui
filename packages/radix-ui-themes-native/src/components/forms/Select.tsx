@@ -10,7 +10,6 @@ import React, {
 import {
   View,
   StyleSheet,
-  Pressable,
   type StyleProp,
   ViewStyle,
   Modal,
@@ -18,7 +17,6 @@ import {
   TouchableWithoutFeedback,
   TextStyle,
   ScrollView,
-  Vibration,
 } from 'react-native';
 import { AnimatedPressable } from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -39,6 +37,7 @@ import {
   type PopoverAlign,
 } from '../../hooks/useAnchorPosition';
 import { ChevronDownIcon } from '../../components/utilities/icons';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // Select Context
@@ -301,7 +300,7 @@ export const SelectTrigger = ({ children, asChild = false }: SelectTriggerProps)
     // Measure the anchor position before opening
     measureAnchor();
     onOpenChange(!open);
-    Vibration.vibrate(10);
+    triggerHaptic('press')
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -716,7 +715,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
       const text = extractText(children);
       setSelectedItemText(text);
       onValueChange(itemValue);
-      Vibration.vibrate(10);
+      triggerHaptic('press')
     }
   };
 

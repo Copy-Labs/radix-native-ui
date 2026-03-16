@@ -65,6 +65,9 @@ importers:
       lucide-react-native:
         specifier: ^0.563.0
         version: 0.563.0(react-native-svg@15.15.2(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      radix-native-ui:
+        specifier: file:.yalc/radix-native-ui
+        version: file:.yalc/radix-native-ui(expo@54.0.33)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -3618,6 +3621,13 @@ packages:
 
   queue@6.0.2:
     resolution: {integrity: sha512-iHZWu+q3IdFZFX36ro/lKBkSvfkztY5Y7HMiPlOUjhupPcG2JMfst2KKEpu5XndviX/3UhFbRngUPNKtgvtZiA==}
+
+  radix-native-ui@file:.yalc/radix-native-ui:
+    resolution: {directory: .yalc/radix-native-ui, type: directory}
+    peerDependencies:
+      expo: '>=48'
+      react: '>=18'
+      react-native: '>=0.70'
 
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
@@ -8809,6 +8819,12 @@ snapshots:
   queue@6.0.2:
     dependencies:
       inherits: 2.0.4
+
+  radix-native-ui@file:.yalc/radix-native-ui(expo@54.0.33)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      expo: 54.0.33(@babel/core@7.29.0)(@expo/metro-runtime@6.1.2)(expo-router@6.0.23)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0)
 
   range-parser@1.2.1: {}
 

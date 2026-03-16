@@ -14,6 +14,10 @@ import {
   type PopoverAlign,
 } from '../../hooks/useAnchorPosition';
 
+import { IconButton } from '../forms/IconButton';
+import { triggerHaptic } from '../../utils';
+import { ChevronDownIcon } from '../utilities/icons';
+
 // ============================================================================
 // DropdownMenu Context
 // ============================================================================
@@ -123,7 +127,7 @@ export const DropdownMenuTrigger = ({ children, asChild = false, hapticFeedback 
     onOpenChange(!open);
     // Trigger haptic feedback
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 
@@ -157,22 +161,6 @@ export const DropdownMenuTrigger = ({ children, asChild = false, hapticFeedback 
 // ============================================================================
 // DropdownMenu.TriggerIcon - Icon button trigger
 // ============================================================================
-
-import { IconButton } from '../forms/IconButton';
-
-/**
- * Default down chevron icon for dropdown menu trigger
- * Uses Unicode character for React Native compatibility
- */
-const ChevronDownIcon = ({ size, color }: { size?: number; color?: string }) => (
-  <Text style={{
-    fontSize: size || 16,
-    color: color || 'currentColor',
-    lineHeight: size ? size + 2 : 18,
-  }}>
-    ▾
-  </Text>
-);
 
 interface DropdownMenuTriggerIconProps {
   /**
@@ -534,7 +522,7 @@ export const DropdownMenuItem = ({
       onOpenChange(false);
       // Trigger haptic feedback on selection
       if (hapticFeedback) {
-        Vibration.vibrate(10);
+        triggerHaptic('press');
       }
     }
   };
@@ -804,7 +792,7 @@ export const DropdownMenuRadioItem = ({
       onCheckedChange(value);
       // Trigger haptic feedback on selection
       if (hapticFeedback) {
-        Vibration.vibrate(10);
+        triggerHaptic('press');
       }
     }
   };
@@ -925,7 +913,7 @@ export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: Drop
     onOpenSubmenu(openSubmenu === submenuId ? null : submenuId);
     // Trigger haptic feedback on press
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 

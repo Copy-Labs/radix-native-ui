@@ -132,6 +132,8 @@ export const SidebarRoot = ({
 
   // Pan responder for swipe/drag gestures
   const panResponder = useMemo(() => {
+    const { onOpenChange } = useSidebar();
+
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
@@ -327,7 +329,7 @@ export const SidebarTrigger = ({
   const handlePress = () => {
     onOpenChange(true);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -408,7 +410,7 @@ export const SidebarOverlay = ({ style, hapticFeedback = true }: SidebarOverlayP
   const handlePress = () => {
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('press');
     }
   };
 
@@ -585,7 +587,7 @@ export const SidebarItem = ({
     onPress?.();
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 
@@ -665,7 +667,7 @@ export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdro
   const handlePress = () => {
     onOpenChange(false);
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection');
     }
   };
 

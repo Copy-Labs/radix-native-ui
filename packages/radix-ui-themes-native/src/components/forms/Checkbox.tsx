@@ -11,6 +11,7 @@ import {
 import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 import type { Color } from '../../theme';
 import { Text } from '../../components';
+import { triggerHaptic } from '../../utils';
 
 interface CheckboxProps {
   /**
@@ -160,7 +161,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
 
         // Trigger haptic feedback on toggle
         if (hapticFeedback) {
-          Vibration.vibrate(10);
+          triggerHaptic('press')
         }
       }
     };

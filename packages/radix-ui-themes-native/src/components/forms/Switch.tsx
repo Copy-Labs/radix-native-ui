@@ -12,6 +12,7 @@ import {
 } from '../../theme/color-helpers';
 import AnimatedPressable from '../../components/primitives/AnimatedPressable';
 import { Color, gray, RadiusSize } from '../../theme';
+import { triggerHaptic } from '../../utils';
 
 interface SwitchProps {
   /**
@@ -124,7 +125,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
       }
       // Trigger haptic feedback on toggle
       if (hapticFeedback && !disabled) {
-        Vibration.vibrate(10);
+        triggerHaptic('press')
       }
     };
 

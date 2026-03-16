@@ -14,7 +14,6 @@ import {
   type StyleProp,
   Animated,
   type LayoutChangeEvent,
-  Vibration,
 } from 'react-native';
 import { View } from '../primitives';
 import AnimatedPressable from '../primitives/AnimatedPressable';
@@ -22,6 +21,7 @@ import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import { ChevronDownIcon } from '../utilities/icons';
+import { triggerHaptic } from '../../utils';
 
 // ============================================================================
 // Types
@@ -386,7 +386,7 @@ const AccordionTrigger = React.forwardRef<
 
     // Trigger haptic feedback on toggle
     if (hapticFeedback) {
-      Vibration.vibrate(10);
+      triggerHaptic('selection')
     }
   };
 

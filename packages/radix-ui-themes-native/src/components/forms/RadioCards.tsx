@@ -22,6 +22,7 @@ import {
 import type { Color, RadiusSize } from '../../theme';
 import { Radio } from '../../components';
 import AnimatedPressable from '../../components/primitives/AnimatedPressable';
+import { triggerHaptic } from '../../utils';
 
 // Context for RadioCards
 interface RadioCardsContextValue {
@@ -289,7 +290,7 @@ const RadioCardsItem = React.forwardRef<
     const handlePress = () => {
       if (!isDisabled) {
         onValueChange(value);
-        Vibration.vibrate(10);
+        triggerHaptic('press')
       }
     };
 
