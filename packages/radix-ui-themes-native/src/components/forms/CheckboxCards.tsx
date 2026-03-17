@@ -13,7 +13,7 @@ import {
   Vibration,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import {
   getAccentColor,
   getGrayAlpha,
@@ -234,6 +234,7 @@ const CheckboxCardsItem = React.forwardRef<
     const context = useCheckboxCardsContext();
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
 
     const {
@@ -298,7 +299,10 @@ const CheckboxCardsItem = React.forwardRef<
         } else {
           onValueChange([...selectedValues, value]);
         }
-        triggerHaptic('press')
+        // Trigger haptic feedback (check global setting)
+        if (globalHaptics) {
+          triggerHaptic('press')
+        }
       }
     };
 

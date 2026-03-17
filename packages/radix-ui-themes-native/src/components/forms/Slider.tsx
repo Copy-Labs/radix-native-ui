@@ -14,10 +14,9 @@ import {
   PanResponderGestureState,
   View as RNView,
   LayoutChangeEvent,
-  Vibration,
 } from 'react-native';
 import { View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../../components';
 import {
   getGrayAlpha,
@@ -190,6 +189,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
     // Theme hooks
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
@@ -403,7 +403,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
         const newValue = positionToValue(position);
 
         // Trigger haptic feedback on track press
-        if (hapticFeedback) {
+        if (globalHaptics && hapticFeedback) {
           triggerHaptic('press')
         }
 
@@ -494,7 +494,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           activeThumbIndexRef.current = nearestIndex;
 
           // Trigger haptic feedback when starting to drag
-          if (hapticFeedback) {
+          if (globalHaptics && hapticFeedback) {
             triggerHaptic('selection')
           }
         },
@@ -511,7 +511,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
           // Trigger haptic feedback when releasing the thumb
-          if (hapticFeedback) {
+          if (globalHaptics && hapticFeedback) {
             triggerHaptic('selection');
           }
         },
@@ -520,7 +520,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
           // Trigger haptic feedback when gesture is terminated
-          if (hapticFeedback) {
+          if (globalHaptics && hapticFeedback) {
             triggerHaptic('selection');
           }
         },

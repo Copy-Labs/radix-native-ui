@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, type ViewStyle, Animated, Easing, Vibration } from 'react-native';
 import { View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../../components';
 import {
   getAccentColor,
@@ -100,6 +100,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
   ) => {
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
@@ -123,8 +124,8 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
       if (onCheckedChange) {
         onCheckedChange(value);
       }
-      // Trigger haptic feedback on toggle
-      if (hapticFeedback && !disabled) {
+      // Trigger haptic feedback on toggle (check both global and local settings)
+      if (globalHaptics && hapticFeedback && !disabled) {
         triggerHaptic('press')
       }
     };

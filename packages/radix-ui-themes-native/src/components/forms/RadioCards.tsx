@@ -13,7 +13,7 @@ import {
   Vibration,
 } from 'react-native';
 import { TouchableOpacity, View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import {
   getAccentColor,
   getGrayAlpha,
@@ -233,6 +233,7 @@ const RadioCardsItem = React.forwardRef<
     const context = useRadioCardsContext();
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
 
     const {
@@ -290,7 +291,10 @@ const RadioCardsItem = React.forwardRef<
     const handlePress = () => {
       if (!isDisabled) {
         onValueChange(value);
-        triggerHaptic('press')
+        // Trigger haptic feedback (check both global and local settings)
+        if (globalHaptics) {
+          triggerHaptic('press')
+        }
       }
     };
 
@@ -368,7 +372,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   itemContainer: {
-    flex: 1,
+    // flex: 1,
   },
   content: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
 import { View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import {
   getAccentColor,
   getContrast,
@@ -102,6 +102,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
 
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
@@ -159,8 +160,8 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
           onCheckedChange?.(newChecked);
         }
 
-        // Trigger haptic feedback on toggle
-        if (hapticFeedback) {
+        // Trigger haptic feedback on toggle (check both global and local settings)
+        if (globalHaptics && hapticFeedback) {
           triggerHaptic('press')
         }
       }

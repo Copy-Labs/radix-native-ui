@@ -18,7 +18,7 @@ import {
 import { View } from '../primitives';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { Text } from '../typography';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import { ChevronDownIcon } from '../utilities/icons';
 import { triggerHaptic } from '../../utils';
@@ -311,6 +311,7 @@ const AccordionTrigger = React.forwardRef<
   const itemContext = useAccordionItemContext();
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
 
   const { value, open, disabled } = itemContext;
@@ -385,7 +386,7 @@ const AccordionTrigger = React.forwardRef<
     }
 
     // Trigger haptic feedback on toggle
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection')
     }
   };

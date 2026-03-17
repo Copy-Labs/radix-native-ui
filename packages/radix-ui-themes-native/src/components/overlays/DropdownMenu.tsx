@@ -3,7 +3,7 @@ import { View, StyleSheet, type StyleProp, ViewStyle, Modal, Dimensions, Touchab
   TextStyle, Vibration
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { BaseColorScale, type Color, ColorScale, getVariantColors, RadiusScale } from '../../theme';
 import {
@@ -120,13 +120,14 @@ interface DropdownMenuTriggerProps {
 
 export const DropdownMenuTrigger = ({ children, asChild = false, hapticFeedback = true }: DropdownMenuTriggerProps) => {
   const { onOpenChange, open, anchorRef, measureAnchor } = useDropdownMenu();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     // Measure the anchor position before opening
     measureAnchor();
     onOpenChange(!open);
     // Trigger haptic feedback
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
     }
   };
@@ -473,6 +474,7 @@ export const DropdownMenuItem = ({
   hapticFeedback = true,
 }: DropdownMenuItemProps) => {
   const { colors, onOpenChange, size } = useDropdownMenu();
+  const globalHaptics = useHaptics();
   const theme = useTheme();
   const mode = useThemeMode();
   const activeColor = color || theme.accentColor;
@@ -521,7 +523,7 @@ export const DropdownMenuItem = ({
       onSelect?.();
       onOpenChange(false);
       // Trigger haptic feedback on selection
-      if (hapticFeedback) {
+      if (globalHaptics && hapticFeedback) {
         triggerHaptic('press');
       }
     }
@@ -756,6 +758,7 @@ export const DropdownMenuRadioItem = ({
   hapticFeedback = true,
 }: DropdownMenuRadioItemProps) => {
   const { colors, size } = useDropdownMenu();
+  const globalHaptics = useHaptics();
   const theme = useTheme();
 
   // Get font size based on size prop
@@ -791,7 +794,7 @@ export const DropdownMenuRadioItem = ({
     if (!disabled) {
       onCheckedChange(value);
       // Trigger haptic feedback on selection
-      if (hapticFeedback) {
+      if (globalHaptics && hapticFeedback) {
         triggerHaptic('press');
       }
     }
@@ -880,6 +883,7 @@ interface DropdownMenuSubTriggerProps {
 
 export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: DropdownMenuSubTriggerProps) => {
   const { colors, openSubmenu, onOpenSubmenu, size } = useDropdownMenu();
+  const globalHaptics = useHaptics();
   const theme = useTheme();
   const submenuId = 'submenu'; // In a real implementation, this would be unique
 
@@ -912,7 +916,7 @@ export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: Drop
   const handlePress = () => {
     onOpenSubmenu(openSubmenu === submenuId ? null : submenuId);
     // Trigger haptic feedback on press
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
     }
   };

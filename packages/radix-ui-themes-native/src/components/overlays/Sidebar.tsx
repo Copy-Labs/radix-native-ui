@@ -21,7 +21,7 @@ import {
   Pressable,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../theme';
 import { getShadow } from '../../theme/shadows';
@@ -48,6 +48,7 @@ interface SidebarContextValue {
   colors: ColorScale | BaseColorScale;
   grayAlpha: ReturnType<typeof getGrayAlpha>;
   radii: RadiusScale;
+  globalHaptics: boolean;
   // Animation and gesture state
   translateX: Animated.Value;
   mainTranslateX: Animated.Value;
@@ -178,7 +179,9 @@ export const SidebarRoot = ({
             }).start();
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
             // Close - swipe left
-            triggerHaptic('selection');
+            if (globalHaptics) {
+              triggerHaptic('selection');
+            }
             // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
@@ -205,7 +208,9 @@ export const SidebarRoot = ({
             }).start();
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
             // Close - swipe right
-            triggerHaptic('selection');
+            if (globalHaptics) {
+              triggerHaptic('selection');
+            }
             // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
@@ -225,7 +230,7 @@ export const SidebarRoot = ({
         isSwiping.current = false;
       },
     });
-  }, [translateX, width, side, open, initialTranslateX, handleOpenChange]);
+  }, [translateX, width, side, open, initialTranslateX, handleOpenChange, globalHaptics]);
 
   // Handle open/close state changes
   useEffect(() => {
@@ -277,6 +282,7 @@ export const SidebarRoot = ({
 
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const colors = mode === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
   const radii = theme.radii;
@@ -296,6 +302,7 @@ export const SidebarRoot = ({
         translateX,
         mainTranslateX,
         panHandlers: panResponder.panHandlers,
+        globalHaptics,
       }}
     >
       {children}
@@ -318,11 +325,11 @@ export const SidebarTrigger = ({
   asChild = true,
   hapticFeedback = false,
 }: SidebarTriggerProps) => {
-  const { onOpenChange } = useSidebar();
+  const { onOpenChange, globalHaptics } = useSidebar();
 
   const handlePress = () => {
     onOpenChange(true);
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };
@@ -389,7 +396,7 @@ interface SidebarOverlayProps {
 }
 
 export const SidebarOverlay = ({ style, hapticFeedback = true }: SidebarOverlayProps) => {
-  const { onOpenChange, variant } = useSidebar();
+  const { onOpenChange, variant, globalHaptics } = useSidebar();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
 
@@ -403,7 +410,7 @@ export const SidebarOverlay = ({ style, hapticFeedback = true }: SidebarOverlayP
 
   const handlePress = () => {
     onOpenChange(false);
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
     }
   };
@@ -572,7 +579,7 @@ export const SidebarItem = ({
   style,
   hapticFeedback = true,
 }: SidebarItemProps) => {
-  const { onOpenChange } = useSidebar();
+  const { onOpenChange, globalHaptics } = useSidebar();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -580,7 +587,7 @@ export const SidebarItem = ({
   const handlePress = () => {
     onPress?.();
     onOpenChange(false);
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };
@@ -647,7 +654,8 @@ interface SidebarBackdropProps {
 }
 
 export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdropProps) => {
-  const { onOpenChange, variant } = useSidebar();
+
+  const { onOpenChange, variant, globalHaptics } = useSidebar();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
 
@@ -660,7 +668,7 @@ export const SidebarBackdrop = ({ style, hapticFeedback = true }: SidebarBackdro
 
   const handlePress = () => {
     onOpenChange(false);
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };

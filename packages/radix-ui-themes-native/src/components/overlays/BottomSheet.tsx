@@ -26,7 +26,7 @@ import {
   Vibration,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { type ButtonProps, Heading } from '../../components';
 import { Button } from '../../components';
@@ -262,7 +262,9 @@ export const BottomSheetRoot = ({
         // Only close if swiped DOWN with enough distance or velocity
         if (gestureState.dy > threshold || gestureState.vy > velocityThreshold / 1000) {
           // Trigger haptic feedback when dismissing via swipe
-          triggerHaptic('selection')
+          if (globalHaptics) {
+            triggerHaptic('selection')
+          }
           // Animate to closed position
           Animated.timing(translateY, {
             toValue: targetSnapHeight,
@@ -303,6 +305,7 @@ export const BottomSheetRoot = ({
 
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
   const colors = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
@@ -348,11 +351,12 @@ export const BottomSheetTrigger = ({
   hapticFeedback = false,
 }: BottomSheetTriggerProps) => {
   const { onOpenChange, open } = useBottomSheet();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     onOpenChange(true);
     // Trigger haptic feedback when opening
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
     }
   };
@@ -421,6 +425,7 @@ interface BottomSheetOverlayProps {
 export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheetOverlayProps) => {
   const { onOpenChange } = useBottomSheet();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
 
   // Use alpha black for overlay based on theme - matches radix-ui styling
@@ -429,7 +434,7 @@ export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheet
   const handlePress = () => {
     onOpenChange(false);
     // Trigger haptic feedback when closing via overlay
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };
@@ -511,6 +516,7 @@ export const BottomSheetContent = ({
 
   // Get the target height for the current snap point
   const targetSnapHeight = snapHeights[currentSnapIndex] || snapHeights[0];
+  const maxTargetSnapHeight = snapHeights[effectiveSnapPoints.length-1] || snapHeights[0];
 
   // Get size-specific styles
   const sizeStyles = getSizeStyles(size, theme.space, radii);
@@ -535,7 +541,8 @@ export const BottomSheetContent = ({
           borderTopRightRadius,
           flex: 1,
           paddingHorizontal: sizeStyles.paddingHorizontal,
-          height: targetSnapHeight,
+          minHeight: targetSnapHeight,
+          maxHeight: maxTargetSnapHeight,
           transform: [{ translateY }],
           ...(shadow || {}),
         },
@@ -547,14 +554,14 @@ export const BottomSheetContent = ({
       {!hideHandle && <BottomSheetHandle />}
 
       {/* Content */}
-      <ScrollView
+      {/*<ScrollView
         style={styles.scrollContent}
         contentContainerStyle={styles.scrollContentContainer}
         showsVerticalScrollIndicator={true}
         bounces={true}
-      >
+      >*/}
         {children}
-      </ScrollView>
+      {/*</ScrollView>*/}
     </Animated.View>
   );
 };
@@ -726,11 +733,12 @@ export const BottomSheetClose = ({
   ...buttonProps
 }: BottomSheetCloseProps) => {
   const { onOpenChange } = useBottomSheet();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     onOpenChange(false);
     // Trigger haptic feedback when closing
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };
@@ -769,12 +777,13 @@ export const BottomSheetAction = ({
   ...buttonProps
 }: BottomSheetActionProps) => {
   const { onOpenChange } = useBottomSheet();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     onPress?.();
     onOpenChange(false);
     // Trigger haptic feedback when action is pressed
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
     }
   };
@@ -802,6 +811,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     // Shadow
     elevation: 4,
+    paddingBottom: 16,
   },
   handleContainer: {
     alignItems: 'center',
@@ -823,7 +833,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 8,
+    // marginTop: 8,
   },
   footerContent: {
     flexDirection: 'row',

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
 import { View, StyleSheet, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback, GestureResponderEvent, type LayoutChangeEvent, TextStyle, Vibration } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { BaseColorScale, type Color, ColorScale, RadiusScale } from '../../theme';
 import {
@@ -116,6 +116,7 @@ export const ContextMenuTrigger = ({
   hapticFeedback = true,
 }: ContextMenuTriggerProps) => {
   const { setPosition, onOpenChange } = useContextMenuContext();
+  const globalHaptics = useHaptics();
 
   const handleLongPress = (event: GestureResponderEvent) => {
     const { pageX, pageY } = event.nativeEvent;
@@ -123,7 +124,7 @@ export const ContextMenuTrigger = ({
     onOpenChange(true);
     onLongPress?.(event);
     // Trigger haptic feedback
-    if (hapticFeedback) {
+    if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
     }
   };
@@ -393,13 +394,14 @@ export const ContextMenuItem = ({
 }: ContextMenuItemProps) => {
   const { colors, onOpenChange, size } = useContextMenuContext();
   const theme = useTheme();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     if (!disabled) {
       onSelect?.();
       onOpenChange(false);
       // Trigger haptic feedback on selection
-      if (hapticFeedback) {
+      if (globalHaptics && hapticFeedback) {
         triggerHaptic('press');
       }
     }
@@ -633,6 +635,8 @@ interface ContextMenuRadioItemProps {
   checked: boolean;
   onCheckedChange: (value: string) => void;
   disabled?: boolean;
+  /** Enable haptic feedback on select */
+  hapticFeedback?: boolean;
 }
 
 export const ContextMenuRadioItem = ({
@@ -641,9 +645,11 @@ export const ContextMenuRadioItem = ({
   checked,
   onCheckedChange,
   disabled = false,
+  hapticFeedback = true,
 }: ContextMenuRadioItemProps) => {
   const { colors, size } = useContextMenuContext();
   const theme = useTheme();
+  const globalHaptics = useHaptics();
 
   // Get font size based on size prop
   const getFontSize = useCallback(() => {
@@ -678,7 +684,9 @@ export const ContextMenuRadioItem = ({
     if (!disabled) {
       onCheckedChange(value);
       // Trigger haptic feedback on selection
-      triggerHaptic('press');
+      if (globalHaptics && hapticFeedback) {
+        triggerHaptic('press');
+      }
     }
   };
 
