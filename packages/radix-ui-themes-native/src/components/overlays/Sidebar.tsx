@@ -100,6 +100,7 @@ export const SidebarRoot = ({
   animationDuration = 300,
 }: SidebarRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
+  // const { onOpenChange: onSidebarOpenChange } = useSidebar();
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
   // Animation value - shared across components
@@ -132,8 +133,6 @@ export const SidebarRoot = ({
 
   // Pan responder for swipe/drag gestures
   const panResponder = useMemo(() => {
-    const { onOpenChange } = useSidebar();
-
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
@@ -185,7 +184,7 @@ export const SidebarRoot = ({
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
             // Close - swipe left
             triggerHaptic('selection');
-            onOpenChange(false, true); // Call immediately for smooth animation
+            // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
               duration: animationDuration,
@@ -212,7 +211,7 @@ export const SidebarRoot = ({
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
             // Close - swipe right
             triggerHaptic('selection');
-            onOpenChange(false, true); // Call immediately for smooth animation
+            // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
               duration: animationDuration,
