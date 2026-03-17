@@ -19,14 +19,9 @@ import {
   type StyleProp,
   ViewStyle,
   Pressable,
-  ScrollView,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { Text } from '../typography';
-import { Heading } from '../typography';
-import type { HeadingProps } from '../typography/Heading';
-import type { TextProps } from '../typography/Text';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../theme';
 import { getShadow } from '../../theme/shadows';
