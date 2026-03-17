@@ -19,14 +19,9 @@ import {
   type StyleProp,
   ViewStyle,
   Pressable,
-  ScrollView,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
-import { Text } from '../typography';
-import { Heading } from '../typography';
-import type { HeadingProps } from '../typography/Heading';
-import type { TextProps } from '../typography/Text';
 import { getGrayAlpha } from '../../theme/color-helpers';
 import type { BaseColorScale, ColorScale, RadiusScale, SpaceScale } from '../../theme';
 import { getShadow } from '../../theme/shadows';
@@ -100,6 +95,7 @@ export const SidebarRoot = ({
   animationDuration = 300,
 }: SidebarRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
+  // const { onOpenChange: onSidebarOpenChange } = useSidebar();
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
   // Animation value - shared across components
@@ -132,8 +128,6 @@ export const SidebarRoot = ({
 
   // Pan responder for swipe/drag gestures
   const panResponder = useMemo(() => {
-    const { onOpenChange } = useSidebar();
-
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
       onMoveShouldSetPanResponder: (_, gestureState) => {
@@ -185,7 +179,7 @@ export const SidebarRoot = ({
           } else if (gestureState.dx < -threshold || gestureState.vx < -velocityThreshold / 1000) {
             // Close - swipe left
             triggerHaptic('selection');
-            onOpenChange(false, true); // Call immediately for smooth animation
+            // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: -width,
               duration: animationDuration,
@@ -212,7 +206,7 @@ export const SidebarRoot = ({
           } else if (gestureState.dx > threshold || gestureState.vx > velocityThreshold / 1000) {
             // Close - swipe right
             triggerHaptic('selection');
-            onOpenChange(false, true); // Call immediately for smooth animation
+            // onSidebarOpenChange(false, true); // Call immediately for smooth animation
             Animated.timing(translateX, {
               toValue: width,
               duration: animationDuration,
