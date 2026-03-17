@@ -2,6 +2,7 @@ import React, { useRef, useCallback } from 'react';
 import { Animated, GestureResponderEvent, StyleProp, Vibration, ViewStyle } from 'react-native';
 import RnPressable, { PressableProps } from './Pressable';
 import { triggerHaptic } from '../../utils/haptics';
+import { useHaptics } from '../../hooks/useTheme';
 
 // Create an animated version of Pressable
 const AnimatedPressableComponent = Animated.createAnimatedComponent(RnPressable);
@@ -42,6 +43,8 @@ export const AnimatedPressable = React.memo(
       },
       ref
     ) => {
+      // Get global haptics setting
+      const globalHaptics = useHaptics();
       // Animated values for press feedback
       const scaleAnim = useRef(new Animated.Value(1)).current;
       const opacityAnim = useRef(new Animated.Value(1)).current;
@@ -83,14 +86,14 @@ export const AnimatedPressable = React.memo(
       // Handle press in with animation and haptic feedback
       const handlePressIn = useCallback(
         (event: GestureResponderEvent) => {
-          // Trigger haptic feedback if enabled and not disabled
-          if (hapticFeedback && !disabled) {
+          // Trigger haptic feedback if both global and local haptics are enabled
+          if (globalHaptics && hapticFeedback && !disabled) {
             triggerHaptic('press');
           }
           animatePressIn();
           onPressIn?.(event);
         },
-        [animatePressIn, onPressIn, hapticFeedback, disabled]
+        [animatePressIn, onPressIn, globalHaptics, hapticFeedback, disabled]
       );
 
       // Handle press out with animation

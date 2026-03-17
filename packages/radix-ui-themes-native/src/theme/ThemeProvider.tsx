@@ -14,6 +14,8 @@ interface ThemeContextValue {
   mode: ThemeMode;
   setMode: (mode: ThemeMode) => void;
   toggleMode: () => void;
+  // Haptics setting
+  haptics: boolean;
   // Toast-related values
   toastConfig: Required<ToastConfig>;
   toasts: ToastData[];
@@ -103,6 +105,13 @@ export interface ThemeProviderProps {
    * Toast configuration options
    */
   toastConfig?: ToastConfig;
+
+  // ===== HAPTICS CONFIGURATION =====
+  /**
+   * Enable or disable haptic feedback globally
+   * @default true
+   */
+  haptics?: boolean;
 }
 
 /**
@@ -137,6 +146,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   themeOptions = {},
   // Toast
   toastConfig: userToastConfig,
+  // Haptics
+  haptics: globalHaptics,
 }) => {
   // Get parent theme context if it exists (for nested ThemeProviders)
   const parentContext = useContext(ThemeContext);
@@ -268,12 +279,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     );
   }, []);
 
+  // Resolve haptics from prop or default to true
+  const resolvedHaptics = globalHaptics ?? true;
+
   const value = useMemo(
     () => ({
       theme,
       mode,
       setMode: handleSetMode,
       toggleMode,
+      // Haptics setting
+      haptics: resolvedHaptics,
       // Toast-related values
       toastConfig,
       toasts,
@@ -282,7 +298,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       hideAllToasts,
       updateToast,
     }),
-    [theme, mode, toggleMode, toastConfig, toasts, showToast, hideToast, hideAllToasts, updateToast]
+    [theme, mode, toggleMode, resolvedHaptics, toastConfig, toasts, showToast, hideToast, hideAllToasts, updateToast]
   );
 
   return (
@@ -313,6 +329,14 @@ export const useThemeMode = (): ThemeMode => {
 export const useThemeActions = () => {
   const { setMode, toggleMode, mode } = useThemeContext();
   return { setMode, toggleMode, mode };
+};
+
+/**
+ * Hook to access the global haptics setting
+ * @returns boolean - whether haptics are enabled globally
+ */
+export const useHaptics = (): boolean => {
+  return useThemeContext().haptics;
 };
 
 /**

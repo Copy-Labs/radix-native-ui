@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
 import { View } from '../primitives';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../../components';
 import { Color, getContrast, getVariantColors } from '../../theme';
 import {
@@ -96,6 +96,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
   ) => {
     const theme = useTheme();
     const mode = useThemeMode();
+    const globalHaptics = useHaptics();
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
@@ -152,8 +153,8 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
         if (selected === undefined) {
           setIsInternallySelected(true);
         }
-        // Trigger haptic feedback on select
-        if (hapticFeedback) {
+        // Trigger haptic feedback on select (check both global and local settings)
+        if (globalHaptics && hapticFeedback) {
           triggerHaptic('press')
         }
       }

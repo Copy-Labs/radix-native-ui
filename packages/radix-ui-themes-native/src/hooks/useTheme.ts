@@ -59,5 +59,17 @@ export const useThemeColors = () => {
   };
 };
 
+/**
+ * Hook to access the global haptics setting
+ * @returns boolean - whether haptics are enabled globally
+ */
+export const useHaptics = (): boolean => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error('useHaptics must be used within a ThemeProvider');
+  }
+  return context.haptics;
+};
+
 export default useTheme;
 // export {ThemeContext, ThemeProvider, useThemeContext} from '@/theme/ThemeProvider';

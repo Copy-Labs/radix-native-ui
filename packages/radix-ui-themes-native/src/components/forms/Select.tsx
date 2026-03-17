@@ -19,7 +19,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { AnimatedPressable } from '../primitives/AnimatedPressable';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import {
   BaseColorScale,
@@ -295,12 +295,16 @@ interface SelectTriggerProps {
 
 export const SelectTrigger = ({ children, asChild = false }: SelectTriggerProps) => {
   const { onOpenChange, open, anchorRef, measureAnchor, disabled } = useSelect();
+  const globalHaptics = useHaptics();
 
   const handlePress = () => {
     // Measure the anchor position before opening
     measureAnchor();
     onOpenChange(!open);
-    triggerHaptic('press')
+    // Trigger haptic feedback (check global setting)
+    if (globalHaptics) {
+      triggerHaptic('press')
+    }
   };
 
   if (asChild && React.isValidElement(children)) {
@@ -620,6 +624,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
   } = useSelect();
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isSelected = value === itemValue;
 
   // Helper to extract text from children
@@ -715,7 +720,10 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
       const text = extractText(children);
       setSelectedItemText(text);
       onValueChange(itemValue);
-      triggerHaptic('press')
+      // Trigger haptic feedback (check global setting)
+      if (globalHaptics) {
+        triggerHaptic('press')
+      }
     }
   };
 

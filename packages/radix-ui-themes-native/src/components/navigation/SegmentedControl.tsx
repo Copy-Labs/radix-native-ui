@@ -2,7 +2,7 @@ import React, { type ReactNode, createContext, useContext, useState, useCallback
 import { StyleSheet, type StyleProp, ViewStyle, type LayoutChangeEvent, Animated, Easing, Vibration } from 'react-native';
 import { View } from '../primitives';
 import { Text } from '../typography';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { getGrayAlpha, getVariantColors } from '../../theme/color-helpers';
 import { BaseColorScale, Color, RadiusSize } from '../../theme';
 import AnimatedPressable from '../primitives/AnimatedPressable';
@@ -37,6 +37,7 @@ interface SegmentedControlContextValue {
   theme: ReturnType<typeof useTheme>;
   pillBackgroundColor: string;
   hapticFeedback: boolean;
+  globalHaptics: boolean;
 }
 
 const SegmentedControlContext = createContext<SegmentedControlContextValue | null>(null);
@@ -91,6 +92,7 @@ const SegmentedControlItem = ({
     theme,
     pillBackgroundColor,
     hapticFeedback,
+    globalHaptics,
   } = useSegmentedControlContext();
 
   const isSelected = value === selectedValue;
@@ -100,11 +102,11 @@ const SegmentedControlItem = ({
     if (!isDisabled) {
       onValueChange(value);
       // Trigger haptic feedback on selection
-      if (hapticFeedback) {
+      if (globalHaptics && hapticFeedback) {
         triggerHaptic('press')
       }
     }
-  }, [isDisabled, onValueChange, value, hapticFeedback]);
+  }, [isDisabled, onValueChange, value, globalHaptics, hapticFeedback]);
 
   const handleLayout = useCallback((event: LayoutChangeEvent) => {
     onItemLayout(value, event);
@@ -219,6 +221,7 @@ const SegmentedControlRoot = ({
 }: SegmentedControlRootProps) => {
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
   const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
@@ -337,6 +340,7 @@ const SegmentedControlRoot = ({
     theme,
     pillBackgroundColor,
     hapticFeedback,
+    globalHaptics,
   };
 
   // Calculate pill dimensions
