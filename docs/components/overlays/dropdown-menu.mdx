@@ -60,11 +60,22 @@ Individual menu item.
 
 ### DropdownMenu.Separator
 
-Visual separator between items.
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
 
 ### DropdownMenu.Label
 
-Label for a group of items.
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Label content.
+  </Prop>
+  <Prop name="style" type="StyleProp<TextStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
 
 ### DropdownMenu.Group
 
@@ -90,9 +101,69 @@ Nested submenu.
 
 Trigger for a submenu.
 
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    SubTrigger content.
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback on press.
+  </Prop>
+</PropTable>
+
 ### DropdownMenu.SubContent
 
 Content for a submenu.
+
+### DropdownMenu.Portal
+
+Renders menu content in a Modal.
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Portal content.
+  </Prop>
+</PropTable>
+
+### DropdownMenu.Overlay
+
+Backdrop for menu. Closes menu when pressed.
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### DropdownMenu.TriggerIcon
+
+Icon button trigger for the menu.
+
+<PropTable>
+  <Prop name="icon" type="ReactNode">
+    Custom icon to render (defaults to down chevron).
+  </Prop>
+  <Prop name="variant" type="'classic' | 'solid' | 'soft' | 'outline' | 'ghost'" default="'ghost'">
+    Button variant.
+  </Prop>
+  <Prop name="color" type="Color">
+    Color scheme for the button.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3" default="2">
+    Button size.
+  </Prop>
+  <Prop name="disabled" type="boolean">
+    Whether the button is disabled.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string" default="'Open menu'">
+    Accessibility label.
+  </Prop>
+  <Prop name="highContrast" type="boolean">
+    High contrast mode for accessibility.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
 
 ## Props
 
@@ -108,6 +179,9 @@ Content for a submenu.
   <Prop name="onOpenChange" type="(open: boolean) => void">
     Callback when open state changes.
   </Prop>
+  <Prop name="defaultOpen" type="boolean" default="false">
+    Initial open state.
+  </Prop>
 </PropTable>
 
 ### DropdownMenu.Content
@@ -116,17 +190,26 @@ Content for a submenu.
   <Prop name="children" type="ReactNode">
     Menu items.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
-  </Prop>
   <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'bottom'">
     Preferred side to render.
   </Prop>
-  <Prop name="sideOffset" type="number">
+  <Prop name="sideOffset" type="number" default="4">
     Distance from trigger.
   </Prop>
   <Prop name="align" type="'start' | 'center' | 'end'" default="'start'">
     Alignment relative to trigger.
+  </Prop>
+  <Prop name="alignOffset" type="number" default="0">
+    Offset from alignment.
+  </Prop>
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Avoid viewport collisions.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
+    Size of the menu content.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
   </Prop>
 </PropTable>
 
@@ -142,8 +225,11 @@ Content for a submenu.
   <Prop name="disabled" type="boolean" default="false">
     Whether the item is disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Item color (e.g., "red" for destructive actions).
+  </Prop>
+  <Prop name="shortcut" type="string">
+    Keyboard shortcut to display.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
@@ -159,7 +245,7 @@ Content for a submenu.
   <Prop name="children" type="ReactNode">
     Trigger element.
   </Prop>
-  <Prop name="asChild" type="boolean" default="true">
+  <Prop name="asChild" type="boolean" default="false">
     Whether to merge props onto child element.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
