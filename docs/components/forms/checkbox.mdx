@@ -21,37 +21,48 @@ import { Checkbox } from 'radix-native-ui';
 <Checkbox
   checked={agreed}
   onCheckedChange={setAgreed}
->
-  I agree to the terms
-</Checkbox>
+  label="I agree to the terms"
+/>
 ```
 
 ## Props
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Label content.
+  <Prop name="checked" type="boolean">
+    Whether the checkbox is checked (controlled mode).
   </Prop>
-  <Prop name="checked" type="boolean" default="false">
-    Whether the checkbox is checked.
+  <Prop name="defaultChecked" type="boolean" default="false">
+    Default checked state (uncontrolled mode).
   </Prop>
   <Prop name="onCheckedChange" type="(checked: boolean) => void">
     Called when checked state changes.
   </Prop>
+  <Prop name="label" type="string">
+    Label text displayed next to the checkbox.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'solid'">
+    Visual style variant.
+  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether the checkbox is disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
     Size of the checkbox.
+  </Prop>
+  <Prop name="indeterminate" type="boolean" default="false">
+    Whether the checkbox is in an indeterminate state.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback when toggling.
@@ -80,48 +91,52 @@ Checkboxes provide haptic feedback by default when toggled. You can disable this
 <Checkbox
   checked={checked}
   onCheckedChange={setChecked}
->
-  Accept terms
-</Checkbox>
+  label="Accept terms"
+/>
 ```
 
 ### Sizes
 
 ```tsx
-<Checkbox size={1}>Small</Checkbox>
-<Checkbox size={2}>Medium (default)</Checkbox>
-<Checkbox size={3}>Large</Checkbox>
+<Checkbox size="1" label="Small" />
+<Checkbox size="2" label="Medium (default)" />
+<Checkbox size="3" label="Large" />
 ```
 
 ### With Color
 
 ```tsx
-<Checkbox color="blue" checked={checked} onCheckedChange={setChecked}>
-  Blue checkbox
-</Checkbox>
+<Checkbox color="blue" checked={checked} onCheckedChange={setChecked} label="Blue checkbox" />
 ```
 
 ### Disabled
 
 ```tsx
-<Checkbox disabled>
-  Disabled checkbox
-</Checkbox>
+<Checkbox disabled label="Disabled checkbox" />
+```
+
+### Variants
+
+```tsx
+<Checkbox variant="solid" defaultChecked label="Solid" />
+<Checkbox variant="soft" defaultChecked label="Soft" />
+<Checkbox variant="surface" defaultChecked label="Surface" />
+<Checkbox variant="outline" defaultChecked label="Outline" />
+```
+
+### Indeterminate
+
+```tsx
+<Checkbox indeterminate label="Select all (indeterminate)" />
 ```
 
 ### Form Example
 
 ```tsx
 <Flex direction="column" gap={3}>
-  <Checkbox checked={terms} onCheckedChange={setTerms}>
-    I agree to the Terms of Service
-  </Checkbox>
-  <Checkbox checked={privacy} onCheckedChange={setPrivacy}>
-    I agree to the Privacy Policy
-  </Checkbox>
-  <Checkbox checked={newsletter} onCheckedChange={setNewsletter}>
-    Subscribe to newsletter
-  </Checkbox>
+  <Checkbox checked={terms} onCheckedChange={setTerms} label="I agree to the Terms of Service" />
+  <Checkbox checked={privacy} onCheckedChange={setPrivacy} label="I agree to the Privacy Policy" />
+  <Checkbox checked={newsletter} onCheckedChange={setNewsletter} label="Subscribe to newsletter" />
   <Button disabled={!terms || !privacy}>Continue</Button>
 </Flex>
 ```
