@@ -18,7 +18,7 @@ import { Box } from 'radix-native-ui';
 ```tsx
 import { Box, Text } from 'radix-native-ui';
 
-<Box padding={4} backgroundColor="gray.2">
+<Box padding={8} backgroundColor="gray">
   <Text>Content inside a box</Text>
 </Box>
 ```
@@ -34,6 +34,14 @@ import { Box, Text } from 'radix-native-ui';
   </Prop>
   <Prop name="asChild" type="boolean" default="false">
     Merge props onto immediate child element.
+  </Prop>
+
+  {/* Background & Radius */}
+  <Prop name="backgroundColor" type="'gray' | 'transparent' | string">
+    Background color variant. Use 'gray' for theme gray scale, 'transparent', or any color string.
+  </Prop>
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+    Border radius variant using theme scale.
   </Prop>
 
   {/* Layout */}
@@ -52,16 +60,45 @@ import { Box, Text } from 'radix-native-ui';
   <Prop name="flexWrap" type="'wrap' | 'nowrap' | 'wrap-reverse'">
     Wrapping behavior.
   </Prop>
-  <Prop name="flex" type="number">
-    Flex grow/shrink value.
+  <Prop name="flexGrow" type="number">
+    Flex grow value.
   </Prop>
-  <Prop name="gap" type="number">
-    Gap between children (uses theme scale).
+  <Prop name="flexShrink" type="number">
+    Flex shrink value.
+  </Prop>
+  <Prop name="flexBasis" type="DimensionValue">
+    Flex basis value.
+  </Prop>
+  <Prop name="alignSelf" type="'auto' | 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'">
+    Override align items for this element.
+  </Prop>
+
+  {/* Position */}
+  <Prop name="position" type="'absolute' | 'relative'">
+    Position type.
+  </Prop>
+  <Prop name="top" type="number">
+    Top offset.
+  </Prop>
+  <Prop name="right" type="number">
+    Right offset.
+  </Prop>
+  <Prop name="bottom" type="number">
+    Bottom offset.
+  </Prop>
+  <Prop name="left" type="number">
+    Left offset.
+  </Prop>
+  <Prop name="zIndex" type="number">
+    Z-index layer.
+  </Prop>
+  <Prop name="overflow" type="'visible' | 'hidden' | 'scroll'">
+    Overflow behavior.
   </Prop>
 
   {/* Spacing */}
   <Prop name="padding" type="number">
-    Padding on all sides (uses theme scale).
+    Padding on all sides.
   </Prop>
   <Prop name="paddingTop" type="number">
     Top padding.
@@ -82,7 +119,7 @@ import { Box, Text } from 'radix-native-ui';
     Vertical padding.
   </Prop>
   <Prop name="margin" type="number">
-    Margin on all sides (uses theme scale).
+    Margin on all sides.
   </Prop>
   <Prop name="marginTop" type="number">
     Top margin.
@@ -103,19 +140,18 @@ import { Box, Text } from 'radix-native-ui';
     Vertical margin.
   </Prop>
 
-  {/* Appearance */}
-  <Prop name="backgroundColor" type="string">
-    Background color (e.g., 'gray.2', '#ffffff').
-  </Prop>
-  <Prop name="borderRadius" type="number">
-    Border radius (uses theme scale).
-  </Prop>
+  {/* Border */}
   <Prop name="borderWidth" type="number">
     Border width.
+  </Prop>
+  <Prop name="borderRadius" type="number">
+    Border radius (numeric value).
   </Prop>
   <Prop name="borderColor" type="string">
     Border color.
   </Prop>
+
+  {/* Appearance */}
   <Prop name="opacity" type="number">
     Opacity (0-1).
   </Prop>
@@ -124,22 +160,22 @@ import { Box, Text } from 'radix-native-ui';
   </Prop>
 
   {/* Dimensions */}
-  <Prop name="width" type="number | string">
+  <Prop name="width" type="DimensionValue">
     Width.
   </Prop>
-  <Prop name="height" type="number | string">
+  <Prop name="height" type="DimensionValue">
     Height.
   </Prop>
-  <Prop name="minWidth" type="number | string">
+  <Prop name="minWidth" type="DimensionValue">
     Minimum width.
   </Prop>
-  <Prop name="maxWidth" type="number | string">
+  <Prop name="maxWidth" type="DimensionValue">
     Maximum width.
   </Prop>
-  <Prop name="minHeight" type="number | string">
+  <Prop name="minHeight" type="DimensionValue">
     Minimum height.
   </Prop>
-  <Prop name="maxHeight" type="number | string">
+  <Prop name="maxHeight" type="DimensionValue">
     Maximum height.
   </Prop>
 </PropTable>
@@ -149,7 +185,7 @@ import { Box, Text } from 'radix-native-ui';
 ### Basic Container
 
 ```tsx
-<Box padding={4} backgroundColor="gray.2">
+<Box padding={8} backgroundColor="gray">
   <Text>Simple container</Text>
 </Box>
 ```
@@ -158,9 +194,9 @@ import { Box, Text } from 'radix-native-ui';
 
 ```tsx
 <Box
-  padding={4}
-  backgroundColor="gray.2"
-  borderRadius={3}
+  padding={8}
+  backgroundColor="gray"
+  radius="medium"
 >
   <Text>Card content</Text>
 </Box>
@@ -169,10 +205,9 @@ import { Box, Text } from 'radix-native-ui';
 ### Flex Container
 
 ```tsx
-<Box display="flex" flexDirection="row" gap={3}>
-  <Text>Item 1</Text>
-  <Text>Item 2</Text>
-  <Text>Item 3</Text>
+<Box display="flex" flexDirection="row" justifyContent="space-between">
+  <Text>Left</Text>
+  <Text>Right</Text>
 </Box>
 ```
 
@@ -180,58 +215,43 @@ import { Box, Text } from 'radix-native-ui';
 
 ```tsx
 <Box
-  padding={4}
+  padding={8}
   borderWidth={1}
-  borderColor="gray.6"
-  borderRadius={2}
+  borderColor="gray"
+  radius="small"
 >
   <Text>Bordered box</Text>
 </Box>
 ```
 
-### Responsive Dimensions
+### Absolute Positioning
 
 ```tsx
-<Box width="100%" height={200} backgroundColor="blue.3">
-  <Text>Full width, fixed height</Text>
+<Box position="relative" height={200}>
+  <Box
+    position="absolute"
+    top={10}
+    right={10}
+    padding={4}
+    backgroundColor="gray"
+    radius="small"
+  >
+    <Text>Positioned box</Text>
+  </Box>
 </Box>
 ```
 
-### With Shadow
+### With Shadow (Android)
 
 ```tsx
 <Box
-  padding={4}
-  backgroundColor="gray.1"
-  borderRadius={3}
+  padding={8}
+  backgroundColor="gray"
+  radius="large"
   elevation={2}
 >
   <Text>Box with shadow</Text>
 </Box>
-```
-
-## Shorthand Props
-
-Box supports shorthand props for common styles:
-
-```tsx
-// Padding
-<Box p={4} />          // padding
-<Box px={4} />         // paddingHorizontal
-<Box py={4} />         // paddingVertical
-<Box pt={4} />         // paddingTop
-<Box pb={4} />         // paddingBottom
-<Box pl={4} />         // paddingLeft
-<Box pr={4} />         // paddingRight
-
-// Margin
-<Box m={4} />          // margin
-<Box mx={4} />         // marginHorizontal
-<Box my={4} />         // marginVertical
-<Box mt={4} />         // marginTop
-<Box mb={4} />         // marginBottom
-<Box ml={4} />         // marginLeft
-<Box mr={4} />         // marginRight
 ```
 
 ## Related
