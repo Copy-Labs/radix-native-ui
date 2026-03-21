@@ -35,6 +35,14 @@ The root container component that manages selection state.
 
 Individual option item.
 
+### SegmentedControl.Value
+
+Text content for an item with automatic color handling based on selection state. Use this for proper text styling within items.
+
+### SegmentedControl.Icon
+
+Icon element for an item with automatic color and size handling based on selection state. Use this to ensure icons match the text color.
+
 ## Props
 
 ### SegmentedControl.Root
@@ -52,14 +60,26 @@ Individual option item.
   <Prop name="onValueChange" type="(value: string) => void">
     Callback when selection changes.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="disabled" type="boolean" default="false">
+    Whether the entire control is disabled.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
+  <Prop name="size" type="1 | 2 | 3 | 4" default="3">
     Size of the control.
   </Prop>
-  <Prop name="color" type="string" default="'accent'">
-    Color of the selected item.
+  <Prop name="color" type="Color">
+    Color of the selected item (e.g., 'blue', 'green', 'red').
+  </Prop>
+  <Prop name="radius" type="RadiusSize" default="medium">
+    Border radius variant.
+  </Prop>
+  <Prop name="highContrast" type="boolean" default="false">
+    Enable high contrast mode for accessibility.
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
   </Prop>
 </PropTable>
 
@@ -75,24 +95,23 @@ Individual option item.
   <Prop name="disabled" type="boolean" default="false">
     Whether the item is disabled.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
-  </Prop>
-  <Prop name="hapticFeedback" type="boolean" default="true">
-    Enable haptic feedback when selected.
+</PropTable>
+
+### SegmentedControl.Value
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Text content to display.
   </Prop>
 </PropTable>
 
-### Haptic Feedback
+### SegmentedControl.Icon
 
-Segmented control items provide haptic feedback by default when selected. You can disable this on the Root component with the `hapticFeedback` prop:
-
-```tsx
-<SegmentedControl.Root defaultValue="option1" hapticFeedback={false}>
-  <SegmentedControl.Item value="option1">No haptic</SegmentedControl.Item>
-  <SegmentedControl.Item value="option2">No haptic</SegmentedControl.Item>
-</SegmentedControl.Root>
-```
+<PropTable>
+  <Prop name="children" type="ReactElement">
+    Icon element to display.
+  </Prop>
+</PropTable>
 
 ## Examples
 
@@ -122,6 +141,11 @@ Segmented control items provide haptic feedback by default when selected. You ca
   <SegmentedControl.Item value="option1">Large</SegmentedControl.Item>
   <SegmentedControl.Item value="option2">Large</SegmentedControl.Item>
 </SegmentedControl.Root>
+
+<SegmentedControl.Root size={4} defaultValue="option1">
+  <SegmentedControl.Item value="option1">Extra Large</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">Extra Large</SegmentedControl.Item>
+</SegmentedControl.Root>
 ```
 
 ### Colors
@@ -135,6 +159,25 @@ Segmented control items provide haptic feedback by default when selected. You ca
 <SegmentedControl.Root color="green" defaultValue="option1">
   <SegmentedControl.Item value="option1">Green</SegmentedControl.Item>
   <SegmentedControl.Item value="option2">Green</SegmentedControl.Item>
+</SegmentedControl.Root>
+```
+
+### With Radius
+
+```tsx
+<SegmentedControl.Root radius="small" defaultValue="option1">
+  <SegmentedControl.Item value="option1">Small Radius</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">Small Radius</SegmentedControl.Item>
+</SegmentedControl.Root>
+
+<SegmentedControl.Root radius="large" defaultValue="option1">
+  <SegmentedControl.Item value="option1">Large Radius</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">Large Radius</SegmentedControl.Item>
+</SegmentedControl.Root>
+
+<SegmentedControl.Root radius="full" defaultValue="option1">
+  <SegmentedControl.Item value="option1">Full</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">Full</SegmentedControl.Item>
 </SegmentedControl.Root>
 ```
 
@@ -172,6 +215,59 @@ function ControlledSegmentedControl() {
 </SegmentedControl.Root>
 ```
 
+### Disabled Control
+
+```tsx
+<SegmentedControl.Root defaultValue="option1" disabled>
+  <SegmentedControl.Item value="option1">Disabled</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">Disabled</SegmentedControl.Item>
+</SegmentedControl.Root>
+```
+
+### With Value Component
+
+Use `SegmentedControl.Value` for proper text styling with automatic color handling:
+
+```tsx
+<SegmentedControl.Root defaultValue="day">
+  <SegmentedControl.Item value="day">
+    <SegmentedControl.Value>Day</SegmentedControl.Value>
+  </SegmentedControl.Item>
+  <SegmentedControl.Item value="week">
+    <SegmentedControl.Value>Week</SegmentedControl.Value>
+  </SegmentedControl.Item>
+  <SegmentedControl.Item value="month">
+    <SegmentedControl.Value>Month</SegmentedControl.Value>
+  </SegmentedControl.Item>
+</SegmentedControl.Root>
+```
+
+### With Icon
+
+Use `SegmentedControl.Icon` to display icons that automatically match the text color:
+
+```tsx
+import { List, Grid, Table } from 'lucide-react-native';
+
+<SegmentedControl.Root defaultValue="grid">
+  <SegmentedControl.Item value="list">
+    <SegmentedControl.Icon>
+      <List />
+    </SegmentedControl.Icon>
+  </SegmentedControl.Item>
+  <SegmentedControl.Item value="grid">
+    <SegmentedControl.Icon>
+      <Grid />
+    </SegmentedControl.Icon>
+  </SegmentedControl.Item>
+  <SegmentedControl.Item value="table">
+    <SegmentedControl.Icon>
+      <Table />
+    </SegmentedControl.Icon>
+  </SegmentedControl.Item>
+</SegmentedControl.Root>
+```
+
 ### Time Range Selector
 
 ```tsx
@@ -196,13 +292,37 @@ function ControlledSegmentedControl() {
   <Heading size={3}>Products</Heading>
   <SegmentedControl.Root defaultValue="grid">
     <SegmentedControl.Item value="list">
-      <Icon name="list" />
+      <SegmentedControl.Icon>
+        <List />
+      </SegmentedControl.Icon>
     </SegmentedControl.Item>
     <SegmentedControl.Item value="grid">
-      <Icon name="grid" />
+      <SegmentedControl.Icon>
+        <Grid />
+      </SegmentedControl.Icon>
     </SegmentedControl.Item>
   </SegmentedControl.Root>
 </Flex>
+```
+
+### Haptic Feedback
+
+Segmented control items provide haptic feedback by default when selected. You can disable this on the Root component with the `hapticFeedback` prop:
+
+```tsx
+<SegmentedControl.Root defaultValue="option1" hapticFeedback={false}>
+  <SegmentedControl.Item value="option1">No haptic</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">No haptic</SegmentedControl.Item>
+</SegmentedControl.Root>
+```
+
+### High Contrast
+
+```tsx
+<SegmentedControl.Root defaultValue="option1" highContrast>
+  <SegmentedControl.Item value="option1">High Contrast</SegmentedControl.Item>
+  <SegmentedControl.Item value="option2">High Contrast</SegmentedControl.Item>
+</SegmentedControl.Root>
 ```
 
 ## Related
