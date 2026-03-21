@@ -5,36 +5,126 @@ description: Portal component for rendering content outside the component hierar
 
 # Portal
 
-`Portal` is a utility component for rendering children into a different part of the React tree, typically at the root of the application.
+`Portal` is a utility component for rendering children into a different part of the React tree, typically at the root of the application. In React Native, it uses Modal to achieve this.
 
 ## Import
 
 ```tsx
-import { Portal } from 'radix-native-ui';
+import { Portal, PortalProvider, usePortal, ManagedPortal } from 'radix-native-ui';
 ```
 
-## Usage
+## Basic Usage
 
 ```tsx
 import { Portal, Flex, Text } from 'radix-native-ui';
 
 <Portal>
-  <Flex style={{ position: 'absolute', top: 0, left: 0 }}>
+  <Flex position="absolute" top={0} left={0}>
     <Text>This renders at the root level</Text>
   </Flex>
 </Portal>
 ```
 
+## Portal Components
+
+### Portal
+
+The main portal component that renders children into a Modal.
+
+### Portal.Provider (PortalProvider)
+
+Provider component that manages multiple portals. Wrap your app with this to enable programmatic portal management.
+
+### usePortal
+
+Hook to programmatically add, remove, and update portals.
+
+### ManagedPortal
+
+A managed portal that automatically handles cleanup when the component unmounts or visibility changes.
+
+### Portal.FlatList
+
+A FlatList that renders its items in a portal.
+
 ## Props
+
+### Portal
 
 <PropTable>
   <Prop name="children" type="ReactNode">
     Content to render in the portal.
   </Prop>
-  <Prop name="container" type="HTMLElement | React.RefObject">
-    Custom container element.
+  <Prop name="hostId" type="string | null">
+    Optional host component id to attach portal to.
+  </Prop>
+  <Prop name="visible" type="boolean" default="true">
+    Whether the portal is visible.
+  </Prop>
+  <Prop name="animationType" type="'none' | 'fade' | 'slide'" default="'fade'">
+    Animation type for the modal.
+  </Prop>
+  <Prop name="onRequestClose" type="() => void">
+    Callback when the modal requests to close.
+  </Prop>
+  <Prop name="supportedOrientations" type="Array<'portrait' | 'portrait-upside-down' | 'landscape' | 'landscape-left' | 'landscape-right'>" default="['portrait', 'landscape']">
+    Supported device orientations.
+  </Prop>
+  <Prop name="transparent" type="boolean" default="false">
+    Whether the modal is transparent.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string" default="'Portal'">
+    Accessibility label for the portal/modal.
+  </Prop>
+  <Prop name="accessibilityRole" type="AccessibilityRole" default="'dialog'">
+    Accessibility role.
+  </Prop>
+  <Prop name="style" type="any">
+    Style prop for the container.
   </Prop>
 </PropTable>
+
+### Portal.Provider
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Child components including PortalProvider.
+  </Prop>
+</PropTable>
+
+### ManagedPortal
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Content to render in the portal.
+  </Prop>
+  <Prop name="name" type="string" required>
+    Unique name/identifier for the portal.
+  </Prop>
+  <Prop name="visible" type="boolean" default="true">
+    Whether the portal is visible.
+  </Prop>
+  <Prop name="animationType" type="'none' | 'fade' | 'slide'" default="'fade'">
+    Animation type for the modal.
+  </Prop>
+</PropTable>
+
+### usePortal Hook
+
+The usePortal hook returns methods for managing portals:
+
+```tsx
+const { addPortal, removePortal, updatePortal } = usePortal();
+
+// Add a portal
+addPortal('my-portal', <View><Text>Content</Text></View>);
+
+// Remove a portal
+removePortal('my-portal');
+
+// Update a portal's content
+updatePortal('my-portal', <View><Text>New Content</Text></View>);
+```
 
 ## Examples
 
@@ -42,7 +132,7 @@ import { Portal, Flex, Text } from 'radix-native-ui';
 
 ```tsx
 <Portal>
-  <Flex style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+  <Flex position="absolute" bottom={5} left={5} right={5}>
     <Card>
       <Text>This appears at the bottom of the screen</Text>
     </Card>
@@ -57,18 +147,12 @@ function ModalOverlay({ visible, children }) {
   if (!visible) return null;
 
   return (
-    <Portal>
+    <Portal visible={visible}>
       <Flex
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
+        flex={1}
+        backgroundColor="rgba(0, 0, 0, 0.5)"
+        justify="center"
+        align="center"
       >
         <Card>
           {children}
@@ -79,34 +163,119 @@ function ModalOverlay({ visible, children }) {
 }
 ```
 
-### Toast Container
+### Controlled Portal
 
 ```tsx
-function ToastContainer({ toasts }) {
+function ControlledModal({ open, onClose, children }) {
   return (
-    <Portal>
-      <Flex
-        direction="column"
-        gap={2}
-        style={{
-          position: 'absolute',
-          bottom: 20,
-          right: 20,
-          maxWidth: 400
-        }}
-      >
-        {toasts.map(toast => (
-          <Card key={toast.id}>
-            <Text>{toast.message}</Text>
-          </Card>
-        ))}
+    <Portal
+      visible={open}
+      animationType="slide"
+      onRequestClose={onClose}
+    >
+      <Flex flex={1} justify="center" align="center">
+        <Card>
+          {children}
+          <Button onPress={onClose}>Close</Button>
+        </Card>
       </Flex>
     </Portal>
   );
 }
 ```
 
-### Dropdown Menu
+### Transparent Overlay
+
+```tsx
+<Portal transparent animationType="fade">
+  <Flex
+    flex={1}
+    backgroundColor="rgba(0, 0, 0, 0.5)"
+    justify="center"
+    align="center"
+  >
+    <Card>
+      <Text>Semi-transparent overlay</Text>
+    </Card>
+  </Flex>
+</Portal>
+```
+
+### Using Portal.Provider with ManagedPortal
+
+```tsx
+import { PortalProvider, ManagedPortal, usePortal } from 'radix-native-ui';
+
+function MyComponent() {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <PortalProvider>
+      <Button onPress={() => setShowModal(true)}>Open Modal</Button>
+
+      <ManagedPortal name="modal" visible={showModal}>
+        <Flex
+          flex={1}
+          backgroundColor="rgba(0, 0, 0, 0.5)"
+          justify="center"
+          align="center"
+        >
+          <Card>
+            <Text>Modal Content</Text>
+            <Button onPress={() => setShowModal(false)}>Close</Button>
+          </Card>
+        </Flex>
+      </ManagedPortal>
+    </PortalProvider>
+  );
+}
+```
+
+### Programmatic Portal with usePortal
+
+```tsx
+import { PortalProvider, usePortal } from 'radix-native-ui';
+
+function ToastLikeNotification({ message, onDismiss }) {
+  const { addPortal, removePortal } = usePortal();
+  const portalId = 'notification-toast';
+
+  useEffect(() => {
+    addPortal(portalId, (
+      <Flex
+        position="absolute"
+        bottom={5}
+        left={5}
+        right={5}
+      >
+        <Card>
+          <Text>{message}</Text>
+        </Card>
+      </Flex>
+    ));
+
+    // Auto-remove after duration
+    const timer = setTimeout(() => {
+      removePortal(portalId);
+      onDismiss?.();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return null;
+}
+
+function App() {
+  return (
+    <PortalProvider>
+      <ToastLikeNotification message="Hello from Portal!" />
+    </PortalProvider>
+  );
+}
+```
+
+### With Dropdown Menu
 
 ```tsx
 function DropdownMenu({ trigger, children, open }) {
@@ -128,11 +297,9 @@ function DropdownMenu({ trigger, children, open }) {
       {open && (
         <Portal>
           <Card
-            style={{
-              position: 'absolute',
-              top: position.y,
-              left: position.x
-            }}
+            position="absolute"
+            top={position.y}
+            left={position.x}
           >
             {children}
           </Card>
@@ -143,7 +310,7 @@ function DropdownMenu({ trigger, children, open }) {
 }
 ```
 
-### Tooltip
+### With Tooltip
 
 ```tsx
 function Tooltip({ content, children }) {
@@ -158,7 +325,7 @@ function Tooltip({ content, children }) {
         onLayout={(e) => {
           setPosition({
             x: e.nativeEvent.layout.x,
-            y: e.nativeEvent.layout.y - 40
+            y: e.nativeEvent.layout.y - 10
           });
         }}
       >
@@ -169,11 +336,9 @@ function Tooltip({ content, children }) {
         <Portal>
           <Card
             size={1}
-            style={{
-              position: 'absolute',
-              top: position.y,
-              left: position.x
-            }}
+            position="absolute"
+            top={position.y}
+            left={position.x}
           >
             <Text size={1}>{content}</Text>
           </Card>

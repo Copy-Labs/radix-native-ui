@@ -30,14 +30,17 @@ import { Slider } from 'radix-native-ui';
 ## Props
 
 <PropTable>
-  <Prop name="value" type="[number] | [number, number]">
+  <Prop name="value" type="number | [number, number]">
     Current value(s) - single or range.
   </Prop>
-  <Prop name="onValueChange" type="(value: number[]) => void">
+  <Prop name="defaultValue" type="number | [number, number]">
+    Default value (uncontrolled).
+  </Prop>
+  <Prop name="onValueChange" type="(value: number | [number, number]) => void">
     Called when value changes.
   </Prop>
-  <Prop name="defaultValue" type="[number] | [number, number]">
-    Default value (uncontrolled).
+  <Prop name="onValueChangeEnd" type="(value: number | [number, number]) => void">
+    Called when value change ends (drag end).
   </Prop>
   <Prop name="min" type="number" default="0">
     Minimum value.
@@ -48,20 +51,44 @@ import { Slider } from 'radix-native-ui';
   <Prop name="step" type="number" default="1">
     Step increment.
   </Prop>
+  <Prop name="minStepsBetweenThumbs" type="number" default="0">
+    Minimum steps between thumbs (for range slider).
+  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether the slider is disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="size" type="'1' | '2' | '3' | '4'" default="'2'">
+    Size of the slider.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'solid'">
+    Visual variant.
+  </Prop>
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
-  <Prop name="size" type="'small' | 'medium' | 'large'" default="'medium'">
-    Size of the slider.
+  <Prop name="radius" type="RadiusSize" default="'full'">
+    Border radius.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
+  <Prop name="label" type="string">
+    Label to display above the slider.
+  </Prop>
+  <Prop name="showValueLabel" type="boolean" default="false">
+    Whether to show value label.
+  </Prop>
+  <Prop name="valueLabelFormatter" type="(value: number) => string">
+    Custom formatter for value label.
+  </Prop>
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
+  </Prop>
+  <Prop name="style" type="ViewStyle">
+    Custom styles.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback during drag.
@@ -135,6 +162,7 @@ Sliders provide haptic feedback by default when dragging starts, ends, and when 
       min={0}
       max={1000}
       step={50}
+      minStepsBetweenThumbs={1}
     />
   </Flex>
 </Card>
@@ -144,9 +172,21 @@ Sliders provide haptic feedback by default when dragging starts, ends, and when 
 
 ```tsx
 <Flex direction="column" gap={3}>
-  <Slider size="small" defaultValue={[50]} />
-  <Slider size="medium" defaultValue={[50]} />
-  <Slider size="large" defaultValue={[50]} />
+  <Slider size="1" defaultValue={50} />
+  <Slider size="2" defaultValue={50} />
+  <Slider size="3" defaultValue={50} />
+  <Slider size="4" defaultValue={50} />
+</Flex>
+```
+
+### Variants
+
+```tsx
+<Flex direction="column" gap={3}>
+  <Slider variant="solid" defaultValue={50} />
+  <Slider variant="soft" defaultValue={50} />
+  <Slider variant="surface" defaultValue={50} />
+  <Slider variant="outline" defaultValue={50} />
 </Flex>
 ```
 

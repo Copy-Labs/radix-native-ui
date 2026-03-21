@@ -51,6 +51,14 @@ The root container component that manages dialog state.
 
 Element that opens the dialog.
 
+### Dialog.Portal
+
+Renders dialog content at the root level using Modal.
+
+### Dialog.Overlay
+
+The backdrop that dims the background.
+
 ### Dialog.Content
 
 The dialog content container.
@@ -66,6 +74,10 @@ Description text for the dialog.
 ### Dialog.Close
 
 Element that closes the dialog.
+
+### Dialog.Action
+
+Action button that closes the dialog after executing onPress.
 
 ## Props
 
@@ -83,6 +95,36 @@ Element that closes the dialog.
   </Prop>
 </PropTable>
 
+### Dialog.Trigger
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Trigger content.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="true">
+    Merge props onto child element.
+  </Prop>
+</PropTable>
+
+### Dialog.Portal
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Portal content.
+  </Prop>
+  <Prop name="hostId" type="string">
+    Host ID for portal container.
+  </Prop>
+</PropTable>
+
+### Dialog.Overlay
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the overlay.
+  </Prop>
+</PropTable>
+
 ### Dialog.Content
 
 <PropTable>
@@ -92,8 +134,11 @@ Element that closes the dialog.
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3 | 4" default="3">
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
     Size of the dialog.
+  </Prop>
+  <Prop name="hideCloseButton" type="boolean" default="false">
+    Hide the close button.
   </Prop>
 </PropTable>
 
@@ -103,8 +148,20 @@ Element that closes the dialog.
   <Prop name="children" type="ReactNode">
     Title content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="size" type="HeadingSize" default="4">
+    Size of the title.
+  </Prop>
+  <Prop name="weight" type="TextWeight">
+    Font weight.
+  </Prop>
+  <Prop name="align" type="TextAlign">
+    Text alignment.
+  </Prop>
+  <Prop name="color" type="Color">
+    Text color.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto child element.
   </Prop>
 </PropTable>
 
@@ -114,8 +171,42 @@ Element that closes the dialog.
   <Prop name="children" type="ReactNode">
     Description content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="size" type="TextSize" default="2">
+    Size of the description text.
+  </Prop>
+  <Prop name="weight" type="TextWeight">
+    Font weight.
+  </Prop>
+  <Prop name="align" type="TextAlign">
+    Text alignment.
+  </Prop>
+  <Prop name="color" type="Color">
+    Text color.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto child element.
+  </Prop>
+</PropTable>
+
+### Dialog.Close
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Close button content.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="true">
+    Merge props onto child element.
+  </Prop>
+</PropTable>
+
+### Dialog.Action
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Action button content.
+  </Prop>
+  <Prop name="onPress" type="() => void">
+    Callback when button is pressed.
   </Prop>
 </PropTable>
 

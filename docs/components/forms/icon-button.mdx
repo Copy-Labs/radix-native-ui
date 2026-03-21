@@ -30,17 +30,17 @@ import { Icon } from './icons';
   <Prop name="children" type="ReactNode">
     Icon content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
+  <Prop name="style" type="ViewStyle">
     Custom styles.
   </Prop>
-  <Prop name="variant" type="'classic' | 'solid' | 'soft' | 'outline' | 'ghost'" default="'classic'">
+  <Prop name="variant" type="'surface' | 'solid' | 'soft' | 'outline' | 'ghost'" default="'solid'">
     Visual style variant.
   </Prop>
   <Prop name="size" type="1 | 2 | 3 | 4" default="2">
     Size of the button.
   </Prop>
-  <Prop name="color" type="string">
-    Accent color name.
+  <Prop name="color" type="Color">
+    Accent color.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether the button is disabled.
@@ -54,11 +54,20 @@ import { Icon } from './icons';
   <Prop name="onPress" type="(event: GestureResponderEvent) => void">
     Called when button is pressed.
   </Prop>
-  <Prop name="accessibilityLabel" type="string" required>
+  <Prop name="onLongPress" type="(event: GestureResponderEvent) => void">
+    Called when button is long-pressed.
+  </Prop>
+  <Prop name="delayLongPress" type="number" default="500">
+    Duration (in ms) before onLongPress is called.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
     Accessibility label for screen readers.
   </Prop>
   <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
     Border radius override.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto child element.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback on press.

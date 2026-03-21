@@ -26,11 +26,14 @@ import { Slot, Text } from 'radix-native-ui';
 ## Props
 
 <PropTable>
-  <Prop name="children" type="ReactElement">
+  <Prop name="children" type="ReactNode">
     Single child element to merge props onto.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
+  <Prop name="style" type="ViewStyle | TextStyle | ImageStyle | (ViewStyle | TextStyle | ImageStyle)[]">
     Styles to merge.
+  </Prop>
+  <Prop name="ref" type="React.Ref<any>">
+    Ref to forward to the child.
   </Prop>
 </PropTable>
 

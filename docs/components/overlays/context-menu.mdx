@@ -25,13 +25,16 @@ import { ContextMenu, Text } from 'radix-native-ui';
     </Flex>
   </ContextMenu.Trigger>
 
-  <ContextMenu.Content>
-    <ContextMenu.Item>Copy</ContextMenu.Item>
-    <ContextMenu.Item>Cut</ContextMenu.Item>
-    <ContextMenu.Item>Paste</ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Item color="red">Delete</ContextMenu.Item>
-  </ContextMenu.Content>
+  <ContextMenu.Portal>
+    <ContextMenu.Overlay />
+    <ContextMenu.Content>
+      <ContextMenu.Item>Copy</ContextMenu.Item>
+      <ContextMenu.Item>Cut</ContextMenu.Item>
+      <ContextMenu.Item>Paste</ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item color="red">Delete</ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Portal>
 </ContextMenu.Root>
 ```
 
@@ -44,6 +47,14 @@ The root container component that manages menu state.
 ### ContextMenu.Trigger
 
 Element that triggers the context menu.
+
+### ContextMenu.Portal
+
+Renders the context menu content in a Modal.
+
+### ContextMenu.Overlay
+
+Touchable overlay that closes the menu when tapped.
 
 ### ContextMenu.Content
 
@@ -97,8 +108,14 @@ Content for a submenu.
   <Prop name="children" type="ReactNode">
     Menu components.
   </Prop>
+  <Prop name="open" type="boolean">
+    Controlled open state.
+  </Prop>
   <Prop name="onOpenChange" type="(open: boolean) => void">
     Callback when open state changes.
+  </Prop>
+  <Prop name="defaultOpen" type="boolean" default="false">
+    Initial open state for uncontrolled mode.
   </Prop>
 </PropTable>
 
@@ -107,6 +124,24 @@ Content for a submenu.
 <PropTable>
   <Prop name="children" type="ReactNode">
     Menu items.
+  </Prop>
+  <Prop name="side" type="'top' | 'bottom' | 'left' | 'right'" default="'bottom'">
+    Preferred side to show menu (flips if collision detected).
+  </Prop>
+  <Prop name="sideOffset" type="number" default="4">
+    Distance from touch point to menu.
+  </Prop>
+  <Prop name="align" type="'start' | 'center' | 'end'" default="'start'">
+    Horizontal alignment relative to touch point.
+  </Prop>
+  <Prop name="alignOffset" type="number" default="0">
+    Horizontal offset from aligned position.
+  </Prop>
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Whether to flip when colliding with screen edges.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
+    Size of the context menu content.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
@@ -125,8 +160,17 @@ Content for a submenu.
   <Prop name="disabled" type="boolean" default="false">
     Whether the item is disabled.
   </Prop>
-  <Prop name="color" type="string">
-    Item color (e.g., "red" for destructive actions).
+  <Prop name="color" type="Color">
+    Item color (e.g., 'red' for destructive actions).
+  </Prop>
+  <Prop name="destructive" type="boolean" default="false">
+    Whether the item is destructive (shows in red).
+  </Prop>
+  <Prop name="icon" type="ReactNode">
+    Icon to display before the item text.
+  </Prop>
+  <Prop name="shortcut" type="string">
+    Keyboard shortcut to display.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
@@ -142,11 +186,76 @@ Content for a submenu.
   <Prop name="children" type="ReactNode">
     Trigger content.
   </Prop>
-  <Prop name="asChild" type="boolean" default="true">
+  <Prop name="asChild" type="boolean" default="false">
     Whether to merge props onto the child element.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback on long press.
+  </Prop>
+  <Prop name="onLongPress" type="(event: GestureResponderEvent) => void">
+    Callback when long press occurs.
+  </Prop>
+</PropTable>
+
+### ContextMenu.Separator
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### ContextMenu.Label
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Label content.
+  </Prop>
+  <Prop name="style" type="TextStyle">
+    Custom text styles.
+  </Prop>
+</PropTable>
+
+### ContextMenu.CheckboxItem
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Item content.
+  </Prop>
+  <Prop name="checked" type="boolean" required>
+    Whether the checkbox is checked.
+  </Prop>
+  <Prop name="onCheckedChange" type="(checked: boolean) => void" required>
+    Callback when checked state changes.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Whether the item is disabled.
+  </Prop>
+  <Prop name="shortcut" type="string">
+    Keyboard shortcut to display.
+  </Prop>
+</PropTable>
+
+### ContextMenu.RadioItem
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Item content.
+  </Prop>
+  <Prop name="value" type="string" required>
+    The value of the radio item.
+  </Prop>
+  <Prop name="checked" type="boolean" required>
+    Whether the radio item is checked.
+  </Prop>
+  <Prop name="onCheckedChange" type="(value: string) => void" required>
+    Callback when radio selection changes.
+  </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Whether the item is disabled.
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Enable haptic feedback when selected.
   </Prop>
 </PropTable>
 
@@ -178,12 +287,15 @@ Context menu triggers and items provide haptic feedback by default. You can disa
     </Card>
   </ContextMenu.Trigger>
 
-  <ContextMenu.Content>
-    <ContextMenu.Item>Edit</ContextMenu.Item>
-    <ContextMenu.Item>Duplicate</ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Item color="red">Delete</ContextMenu.Item>
-  </ContextMenu.Content>
+  <ContextMenu.Portal>
+    <ContextMenu.Overlay />
+    <ContextMenu.Content>
+      <ContextMenu.Item>Edit</ContextMenu.Item>
+      <ContextMenu.Item>Duplicate</ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item color="red">Delete</ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Portal>
 </ContextMenu.Root>
 ```
 
@@ -198,46 +310,49 @@ Context menu triggers and items provide haptic feedback by default. You can disa
     </Flex>
   </ContextMenu.Trigger>
 
-  <ContextMenu.Content>
-    <ContextMenu.Item>
-      <Flex gap={2} align="center">
-        <Icon name="eye" />
-        <Text>Preview</Text>
-      </Flex>
-    </ContextMenu.Item>
-    <ContextMenu.Item>
-      <Flex gap={2} align="center">
-        <Icon name="download" />
-        <Text>Download</Text>
-      </Flex>
-    </ContextMenu.Item>
-    <ContextMenu.Item>
-      <Flex gap={2} align="center">
-        <Icon name="share" />
-        <Text>Share</Text>
-      </Flex>
-    </ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Item>
-      <Flex gap={2} align="center">
-        <Icon name="pencil" />
-        <Text>Rename</Text>
-      </Flex>
-    </ContextMenu.Item>
-    <ContextMenu.Item>
-      <Flex gap={2} align="center">
-        <Icon name="folder" />
-        <Text>Move to...</Text>
-      </Flex>
-    </ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Item color="red">
-      <Flex gap={2} align="center">
-        <Icon name="trash" />
-        <Text>Delete</Text>
-      </Flex>
-    </ContextMenu.Item>
-  </ContextMenu.Content>
+  <ContextMenu.Portal>
+    <ContextMenu.Overlay />
+    <ContextMenu.Content>
+      <ContextMenu.Item>
+        <Flex gap={2} align="center">
+          <Icon name="eye" />
+          <Text>Preview</Text>
+        </Flex>
+      </ContextMenu.Item>
+      <ContextMenu.Item>
+        <Flex gap={2} align="center">
+          <Icon name="download" />
+          <Text>Download</Text>
+        </Flex>
+      </ContextMenu.Item>
+      <ContextMenu.Item>
+        <Flex gap={2} align="center">
+          <Icon name="share" />
+          <Text>Share</Text>
+        </Flex>
+      </ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item>
+        <Flex gap={2} align="center">
+          <Icon name="pencil" />
+          <Text>Rename</Text>
+        </Flex>
+      </ContextMenu.Item>
+      <ContextMenu.Item>
+        <Flex gap={2} align="center">
+          <Icon name="folder" />
+          <Text>Move to...</Text>
+        </Flex>
+      </ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item color="red">
+        <Flex gap={2} align="center">
+          <Icon name="trash" />
+          <Text>Delete</Text>
+        </Flex>
+      </ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Portal>
 </ContextMenu.Root>
 ```
 
@@ -249,13 +364,16 @@ Context menu triggers and items provide haptic feedback by default. You can disa
     <TextField value="Selected text" />
   </ContextMenu.Trigger>
 
-  <ContextMenu.Content>
-    <ContextMenu.Item>Cut</ContextMenu.Item>
-    <ContextMenu.Item>Copy</ContextMenu.Item>
-    <ContextMenu.Item>Paste</ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Item>Select All</ContextMenu.Item>
-  </ContextMenu.Content>
+  <ContextMenu.Portal>
+    <ContextMenu.Overlay />
+    <ContextMenu.Content>
+      <ContextMenu.Item>Cut</ContextMenu.Item>
+      <ContextMenu.Item>Copy</ContextMenu.Item>
+      <ContextMenu.Item>Paste</ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Item>Select All</ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Portal>
 </ContextMenu.Root>
 ```
 
@@ -269,22 +387,25 @@ Context menu triggers and items provide haptic feedback by default. You can disa
     </Card>
   </ContextMenu.Trigger>
 
-  <ContextMenu.Content>
-    <ContextMenu.Item>Edit</ContextMenu.Item>
-    <ContextMenu.Separator />
-    <ContextMenu.Sub>
-      <ContextMenu.SubTrigger>
-        <Text>Share</Text>
-      </ContextMenu.SubTrigger>
-      <ContextMenu.SubContent>
-        <ContextMenu.Item>Email</ContextMenu.Item>
-        <ContextMenu.Item>Message</ContextMenu.Item>
-        <ContextMenu.Item>Copy Link</ContextMenu.Item>
-      </ContextMenu.SubContent>
-    </ContextMenu.Sub>
-    <ContextMenu.Separator />
-    <ContextMenu.Item color="red">Delete</ContextMenu.Item>
-  </ContextMenu.Content>
+  <ContextMenu.Portal>
+    <ContextMenu.Overlay />
+    <ContextMenu.Content>
+      <ContextMenu.Item>Edit</ContextMenu.Item>
+      <ContextMenu.Separator />
+      <ContextMenu.Sub>
+        <ContextMenu.SubTrigger>
+          <Text>Share</Text>
+        </ContextMenu.SubTrigger>
+        <ContextMenu.SubContent>
+          <ContextMenu.Item>Email</ContextMenu.Item>
+          <ContextMenu.Item>Message</ContextMenu.Item>
+          <ContextMenu.Item>Copy Link</ContextMenu.Item>
+        </ContextMenu.SubContent>
+      </ContextMenu.Sub>
+      <ContextMenu.Separator />
+      <ContextMenu.Item color="red">Delete</ContextMenu.Item>
+    </ContextMenu.Content>
+  </ContextMenu.Portal>
 </ContextMenu.Root>
 ```
 
@@ -309,18 +430,21 @@ function FileList({ files }) {
             </Flex>
           </ContextMenu.Trigger>
 
-          <ContextMenu.Content>
-            <ContextMenu.Item onSelect={() => openFile(file)}>
-              Open
-            </ContextMenu.Item>
-            <ContextMenu.Item onSelect={() => renameFile(file)}>
-              Rename
-            </ContextMenu.Item>
-            <ContextMenu.Separator />
-            <ContextMenu.Item color="red" onSelect={() => deleteFile(file)}>
-              Delete
-            </ContextMenu.Item>
-          </ContextMenu.Content>
+          <ContextMenu.Portal>
+            <ContextMenu.Overlay />
+            <ContextMenu.Content>
+              <ContextMenu.Item onSelect={() => openFile(file)}>
+                Open
+              </ContextMenu.Item>
+              <ContextMenu.Item onSelect={() => renameFile(file)}>
+                Rename
+              </ContextMenu.Item>
+              <ContextMenu.Separator />
+              <ContextMenu.Item color="red" onSelect={() => deleteFile(file)}>
+                Delete
+              </ContextMenu.Item>
+            </ContextMenu.Content>
+          </ContextMenu.Portal>
         </ContextMenu.Root>
       ))}
     </Flex>

@@ -40,7 +40,16 @@ The root container component that manages popover state.
 
 ### Popover.Trigger
 
-Element that opens the popover.
+Element that opens the popover. Defaults to merging props onto child element.
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Trigger content.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="true">
+    Merge props onto immediate child element.
+  </Prop>
+</PropTable>
 
 ### Popover.Content
 
@@ -49,6 +58,26 @@ The popover content container.
 ### Popover.Close
 
 Element that closes the popover.
+
+### Popover.Portal
+
+Renders popover content in a Modal.
+
+### Popover.Overlay
+
+Backdrop for popover. Closes popover when pressed.
+
+### Popover.Arrow
+
+The arrow indicator pointing to the trigger.
+
+### Popover.Title
+
+Accessible title for screen readers.
+
+### Popover.Description
+
+Accessible description for screen readers.
 
 ### Popover.Anchor
 
@@ -67,6 +96,9 @@ Optional anchor element for positioning.
   </Prop>
   <Prop name="onOpenChange" type="(open: boolean) => void">
     Callback when open state changes.
+  </Prop>
+  <Prop name="defaultOpen" type="boolean" default="false">
+    Initial open state.
   </Prop>
 </PropTable>
 
@@ -90,6 +122,72 @@ Optional anchor element for positioning.
   </Prop>
   <Prop name="alignOffset" type="number">
     Offset from alignment.
+  </Prop>
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Avoid viewport collisions.
+  </Prop>
+  <Prop name="size" type="1 | 2 | 3" default="2">
+    Size of the popover content.
+  </Prop>
+</PropTable>
+
+### Popover.Close
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Close button content.
+  </Prop>
+  <Prop name="ariaLabel" type="string" default="'Close popover'">
+    Accessibility label.
+  </Prop>
+</PropTable>
+
+### Popover.Arrow
+
+<PropTable>
+  <Prop name="size" type="number" default="8">
+    Arrow size.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### Popover.Title
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Title content.
+  </Prop>
+  <Prop name="style" type="StyleProp<TextStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### Popover.Description
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Description content.
+  </Prop>
+  <Prop name="style" type="StyleProp<TextStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### Popover.Portal
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Portal content.
+  </Prop>
+</PropTable>
+
+### Popover.Overlay
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
   </Prop>
 </PropTable>
 

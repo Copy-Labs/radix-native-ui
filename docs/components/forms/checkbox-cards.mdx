@@ -39,46 +39,70 @@ import { CheckboxCards } from 'radix-native-ui';
 ### CheckboxCards.Root
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    CheckboxCard items.
-  </Prop>
   <Prop name="value" type="string[]">
-    Array of selected values.
+    Array of selected values (controlled mode).
+  </Prop>
+  <Prop name="defaultValue" type="string[]" default="[]">
+    Default selected values (uncontrolled mode).
   </Prop>
   <Prop name="onValueChange" type="(value: string[]) => void">
     Called when selection changes.
   </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'surface'">
+    Visual style variant.
+  </Prop>
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+    Size of the cards.
+  </Prop>
+  <Prop name="color" type="Color">
+    Accent color.
+  </Prop>
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'" default="'medium'">
+    Border radius.
+  </Prop>
+  <Prop name="direction" type="'row' | 'column'" default="'column'">
+    Layout direction.
+  </Prop>
+  <Prop name="gap" type="number">
+    Gap between items.
+  </Prop>
+  <Prop name="side" type="'left' | 'right'" default="'right'">
+    Indicator position.
+  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether all items are disabled.
   </Prop>
-  <Prop name="color" type="string">
-    Accent color.
-  </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
-    Size of the cards.
-  </Prop>
-  <Prop name="columns" type="number" default="1">
-    Number of columns.
-  </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
   </Prop>
 </PropTable>
 
 ### CheckboxCards.Item
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Card content.
-  </Prop>
   <Prop name="value" type="string" required>
     Unique value for this item.
+  </Prop>
+  <Prop name="side" type="'left' | 'right'">
+    Indicator position override.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether this item is disabled.
   </Prop>
-  <Prop name="hapticFeedback" type="boolean" default="true">
-    Enable haptic feedback when selected.
+  <Prop name="children" type="ReactNode">
+    Card content.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
 </PropTable>
 

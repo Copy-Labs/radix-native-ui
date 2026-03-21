@@ -33,23 +33,42 @@ export default function App() {
   <Prop name="children" type="ReactNode" required>
     Child components that will have access to the theme context.
   </Prop>
+  <Prop name="appearance" type="'light' | 'dark' | 'inherit'" default="'inherit'">
+    Color scheme preference. 'inherit' follows the device's color scheme.
+  </Prop>
   <Prop name="mode" type="'light' | 'dark' | undefined" default="undefined">
     Initial theme mode. When undefined, follows the device's color scheme.
+    **Deprecated:** Use `appearance` instead for consistency with Radix UI.
   </Prop>
   <Prop name="forcedMode" type="'light' | 'dark' | undefined" default="undefined">
     Force a specific mode, overriding device settings.
   </Prop>
+  <Prop name="hasBackground" type="boolean" default="true">
+    Whether to apply background color to the container.
+  </Prop>
   <Prop name="accentColor" type="string" default="'indigo'">
     Accent color for components. See available colors below.
   </Prop>
-  <Prop name="grayColor" type="string" default="'gray'">
+  <Prop name="grayColor" type="'mauve' | 'olive' | 'sage' | 'sand' | 'slate' | 'gray'" default="'mauve'">
     Gray scale variant. See available variants below.
   </Prop>
-  <Prop name="radius" type="string" default="'medium'">
-    Border radius scale. Options: 'none', 'small', 'medium', 'large', 'full'.
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'" default="'medium'">
+    Border radius scale.
   </Prop>
   <Prop name="scaling" type="number" default="1">
     Scale factor for all sizes. Use values like 0.9 for smaller, 1.1 for larger.
+  </Prop>
+  <Prop name="panelBackground" type="'solid' | 'translucent'" default="'solid'">
+    Panel background style.
+  </Prop>
+  <Prop name="haptics" type="boolean" default="true">
+    Enable or disable haptic feedback globally.
+  </Prop>
+  <Prop name="toastConfig" type="ToastConfig">
+    Toast configuration options.
+  </Prop>
+  <Prop name="themeOptions" type="Partial<Theme>">
+    Theme options object (legacy - use flat props instead).
   </Prop>
   <Prop name="onModeChange" type="(mode: ThemeMode) => void">
     Callback when theme mode changes.

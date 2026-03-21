@@ -37,20 +37,29 @@ import { Avatar } from 'radix-native-ui';
   <Prop name="fallback" type="ReactNode">
     Fallback content when image fails to load.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3 | 4 | 5 | 6 | 7" default="3">
+  <Prop name="size" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9" default="2">
     Size of the avatar.
   </Prop>
-  <Prop name="variant" type="'solid' | 'soft'" default="'soft'">
+  <Prop name="variant" type="'solid' | 'soft'" default="'solid'">
     Visual style for fallback.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color for fallback.
   </Prop>
-  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'" default="'full'">
+  <Prop name="radius" type="RadiusSize">
     Border radius.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
+  </Prop>
+  <Prop name="fallbackBehavior" type="'icon' | 'character'" default="'character'">
+    Fallback display behavior.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
   </Prop>
 </PropTable>
 
@@ -86,6 +95,8 @@ import { Avatar } from 'radix-native-ui';
   <Avatar size={5} fallback="5" />
   <Avatar size={6} fallback="6" />
   <Avatar size={7} fallback="7" />
+  <Avatar size={8} fallback="8" />
+  <Avatar size={9} fallback="9" />
 </Flex>
 ```
 

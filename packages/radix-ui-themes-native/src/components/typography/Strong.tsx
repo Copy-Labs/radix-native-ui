@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { type TextStyle, Text as RNText } from 'react-native';
 import { Text } from '../../components';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { Color } from '../../theme';
 
 interface StrongProps {
   /**
@@ -15,7 +16,7 @@ interface StrongProps {
   /**
    * Text color
    */
-  color?: string;
+  color?: Color;
 }
 
 type StyleProp<T> = T | T[];
@@ -46,13 +47,13 @@ const Strong = React.memo(
           fontFamily: strongFont.fontFamily,
           fontWeight: strongFont.fontWeight,
           fontStyle: strongFont.fontStyle,
-          color: color || colors[12],
+          // color: color || colors[12],
         }),
         [strongFont, color, colors]
       );
 
       return (
-        <Text ref={ref} style={[textStyle, style]} {...rest}>
+        <Text color={color} ref={ref} style={[textStyle, style]} {...rest}>
           {children}
         </Text>
       );

@@ -165,8 +165,7 @@
             "pages": [
               "api-reference/theme-provider",
               "api-reference/hooks",
-              "api-reference/color-helpers",
-              "api-reference/primitives"
+              "api-reference/color-helpers"
             ]
           }
         ]

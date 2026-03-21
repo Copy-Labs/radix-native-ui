@@ -5,7 +5,7 @@ description: Tooltip component for displaying contextual information.
 
 # Tooltip
 
-`Tooltip` is an overlay component for displaying contextual information on hover or focus.
+`Tooltip` is an overlay component for displaying contextual information on hover or long-press. Supports both simple usage and compound component API for more control.
 
 ## Import
 
@@ -25,35 +25,138 @@ import { Tooltip, IconButton } from 'radix-native-ui';
 </Tooltip>
 ```
 
-## Props
+## Components
+
+Tooltip supports both simple usage and compound component API.
+
+### Simple Usage
+
+The simple API combines Root, Trigger, Portal, and Content into one component.
+
+### Tooltip.Root
+
+The root container component that manages tooltip state.
 
 <PropTable>
-  <Prop name="content" type="ReactNode" required>
-    Tooltip content.
+  <Prop name="children" type="ReactNode">
+    Tooltip components.
   </Prop>
-  <Prop name="children" type="ReactNode" required>
+  <Prop name="open" type="boolean">
+    Controlled open state.
+  </Prop>
+  <Prop name="onOpenChange" type="(open: boolean) => void">
+    Callback when open state changes.
+  </Prop>
+  <Prop name="defaultOpen" type="boolean" default="false">
+    Initial open state.
+  </Prop>
+  <Prop name="delayDuration" type="number" default="300">
+    Delay before showing tooltip (ms).
+  </Prop>
+  <Prop name="longPressDuration" type="number" default="500">
+    Long press duration to show tooltip on mobile (ms).
+  </Prop>
+</PropTable>
+
+### Tooltip.Trigger
+
+Element that triggers the tooltip.
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
     Trigger element.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="asChild" type="boolean" default="true">
+    Merge props onto immediate child element.
+  </Prop>
+</PropTable>
+
+### Tooltip.Portal
+
+Renders tooltip content in a Modal.
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Portal content.
+  </Prop>
+</PropTable>
+
+### Tooltip.Content
+
+The tooltip content container.
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Tooltip content.
   </Prop>
   <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'top'">
     Preferred side to render.
   </Prop>
-  <Prop name="sideOffset" type="number" default="4">
+  <Prop name="sideOffset" type="number" default="8">
     Distance from trigger.
   </Prop>
   <Prop name="align" type="'start' | 'center' | 'end'" default="'center'">
     Alignment relative to trigger.
   </Prop>
-  <Prop name="alignOffset" type="number">
+  <Prop name="alignOffset" type="number" default="0">
     Offset from alignment.
   </Prop>
-  <Prop name="delayDuration" type="number" default="400">
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Avoid viewport collisions.
+  </Prop>
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+    Border radius. Inherits from theme by default.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### Tooltip.Arrow
+
+Optional arrow indicator.
+
+<PropTable>
+  <Prop name="size" type="number" default="6">
+    Arrow size.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+## Simple Tooltip Props
+
+<PropTable>
+  <Prop name="content" type="string" required>
+    Tooltip content text.
+  </Prop>
+  <Prop name="children" type="ReactNode" required>
+    Trigger element.
+  </Prop>
+  <Prop name="side" type="'top' | 'right' | 'bottom' | 'left'" default="'top'">
+    Preferred side to render.
+  </Prop>
+  <Prop name="sideOffset" type="number" default="8">
+    Distance from trigger.
+  </Prop>
+  <Prop name="align" type="'start' | 'center' | 'end'" default="'center'">
+    Alignment relative to trigger.
+  </Prop>
+  <Prop name="alignOffset" type="number" default="0">
+    Offset from alignment.
+  </Prop>
+  <Prop name="delayDuration" type="number" default="300">
     Delay before showing tooltip (ms).
   </Prop>
-  <Prop name="skipDelayDuration" type="number" default="300">
-    Skip delay when switching between tooltips (ms).
+  <Prop name="longPressDuration" type="number" default="500">
+    Long press duration to show tooltip on mobile (ms).
+  </Prop>
+  <Prop name="avoidCollisions" type="boolean" default="true">
+    Avoid viewport collisions.
+  </Prop>
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+    Border radius. Inherits from theme by default.
   </Prop>
 </PropTable>
 

@@ -66,7 +66,7 @@ The BottomSheet follows the Radix compound component pattern:
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Trigger element |
 | `asChild` | `boolean` | `true` | Merge props onto child element |
-| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback on press |
+| `hapticFeedback` | `boolean` | `false` | Enable haptic feedback on press |
 
 ### BottomSheet.Portal
 
@@ -133,7 +133,7 @@ Extends `Text` component props.
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Close trigger element |
 | `asChild` | `boolean` | `true` | Merge props onto child element |
-| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when closing |
+| `hapticFeedback` | `boolean` | `false` | Enable haptic feedback when closing |
 
 ### BottomSheet.Action
 
@@ -177,15 +177,6 @@ You can disable haptic feedback on individual components:
   </BottomSheet.Portal>
 </BottomSheet.Root>
 ```
-
-## Examples
-
-Extends `Button` component props.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | - | Action button content |
-| `onPress` | `() => void` | - | Callback executed before closing |
 
 ## Examples
 

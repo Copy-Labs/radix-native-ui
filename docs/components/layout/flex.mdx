@@ -16,7 +16,7 @@ import { Flex } from 'radix-native-ui';
 ## Usage
 
 ```tsx
-import { Flex, Text, Button } from 'radix-native-ui';
+import { Flex, Text, Box } from 'radix-native-ui';
 
 <Flex direction="row" gap={3}>
   <Text>Left</Text>
@@ -38,20 +38,23 @@ import { Flex, Text, Button } from 'radix-native-ui';
   </Prop>
 
   {/* Flex Layout */}
-  <Prop name="direction" type="'row' | 'column' | 'row-reverse' | 'column-reverse'" default="'column'">
+  <Prop name="direction" type="'row' | 'column' | 'row-reverse' | 'column-reverse'" default="'row'">
     Direction of flex items.
   </Prop>
-  <Prop name="align" type="'start' | 'center' | 'end' | 'stretch' | 'baseline'">
+  <Prop name="align" type="'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'" default="'stretch'">
     Alignment along cross axis.
   </Prop>
-  <Prop name="justify" type="'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'">
+  <Prop name="alignContent" type="'flex-start' | 'center' | 'flex-end' | 'stretch' | 'space-between' | 'space-around'">
+    Align content on cross axis (multi-line).
+  </Prop>
+  <Prop name="justify" type="'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly'" default="'flex-start'">
     Alignment along main axis.
   </Prop>
   <Prop name="wrap" type="'wrap' | 'nowrap' | 'wrap-reverse'" default="'nowrap'">
     Wrapping behavior.
   </Prop>
   <Prop name="gap" type="number">
-    Gap between children (uses theme scale).
+    Gap between items.
   </Prop>
   <Prop name="columnGap" type="number">
     Gap between columns.
@@ -62,7 +65,7 @@ import { Flex, Text, Button } from 'radix-native-ui';
 
   {/* Flex Item */}
   <Prop name="flex" type="number">
-    Flex grow/shrink value.
+    Flex shorthand (flexGrow, flexShrink, flexBasis).
   </Prop>
   <Prop name="flexGrow" type="number">
     Flex grow value.
@@ -70,19 +73,98 @@ import { Flex, Text, Button } from 'radix-native-ui';
   <Prop name="flexShrink" type="number">
     Flex shrink value.
   </Prop>
-  <Prop name="flexBasis" type="number | string">
+  <Prop name="flexBasis" type="DimensionValue">
     Flex basis value.
   </Prop>
-  <Prop name="alignSelf" type="'auto' | 'start' | 'center' | 'end' | 'stretch' | 'baseline'">
+  <Prop name="alignSelf" type="'auto' | 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'">
     Override align for this item.
   </Prop>
 
+  {/* Position */}
+  <Prop name="position" type="'absolute' | 'relative'">
+    Position type.
+  </Prop>
+  <Prop name="top" type="number">
+    Top offset.
+  </Prop>
+  <Prop name="right" type="number">
+    Right offset.
+  </Prop>
+  <Prop name="bottom" type="number">
+    Bottom offset.
+  </Prop>
+  <Prop name="left" type="number">
+    Left offset.
+  </Prop>
+  <Prop name="zIndex" type="number">
+    Z-index layer.
+  </Prop>
+  <Prop name="overflow" type="'visible' | 'hidden' | 'scroll'">
+    Overflow behavior.
+  </Prop>
+
+  {/* Spacing */}
+  <Prop name="padding" type="number">
+    Padding on all sides.
+  </Prop>
+  <Prop name="paddingTop" type="number">
+    Top padding.
+  </Prop>
+  <Prop name="paddingBottom" type="number">
+    Bottom padding.
+  </Prop>
+  <Prop name="paddingLeft" type="number">
+    Left padding.
+  </Prop>
+  <Prop name="paddingRight" type="number">
+    Right padding.
+  </Prop>
+  <Prop name="paddingHorizontal" type="number">
+    Horizontal padding.
+  </Prop>
+  <Prop name="paddingVertical" type="number">
+    Vertical padding.
+  </Prop>
+  <Prop name="margin" type="number">
+    Margin on all sides.
+  </Prop>
+  <Prop name="marginTop" type="number">
+    Top margin.
+  </Prop>
+  <Prop name="marginBottom" type="number">
+    Bottom margin.
+  </Prop>
+  <Prop name="marginLeft" type="number">
+    Left margin.
+  </Prop>
+  <Prop name="marginRight" type="number">
+    Right margin.
+  </Prop>
+  <Prop name="marginHorizontal" type="number">
+    Horizontal margin.
+  </Prop>
+  <Prop name="marginVertical" type="number">
+    Vertical margin.
+  </Prop>
+
   {/* Dimensions */}
-  <Prop name="width" type="number | string">
+  <Prop name="width" type="DimensionValue">
     Width.
   </Prop>
-  <Prop name="height" type="number | string">
+  <Prop name="height" type="DimensionValue">
     Height.
+  </Prop>
+  <Prop name="minWidth" type="DimensionValue">
+    Minimum width.
+  </Prop>
+  <Prop name="maxWidth" type="DimensionValue">
+    Maximum width.
+  </Prop>
+  <Prop name="minHeight" type="DimensionValue">
+    Minimum height.
+  </Prop>
+  <Prop name="maxHeight" type="DimensionValue">
+    Maximum height.
   </Prop>
 
   {/* Appearance */}
@@ -90,7 +172,7 @@ import { Flex, Text, Button } from 'radix-native-ui';
     Background color.
   </Prop>
   <Prop name="borderRadius" type="number">
-    Border radius (uses theme scale).
+    Border radius.
   </Prop>
   <Prop name="opacity" type="number">
     Opacity (0-1).
@@ -130,7 +212,7 @@ import { Flex, Text, Button } from 'radix-native-ui';
 ### Space Between
 
 ```tsx
-<Flex direction="row" justify="between">
+<Flex direction="row" justify="space-between">
   <Text>Left</Text>
   <Text>Right</Text>
 </Flex>
@@ -141,7 +223,7 @@ import { Flex, Text, Button } from 'radix-native-ui';
 ```tsx
 <Card>
   <Flex direction="column" gap={3}>
-    <Flex direction="row" justify="between" align="center">
+    <Flex direction="row" justify="space-between" align="center">
       <Heading size={3}>Card Title</Heading>
       <Badge>New</Badge>
     </Flex>
@@ -168,7 +250,7 @@ import { Flex, Text, Button } from 'radix-native-ui';
     <TextField placeholder="Enter password" secureTextEntry />
   </Flex>
 
-  <Flex direction="row" justify="end" gap={2}>
+  <Flex direction="row" justify="flex-end" gap={2}>
     <Button variant="outline">Cancel</Button>
     <Button>Sign In</Button>
   </Flex>
@@ -191,10 +273,10 @@ import { Flex, Text, Button } from 'radix-native-ui';
 
 ```tsx
 <Flex direction="row" gap={3}>
-  <Box flex={1} backgroundColor="blue.3">
+  <Box flex={1}>
     <Text>Flexible</Text>
   </Box>
-  <Box backgroundColor="gray.3">
+  <Box>
     <Text>Fixed</Text>
   </Box>
 </Flex>
@@ -206,9 +288,9 @@ import { Flex, Text, Button } from 'radix-native-ui';
 
 | Value | Description |
 |-------|-------------|
-| `start` | Align to start of cross axis |
+| `flex-start` | Align to start of cross axis |
 | `center` | Center along cross axis |
-| `end` | Align to end of cross axis |
+| `flex-end` | Align to end of cross axis |
 | `stretch` | Stretch to fill container |
 | `baseline` | Align to text baseline |
 
@@ -216,12 +298,12 @@ import { Flex, Text, Button } from 'radix-native-ui';
 
 | Value | Description |
 |-------|-------------|
-| `start` | Pack to start |
+| `flex-start` | Pack to start |
 | `center` | Pack to center |
-| `end` | Pack to end |
-| `between` | Space between items |
-| `around` | Space around items |
-| `evenly` | Equal space between and around |
+| `flex-end` | Pack to end |
+| `space-between` | Space between items |
+| `space-around` | Space around items |
+| `space-evenly` | Equal space between and around |
 
 ## Related
 

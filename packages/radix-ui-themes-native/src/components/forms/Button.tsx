@@ -41,7 +41,7 @@ interface ButtonProps {
    * Button variant
    * @default 'classic'
    */
-  variant?: 'classic' | 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
+  variant?: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
   /**
    * Radius variant mode for accessibility
    * @default 'medium'
@@ -211,7 +211,7 @@ const Button = React.memo(
       {
         children,
         style,
-        variant = 'classic',
+        variant = 'solid',
         color,
         radius,
         size = 2,

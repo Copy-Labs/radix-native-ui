@@ -1,5 +1,5 @@
-import React, { type ReactNode, createContext, useContext, useState, useCallback, useRef, useEffect, useMemo } from 'react';
-import { StyleSheet, type StyleProp, ViewStyle, type LayoutChangeEvent, Animated, Easing, Vibration } from 'react-native';
+import React, { type ReactNode, createContext, useContext, useState, useCallback, useRef, useEffect, useMemo, isValidElement, type ReactElement } from 'react';
+import { StyleSheet, type StyleProp, ViewStyle, TextStyle, type LayoutChangeEvent, Animated, Easing, Vibration } from 'react-native';
 import { View } from '../primitives';
 import { Text } from '../typography';
 import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
@@ -38,6 +38,10 @@ interface SegmentedControlContextValue {
   pillBackgroundColor: string;
   hapticFeedback: boolean;
   globalHaptics: boolean;
+  // For Value component
+  itemValue: string | null;
+  isItemSelected: boolean;
+  itemDisabled: boolean;
 }
 
 const SegmentedControlContext = createContext<SegmentedControlContextValue | null>(null);
@@ -49,6 +53,95 @@ function useSegmentedControlContext() {
   }
   return context;
 }
+
+// ============================================================================
+// Value Component
+// ============================================================================
+
+interface SegmentedControlValueProps {
+  /**
+   * Content to display (typically text)
+   */
+  children: ReactNode;
+}
+
+const SegmentedControlValue = ({ children }: SegmentedControlValueProps) => {
+  const {
+    value: selectedValue,
+    color,
+    isDark,
+    grayScale,
+    activeColor,
+    solidVariantColors,
+    softVariantColors,
+    sizeValues,
+    theme,
+    itemValue,
+    isItemSelected,
+    itemDisabled,
+  } = useSegmentedControlContext();
+
+  const textStyle = {
+    color: itemDisabled
+      ? grayScale['9']
+      : color
+        ? (isItemSelected ? solidVariantColors.textColor : softVariantColors.textColor)
+        : (isItemSelected ? grayScale[12] : grayScale[10]),
+    fontWeight: isItemSelected ? theme.typography.fontWeights.semibold : theme.typography.fontWeights.regular,
+    fontSize: sizeValues.fontSize,
+  };
+
+  return <Text style={textStyle}>{children}</Text>;
+};
+
+SegmentedControlValue.displayName = 'SegmentedControlValue';
+
+// ============================================================================
+// Icon Component
+// ============================================================================
+
+interface SegmentedControlIconProps {
+  /**
+   * Icon element to display
+   */
+  children: ReactElement;
+}
+
+const SegmentedControlIcon = ({ children }: SegmentedControlIconProps) => {
+  const {
+    color,
+    isDark,
+    grayScale,
+    activeColor,
+    solidVariantColors,
+    softVariantColors,
+    sizeValues,
+    itemValue,
+    isItemSelected,
+    itemDisabled,
+  } = useSegmentedControlContext();
+
+  // Calculate the icon color based on selection state
+  const iconColor = itemDisabled
+    ? grayScale['9']
+    : color
+      ? (isItemSelected ? solidVariantColors.textColor : softVariantColors.textColor)
+      : (isItemSelected ? grayScale[12] : grayScale[10]);
+
+  // Get the appropriate size for the icon based on the segment size
+  const iconSize = sizeValues.fontSize;
+
+  // Clone the icon element with the appropriate color and size
+  const iconElement = React.cloneElement(children, {
+    ...children.props,
+    color: iconColor,
+    size: children.props.size ?? iconSize,
+  } as any);
+
+  return iconElement;
+};
+
+SegmentedControlIcon.displayName = 'SegmentedControlIcon';
 
 // ============================================================================
 // Item Component
@@ -67,6 +160,19 @@ interface SegmentedControlItemProps {
    * Content to display (can include icons, text, etc.)
    */
   children: ReactNode;
+}
+
+// Create a nested context for Item to Value communication
+interface SegmentedControlItemContextValue {
+  itemValue: string;
+  isSelected: boolean;
+  isDisabled: boolean;
+}
+
+const SegmentedControlItemContext = createContext<SegmentedControlItemContextValue | null>(null);
+
+function useSegmentedControlItemContext() {
+  return useContext(SegmentedControlItemContext);
 }
 
 const SegmentedControlItem = ({
@@ -97,6 +203,27 @@ const SegmentedControlItem = ({
 
   const isSelected = value === selectedValue;
   const isDisabled = disabled || itemDisabled;
+
+  // Check if children is a SegmentedControlValue or SegmentedControlIcon element
+  const hasValueChild = isValidElement(children) &&
+    (children.type as any)?.displayName === 'SegmentedControlValue';
+  const hasIconChild = isValidElement(children) &&
+    (children.type as any)?.displayName === 'SegmentedControlIcon';
+
+  // Create item context for nested Value component
+  const itemContextValue: SegmentedControlItemContextValue = {
+    itemValue: value,
+    isSelected,
+    isDisabled,
+  };
+
+  // Merge with parent context for Value component
+  const mergedContext = {
+    ...useSegmentedControlContext(),
+    itemValue: value,
+    isItemSelected: isSelected,
+    itemDisabled: isDisabled,
+  };
 
   const handlePress = useCallback(() => {
     if (!isDisabled) {
@@ -133,20 +260,25 @@ const SegmentedControlItem = ({
   };
 
   return (
-    <AnimatedPressable
-      style={optionStyle}
-      onPress={handlePress}
-      onLayout={handleLayout}
-      disabled={isDisabled}
-      accessibilityRole="radio"
-      accessibilityState={{ checked: isSelected, disabled: isDisabled }}
-      pressedScale={0.975}
-      pressedOpacity={0.9}
-      animationDuration={100}
-      hapticFeedback={false}
-    >
-      <Text style={textStyle}>{children}</Text>
-    </AnimatedPressable>
+    <SegmentedControlItemContext.Provider value={itemContextValue}>
+      <SegmentedControlContext.Provider value={mergedContext}>
+        <AnimatedPressable
+          style={optionStyle}
+          onPress={handlePress}
+          onLayout={handleLayout}
+          disabled={isDisabled}
+          accessibilityRole="radio"
+          accessibilityState={{ checked: isSelected, disabled: isDisabled }}
+          pressedScale={0.975}
+          pressedOpacity={0.9}
+          animationDuration={100}
+          hapticFeedback={false}
+        >
+          {/* If children is a Value or Icon component, render it directly; otherwise wrap in Text */}
+          {hasValueChild || hasIconChild ? children : <Text style={textStyle}>{children}</Text>}
+        </AnimatedPressable>
+      </SegmentedControlContext.Provider>
+    </SegmentedControlItemContext.Provider>
   );
 };
 
@@ -341,6 +473,10 @@ const SegmentedControlRoot = ({
     pillBackgroundColor,
     hapticFeedback,
     globalHaptics,
+    // Default values for Value component (overridden by Item when nested)
+    itemValue: null,
+    isItemSelected: false,
+    itemDisabled: false,
   };
 
   // Calculate pill dimensions
@@ -389,6 +525,8 @@ SegmentedControlRoot.displayName = 'SegmentedControlRoot';
 const SegmentedControl = {
   Item: SegmentedControlItem,
   Root: SegmentedControlRoot,
+  Value: SegmentedControlValue,
+  Icon: SegmentedControlIcon,
 };
 
 const styles = StyleSheet.create({
@@ -410,4 +548,4 @@ const styles = StyleSheet.create({
 });
 
 export { SegmentedControl };
-export type { SegmentedControlRootProps, SegmentedControlItemProps };
+export type { SegmentedControlRootProps, SegmentedControlItemProps, SegmentedControlValueProps, SegmentedControlIconProps };

@@ -88,6 +88,15 @@ Content that is shown/hidden.
   <Prop name="collapsible" type="boolean" default="false">
     Whether items can be collapsed when open.
   </Prop>
+  <Prop name="disabled" type="boolean" default="false">
+    Whether all items are disabled.
+  </Prop>
+  <Prop name="dir" type="'ltr' | 'rtl'" default="'ltr'">
+    Direction for chevron rotation.
+  </Prop>
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+    Size variant.
+  </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
@@ -116,8 +125,14 @@ Content that is shown/hidden.
   <Prop name="children" type="ReactNode">
     Trigger content.
   </Prop>
+  <Prop name="icon" type="ReactNode">
+    Custom icon to replace the default chevron.
+  </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback when expanding/collapsing.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
   </Prop>
 </PropTable>
 

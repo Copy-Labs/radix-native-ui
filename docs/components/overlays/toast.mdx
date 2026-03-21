@@ -5,93 +5,195 @@ description: Toast notification component for displaying brief messages.
 
 # Toast
 
-`Toast` is an overlay component for displaying brief, non-critical notifications that appear temporarily.
+`Toast` is an overlay component for displaying brief, non-critical notifications that appear temporarily. Toast uses a hook-based pattern combined with `ThemeProvider`.
 
 ## Import
 
 ```tsx
-import { Toast } from 'radix-native-ui';
+import { Toast, useToast } from 'radix-native-ui';
+```
+
+## Setup
+
+Wrap your app with `ThemeProvider` and configure the toast settings:
+
+```tsx
+import { ThemeProvider } from 'radix-native-ui';
+
+<ThemeProvider
+  toastConfig={{
+    position: 'bottom',
+    maxVisible: 3,
+    duration: 5000,
+    swipeToDismiss: true,
+  }}
+>
+  <App />
+</ThemeProvider>
 ```
 
 ## Usage
 
 ```tsx
-import { Toast, Button, Text } from 'radix-native-ui';
+import { Toast, Button, useToast } from 'radix-native-ui';
 
 function App() {
-  return (
-    <Toast.Provider>
-      <Toast.Root>
-        <Toast.Title>Success!</Toast.Title>
-        <Toast.Description>Your changes have been saved.</Toast.Description>
-        <Toast.Close />
-      </Toast.Root>
+  const toast = useToast();
 
-      <Toast.Viewport />
-    </Toast.Provider>
+  return (
+    <Button onPress={() => toast.show({ title: 'Notification', description: 'Your changes have been saved.' })}>
+      Show Toast
+    </Button>
   );
 }
 ```
 
 ## Components
 
-### Toast.Provider
+### Toast.Viewport
 
-The provider component that manages toast state.
-
-### Toast.Root
-
-Individual toast notification.
+Container where toasts are rendered. Must be placed in your app layout.
 
 ### Toast.Title
 
-Title for the toast.
+Title text for custom toast content.
 
 ### Toast.Description
 
-Description text for the toast.
+Description text for custom toast content.
 
 ### Toast.Close
 
-Close button for the toast.
+Close button for custom toast content.
 
-### Toast.Viewport
+### Toast.Action
 
-Container where toasts are rendered.
+Action button for custom toast content.
 
-## Props
+## Hook: useToast
 
-### Toast.Provider
+The `useToast` hook returns a toast controller with methods to show and manage toasts:
+
+```tsx
+const toast = useToast();
+
+// Show a toast with options
+toast.show({ title: 'Message' });
+
+// Shorthand methods
+toast.success({ title: 'Success!' });
+toast.error({ title: 'Error!' });
+toast.warning({ title: 'Warning!' });
+toast.info({ title: 'Info' });
+toast.accent({ title: 'Accent' });
+
+// Programmatic control
+toast.hide(id);
+toast.hideAll();
+toast.update(id, { title: 'Updated' });
+```
+
+### ToastController Methods
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Toast components.
+  <Prop name="show" type="(options: ToastOptions) => string">
+    Show a toast with full options. Returns toast ID.
   </Prop>
-  <Prop name="swipeDirection" type="'right' | 'left' | 'up' | 'down'">
-    Direction to swipe to dismiss.
+  <Prop name="success" type="(options: ToastOptions) => string">
+    Show a success toast. Returns toast ID.
   </Prop>
-  <Prop name="duration" type="number" default="5000">
-    Duration in milliseconds.
+  <Prop name="error" type="(options: ToastOptions) => string">
+    Show an error toast. Returns toast ID.
+  </Prop>
+  <Prop name="warning" type="(options: ToastOptions) => string">
+    Show a warning toast. Returns toast ID.
+  </Prop>
+  <Prop name="info" type="(options: ToastOptions) => string">
+    Show an info toast. Returns toast ID.
+  </Prop>
+  <Prop name="accent" type="(options: ToastOptions) => string">
+    Show an accent toast. Returns toast ID.
+  </Prop>
+  <Prop name="hide" type="(id: string) => void">
+    Hide a specific toast by ID.
+  </Prop>
+  <Prop name="hideAll" type="() => void">
+    Hide all visible toasts.
+  </Prop>
+  <Prop name="update" type="(id: string, options: Partial<ToastOptions>) => void">
+    Update an existing toast.
   </Prop>
 </PropTable>
 
-### Toast.Root
+## ToastOptions
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Toast content.
+  <Prop name="title" type="string" required>
+    Toast title (required).
   </Prop>
-  <Prop name="type" type="'foreground' | 'background'">
-    Toast type for accessibility.
+  <Prop name="description" type="string">
+    Optional description text.
+  </Prop>
+  <Prop name="variant" type="'default' | 'success' | 'error' | 'warning' | 'info' | 'accent'" default="'default'">
+    Visual variant.
+  </Prop>
+  <Prop name="color" type="Color">
+    Override color (overrides variant color).
   </Prop>
   <Prop name="duration" type="number">
-    Override provider duration.
+    Duration in milliseconds before auto-dismiss. Set to Infinity for no auto-dismiss.
   </Prop>
-  <Prop name="onOpenChange" type="(open: boolean) => void">
-    Callback when open state changes.
+  <Prop name="position" type="'top' | 'bottom'">
+    Position override for this specific toast.
+  </Prop>
+  <Prop name="action" type="{ label: string; onPress: () => void }">
+    Optional action button.
+  </Prop>
+  <Prop name="onDismiss" type="() => void">
+    Callback when toast is dismissed.
+  </Prop>
+  <Prop name="onAutoClose" type="() => void">
+    Callback when toast auto-closes.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label for screen readers.
+  </Prop>
+  <Prop name="icon" type="ReactNode">
+    Custom icon.
+  </Prop>
+  <Prop name="showClose" type="boolean" default="true">
+    Whether to show close button.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+    Custom style for the toast container.
+  </Prop>
+</PropTable>
+
+## ThemeProvider: toastConfig
+
+Configure toast behavior via `ThemeProvider`:
+
+<PropTable>
+  <Prop name="position" type="'top' | 'bottom'" default="'bottom'">
+    Position of toast container.
+  </Prop>
+  <Prop name="maxVisible" type="number" default="3">
+    Maximum number of visible toasts in stack.
+  </Prop>
+  <Prop name="duration" type="number" default="5000">
+    Default duration in milliseconds.
+  </Prop>
+  <Prop name="defaultVariant" type="'default' | 'success' | 'error' | 'warning' | 'info' | 'accent'" default="'default'">
+    Default variant.
+  </Prop>
+  <Prop name="swipeToDismiss" type="boolean" default="true">
+    Whether toasts can be dismissed by swiping.
+  </Prop>
+  <Prop name="gap" type="number" default="8">
+    Gap between stacked toasts (in pixels).
+  </Prop>
+  <Prop name="hapticFeedback" type="boolean" default="true">
+    Whether to enable haptic feedback.
   </Prop>
 </PropTable>
 
@@ -101,19 +203,12 @@ Container where toasts are rendered.
 
 ```tsx
 function ToastDemo() {
-  const [open, setOpen] = useState(false);
+  const toast = useToast();
 
   return (
-    <Toast.Provider>
-      <Button onPress={() => setOpen(true)}>Show Toast</Button>
-
-      <Toast.Root open={open} onOpenChange={setOpen}>
-        <Toast.Title>Notification</Toast.Title>
-        <Toast.Description>This is a toast message.</Toast.Description>
-      </Toast.Root>
-
-      <Toast.Viewport />
-    </Toast.Provider>
+    <Button onPress={() => toast.show({ title: 'Default toast message' })}>
+      Show Default Toast
+    </Button>
   );
 }
 ```
@@ -121,127 +216,305 @@ function ToastDemo() {
 ### Success Toast
 
 ```tsx
-<Toast.Root>
-  <Flex direction="row" gap={2} align="center">
-    <Icon name="check-circle" color="green" />
-    <Flex direction="column">
-      <Toast.Title>Success</Toast.Title>
-      <Toast.Description>Your file has been uploaded.</Toast.Description>
-    </Flex>
-  </Flex>
-</Toast.Root>
+<Button color="green" onPress={() => toast.success({ title: 'Operation successful!' })}>
+  Show Success Toast
+</Button>
 ```
 
 ### Error Toast
 
 ```tsx
-<Toast.Root>
-  <Flex direction="row" gap={2} align="center">
-    <Icon name="x-circle" color="red" />
-    <Flex direction="column">
-      <Toast.Title>Error</Toast.Title>
-      <Toast.Description>Failed to save changes.</Toast.Description>
-    </Flex>
-  </Flex>
-  <Toast.Close>
-    <IconButton size={1} variant="ghost">
-      <Icon name="x" />
-    </IconButton>
-  </Toast.Close>
-</Toast.Root>
+<Button color="red" onPress={() => toast.error({ title: 'Something went wrong' })}>
+  Show Error Toast
+</Button>
 ```
 
-### With Action
+### Toast with Description
 
 ```tsx
-<Toast.Root>
-  <Flex direction="row" gap={3} align="center" justify="between">
-    <Flex direction="column">
-      <Toast.Title>Item Deleted</Toast.Title>
-      <Toast.Description>Undo to restore the item.</Toast.Description>
-    </Flex>
-    <Toast.Close>
-      <Button size={1} variant="soft">Undo</Button>
-    </Toast.Close>
-  </Flex>
-</Toast.Root>
+toast.success({
+  title: 'File uploaded',
+  description: 'Your document has been successfully uploaded to the server.',
+});
 ```
 
-### Toast Hook
+### Toast with Action
 
 ```tsx
-import { useToast } from 'radix-native-ui';
+toast.error({
+  title: 'File deleted',
+  description: 'Your file has been moved to trash.',
+  action: {
+    label: 'Undo',
+    onPress: () => toast.success({ title: 'File restored!' }),
+  },
+  showClose: false,
+});
+```
 
-function SaveButton() {
+### Toast with Custom Icon
+
+```tsx
+toast.show({
+  title: 'Upload complete',
+  icon: <Ionicons name="checkmark-circle" size={24} color="green" />,
+});
+```
+
+### Custom Duration
+
+```tsx
+// 2 second toast
+toast.show({
+  title: 'Quick message',
+  duration: 2000,
+});
+
+// Persistent toast (no auto-dismiss)
+toast.show({
+  title: 'Update available',
+  duration: Infinity,
+});
+```
+
+### Position Override
+
+```tsx
+// Show at top
+toast.show({
+  title: 'Top toast',
+  position: 'top',
+});
+
+// Show at bottom (default)
+toast.show({
+  title: 'Bottom toast',
+  position: 'bottom',
+});
+```
+
+### Programmatic Control
+
+```tsx
+const toast = useToast();
+
+// Get toast ID for later control
+const toastId = toast.show({ title: 'Message' });
+
+// Hide specific toast
+toast.hide(toastId);
+
+// Hide all toasts
+toast.hideAll();
+
+// Update existing toast
+toast.update(toastId, { title: 'Updated message' });
+```
+
+### Complete Example
+
+```tsx
+import { ThemeProvider, Button, Flex, Heading, Text, Box, Card, useToast } from 'radix-native-ui';
+import { ScrollView, View } from 'react-native';
+
+function ToastDemo() {
   const toast = useToast();
 
-  const handleSave = async () => {
-    try {
-      await saveData();
-      toast.success('Changes saved successfully!');
-    } catch (error) {
-      toast.error('Failed to save changes.');
-    }
-  };
-
-  return <Button onPress={handleSave}>Save</Button>;
-}
-```
-
-### Multiple Toasts
-
-```tsx
-function ToastManager() {
-  const [toasts, setToasts] = useState([]);
-
-  const addToast = (message, type = 'info') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 5000);
-  };
-
   return (
-    <Toast.Provider>
-      <Flex gap={2}>
-        <Button onPress={() => addToast('Info message', 'info')}>
-          Info
-        </Button>
-        <Button onPress={() => addToast('Success!', 'success')} color="green">
-          Success
-        </Button>
-        <Button onPress={() => addToast('Error occurred', 'error')} color="red">
-          Error
-        </Button>
-      </Flex>
+    <Flex direction="column" gap={32} padding={12}>
+      <Box>
+        <Heading size={6}>Toast</Heading>
+        <Text color="gray" size={4}>
+          Brief notifications that appear temporarily.
+        </Text>
+      </Box>
 
-      {toasts.map(toast => (
-        <Toast.Root key={toast.id}>
-          <Toast.Description>{toast.message}</Toast.Description>
-        </Toast.Root>
-      ))}
+      {/* Basic Toasts */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Basic Toasts</Heading>
 
-      <Toast.Viewport />
-    </Toast.Provider>
+          <Button onPress={() => toast.show({ title: 'Default toast message' })}>
+            Show Default Toast
+          </Button>
+
+          <Button color="green" onPress={() => toast.success({ title: 'Operation successful!' })}>
+            Show Success Toast
+          </Button>
+
+          <Button color="red" onPress={() => toast.error({ title: 'Something went wrong' })}>
+            Show Error Toast
+          </Button>
+
+          <Button color="yellow" onPress={() => toast.warning({ title: 'Warning: Please review' })}>
+            Show Warning Toast
+          </Button>
+
+          <Button color="blue" onPress={() => toast.info({ title: 'Here is some information' })}>
+            Show Info Toast
+          </Button>
+        </Flex>
+      </Card>
+
+      {/* Toast with Action */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>With Action</Heading>
+
+          <Button
+            color="red"
+            onPress={() =>
+              toast.error({
+                title: 'File deleted',
+                description: 'Your file has been moved to trash.',
+                action: {
+                  label: 'Undo',
+                  onPress: () => toast.success({ title: 'File restored!' }),
+                },
+                showClose: false,
+              })
+            }
+          >
+            Delete File (with Undo)
+          </Button>
+        </Flex>
+      </Card>
+
+      {/* Custom Duration */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Custom Duration</Heading>
+
+          <Button
+            onPress={() =>
+              toast.show({
+                title: 'Quick toast (2s)',
+                duration: 2000,
+              })
+            }
+          >
+            2 Second Toast
+          </Button>
+
+          <Button
+            onPress={() =>
+              toast.show({
+                title: 'Long toast (10s)',
+                description: 'This toast will stay for 10 seconds',
+                duration: 10000,
+              })
+            }
+          >
+            10 Second Toast
+          </Button>
+        </Flex>
+      </Card>
+
+      {/* Position Override */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Position Override</Heading>
+
+          <Button
+            onPress={() =>
+              toast.show({
+                title: 'Top positioned toast',
+                position: 'top',
+              })
+            }
+          >
+            Show at Top
+          </Button>
+
+          <Button
+            onPress={() =>
+              toast.show({
+                title: 'Bottom positioned toast',
+                position: 'bottom',
+              })
+            }
+          >
+            Show at Bottom
+          </Button>
+        </Flex>
+      </Card>
+
+      {/* Stacking Demo */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Stacking</Heading>
+          <Text color="gray" size={2}>
+            Multiple toasts stack. Max 3 visible by default.
+          </Text>
+
+          <Button
+            onPress={() => {
+              toast.show({ title: 'First toast' });
+              setTimeout(() => toast.show({ title: 'Second toast' }), 300);
+              setTimeout(() => toast.show({ title: 'Third toast' }), 600);
+              setTimeout(() => toast.success({ title: 'All done!' }), 900);
+            }}
+          >
+            Show Multiple Toasts
+          </Button>
+        </Flex>
+      </Card>
+
+      {/* Programmatic Control */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Programmatic Control</Heading>
+
+          <Flex direction="row" gap={8}>
+            <Button color="red" variant="soft" onPress={() => toast.hideAll()}>
+              Hide All
+            </Button>
+          </Flex>
+        </Flex>
+      </Card>
+
+      {/* Without Close Button */}
+      <Card>
+        <Flex direction="column" gap={12} paddingHorizontal={4}>
+          <Heading size={4}>Without Close Button</Heading>
+
+          <Button
+            onPress={() =>
+              toast.show({
+                title: 'No close button',
+                description: 'Swipe to dismiss',
+                showClose: false,
+              })
+            }
+          >
+            Show Toast (no X)
+          </Button>
+        </Flex>
+      </Card>
+    </Flex>
   );
 }
-```
 
-### Persistent Toast
-
-```tsx
-<Toast.Root duration={Infinity}>
-  <Flex direction="column">
-    <Toast.Title>Update Available</Toast.Title>
-    <Toast.Description>A new version is ready to install.</Toast.Description>
-  </Flex>
-  <Flex gap={2}>
-    <Button size={1} variant="soft">Later</Button>
-    <Button size={1}>Update Now</Button>
-  </Flex>
-</Toast.Root>
+export default function ToastDemoScreen() {
+  return (
+    <ThemeProvider
+      mode="light"
+      themeOptions={{ accentColor: 'blue', radius: 'large', scaling: 1 }}
+      toastConfig={{
+        position: 'bottom',
+        maxVisible: 3,
+        duration: 5000,
+        swipeToDismiss: true,
+      }}
+    >
+      <ScrollView>
+        <View style={{ flex: 1 }}>
+          <ToastDemo />
+        </View>
+      </ScrollView>
+    </ThemeProvider>
+  );
+}
 ```
 
 ## Related
