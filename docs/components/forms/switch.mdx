@@ -27,8 +27,11 @@ import { Switch } from 'radix-native-ui';
 ## Props
 
 <PropTable>
-  <Prop name="checked" type="boolean" default="false">
-    Whether the switch is on.
+  <Prop name="defaultChecked" type="boolean" default="false">
+    Whether the switch is checked by default (uncontrolled mode).
+  </Prop>
+  <Prop name="checked" type="boolean">
+    Whether the switch is on (controlled mode).
   </Prop>
   <Prop name="onCheckedChange" type="(checked: boolean) => void">
     Called when checked state changes.
@@ -36,17 +39,32 @@ import { Switch } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether the switch is disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+    Size of the switch.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface'" default="'solid'">
+    Visual variant.
+  </Prop>
+  <Prop name="color" type="Color">
     Accent color when checked.
   </Prop>
-  <Prop name="size" type="'small' | 'medium' | 'large'" default="'medium'">
-    Size of the switch.
+  <Prop name="thumbColor" type="string">
+    Custom color for the thumb.
+  </Prop>
+  <Prop name="radius" type="RadiusSize" default="'full'">
+    Border radius of the switch.
+  </Prop>
+  <Prop name="label" type="string">
+    Label text displayed next to the switch.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback when toggling.
@@ -94,17 +112,33 @@ Switches provide haptic feedback by default when toggled. You can disable this w
 <Flex direction="column" gap={3}>
   <Flex direction="row" justify="between" align="center">
     <Text>Small</Text>
-    <Switch size="small" />
+    <Switch size="1" />
   </Flex>
   <Flex direction="row" justify="between" align="center">
     <Text>Medium</Text>
-    <Switch size="medium" />
+    <Switch size="2" />
   </Flex>
   <Flex direction="row" justify="between" align="center">
     <Text>Large</Text>
-    <Switch size="large" />
+    <Switch size="3" />
   </Flex>
 </Flex>
+```
+
+### Variants
+
+```tsx
+<Flex direction="column" gap={3}>
+  <Switch variant="solid" defaultChecked />
+  <Switch variant="soft" defaultChecked />
+  <Switch variant="surface" defaultChecked />
+</Flex>
+```
+
+### With Label
+
+```tsx
+<Switch size="2" label="Enable notifications" defaultChecked />
 ```
 
 ### With Color
