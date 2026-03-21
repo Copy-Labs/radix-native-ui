@@ -30,20 +30,23 @@ import { Badge } from 'radix-native-ui';
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
-  <Prop name="variant" type="'solid' | 'soft' | 'outline'" default="'soft'">
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'soft'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="1">
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
     Size of the badge.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
-  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+  <Prop name="radius" type="RadiusSize" default="'medium'">
     Border radius override.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
   </Prop>
 </PropTable>
 
@@ -55,6 +58,7 @@ import { Badge } from 'radix-native-ui';
 <Flex direction="row" gap={2}>
   <Badge variant="solid">Solid</Badge>
   <Badge variant="soft">Soft</Badge>
+  <Badge variant="surface">Surface</Badge>
   <Badge variant="outline">Outline</Badge>
 </Flex>
 ```
@@ -78,6 +82,7 @@ import { Badge } from 'radix-native-ui';
   <Badge size={1}>Small</Badge>
   <Badge size={2}>Medium</Badge>
   <Badge size={3}>Large</Badge>
+  <Badge size={4}>Extra Large</Badge>
 </Flex>
 ```
 
