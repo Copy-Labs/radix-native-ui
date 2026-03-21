@@ -18,34 +18,66 @@ import { Callout } from 'radix-native-ui';
 ```tsx
 import { Callout } from 'radix-native-ui';
 
-<Callout>
-  This is an important message.
-</Callout>
+<Callout.Root>
+  <Callout.Icon>
+    <Icon name="info" />
+  </Callout.Icon>
+  <Callout.Text>
+    This is an important message.
+  </Callout.Text>
+</Callout.Root>
 ```
 
 ## Props
+
+### Callout.Root
 
 <PropTable>
   <Prop name="children" type="ReactNode">
     Callout content.
   </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto immediate child.
+  </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
-  <Prop name="variant" type="'soft' | 'outline' | 'surface'" default="'soft'">
+  <Prop name="variant" type="'soft' | 'surface' | 'outline'" default="'soft'">
     Visual style variant.
   </Prop>
   <Prop name="size" type="1 | 2 | 3" default="2">
     Size of the callout.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
   </Prop>
-  <Prop name="icon" type="ReactNode">
-    Icon to display.
+</PropTable>
+
+### Callout.Icon
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Icon content.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+</PropTable>
+
+### Callout.Text
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Text content.
+  </Prop>
+  <Prop name="style" type="StyleProp<TextStyle>">
+    Custom text styles.
+  </Prop>
+  <Prop name="trim" type="'start' | 'end' | 'both'">
+    Trim whitespace.
   </Prop>
 </PropTable>
 
@@ -54,62 +86,90 @@ import { Callout } from 'radix-native-ui';
 ### Basic Callout
 
 ```tsx
-<Callout>
-  This is an important message.
-</Callout>
+<Callout.Root>
+  <Callout.Text>
+    This is an important message.
+  </Callout.Text>
+</Callout.Root>
 ```
 
 ### With Color
 
 ```tsx
-<Callout color="blue">
-  This is an informational message.
-</Callout>
+<Callout.Root color="blue">
+  <Callout.Text>
+    This is an informational message.
+  </Callout.Text>
+</Callout.Root>
 
-<Callout color="red">
-  This is an error message.
-</Callout>
+<Callout.Root color="red">
+  <Callout.Text>
+    This is an error message.
+  </Callout.Text>
+</Callout.Root>
 
-<Callout color="green">
-  This is a success message.
-</Callout>
+<Callout.Root color="green">
+  <Callout.Text>
+    This is a success message.
+  </Callout.Text>
+</Callout.Root>
 ```
 
 ### Variants
 
 ```tsx
-<Callout variant="soft">Soft callout</Callout>
-<Callout variant="outline">Outline callout</Callout>
-<Callout variant="surface">Surface callout</Callout>
+<Callout.Root variant="soft">
+  <Callout.Text>Soft callout</Callout.Text>
+</Callout.Root>
+<Callout.Root variant="outline">
+  <Callout.Text>Outline callout</Callout.Text>
+</Callout.Root>
+<Callout.Root variant="surface">
+  <Callout.Text>Surface callout</Callout.Text>
+</Callout.Root>
 ```
 
 ### With Icon
 
 ```tsx
-<Callout color="yellow" icon={<Icon name="warning" />}>
-  Warning: This action cannot be undone.
-</Callout>
+<Callout.Root color="amber">
+  <Callout.Icon>
+    <WarningIcon />
+  </Callout.Icon>
+  <Callout.Text>
+    Warning: This action cannot be undone.
+  </Callout.Text>
+</Callout.Root>
 ```
 
 ### Sizes
 
 ```tsx
-<Callout size={1}>Small callout</Callout>
-<Callout size={2}>Medium callout (default)</Callout>
-<Callout size={3}>Large callout</Callout>
+<Callout.Root size={1}>
+  <Callout.Text>Small callout</Callout.Text>
+</Callout.Root>
+<Callout.Root size={2}>
+  <Callout.Text>Medium callout (default)</Callout.Text>
+</Callout.Root>
+<Callout.Root size={3}>
+  <Callout.Text>Large callout</Callout.Text>
+</Callout.Root>
 ```
 
 ### Form Error
 
 ```tsx
-<Callout color="red" variant="outline">
-  <Flex direction="column" gap={2}>
-    <Text weight="medium">Form Errors</Text>
-    <Text>Please fix the following issues:</Text>
-    <Text>- Email is required</Text>
-    <Text>- Password must be at least 8 characters</Text>
+<Callout.Root color="red" variant="outline">
+  <Callout.Icon>
+    <ErrorIcon />
+  </Callout.Icon>
+  <Flex direction="column">
+    <Callout.Text weight="medium">Form Errors</Callout.Text>
+    <Callout.Text>Please fix the following issues:</Callout.Text>
+    <Callout.Text>- Email is required</Callout.Text>
+    <Callout.Text>- Password must be at least 8 characters</Callout.Text>
   </Flex>
-</Callout>
+</Callout.Root>
 ```
 
 ## Related
