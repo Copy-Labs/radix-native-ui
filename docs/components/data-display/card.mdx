@@ -32,20 +32,37 @@ import { Card, Text, Heading, Flex } from 'radix-native-ui';
   <Prop name="children" type="ReactNode">
     Card content.
   </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto immediate child.
+  </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
-  <Prop name="variant" type="'elevated' | 'outlined' | 'flat'" default="'elevated'">
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline' | 'ghost'" default="'solid'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3 | 4 | 5" default="3">
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
     Size of the card padding.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
-  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+  <Prop name="radius" type="RadiusSize" default="'medium'">
     Border radius override.
+  </Prop>
+  <Prop name="highContrast" type="boolean" default="false">
+    Uses high contrast colors.
+  </Prop>
+</PropTable>
+
+### Card.Footer
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Footer content.
+  </Prop>
+  <Prop name="separate" type="boolean" default="true">
+    Separate footer with a border.
   </Prop>
 </PropTable>
 
@@ -54,19 +71,20 @@ import { Card, Text, Heading, Flex } from 'radix-native-ui';
 ### Variants
 
 ```tsx
-<Card variant="elevated">Elevated card</Card>
-<Card variant="outlined">Outlined card</Card>
-<Card variant="flat">Flat card</Card>
+<Card variant="solid">Solid card</Card>
+<Card variant="soft">Soft card</Card>
+<Card variant="surface">Surface card</Card>
+<Card variant="outline">Outline card</Card>
+<Card variant="ghost">Ghost card</Card>
 ```
 
 ### Sizes
 
 ```tsx
-<Card size={1}>Extra small padding</Card>
-<Card size={2}>Small padding</Card>
-<Card size={3}>Medium padding (default)</Card>
-<Card size={4}>Large padding</Card>
-<Card size={5}>Extra large padding</Card>
+<Card size={1}>Small padding</Card>
+<Card size={2}>Medium padding (default)</Card>
+<Card size={3}>Large padding</Card>
+<Card size={4}>Extra large padding</Card>
 ```
 
 ### With Color
