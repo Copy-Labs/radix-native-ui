@@ -37,25 +37,34 @@ import { TextField } from 'radix-native-ui';
   <Prop name="placeholder" type="string">
     Placeholder text.
   </Prop>
-  <Prop name="variant" type="'classic' | 'surface' | 'soft'" default="'surface'">
+  <Prop name="variant" type="'surface' | 'soft' | 'outline'" default="'outline'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
     Size of the input.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Accent color for focus state.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether the input is disabled.
   </Prop>
-  <Prop name="error" type="string | boolean">
-    Error state or error message.
+  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
+    Border radius override.
+  </Prop>
+  <Prop name="label" type="string">
+    Label text displayed above the input.
+  </Prop>
+  <Prop name="error" type="string">
+    Error message displayed below the input.
+  </Prop>
+  <Prop name="multiline" type="boolean" default="false">
+    Whether this is a multiline input.
   </Prop>
   <Prop name="secureTextEntry" type="boolean" default="false">
     Masks text for passwords.
   </Prop>
-  <Prop name="keyboardType" type="'default' | 'email-address' | 'numeric' | 'phone-pad' | ...">
+  <Prop name="keyboardType" type="KeyboardTypeOptions" default="'default'">
     Keyboard type.
   </Prop>
   <Prop name="autoCapitalize" type="'none' | 'sentences' | 'words' | 'characters'">
@@ -66,6 +75,9 @@ import { TextField } from 'radix-native-ui';
   </Prop>
   <Prop name="accessibilityLabel" type="string">
     Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
@@ -87,7 +99,7 @@ import { TextField } from 'radix-native-ui';
 ### Variants
 
 ```tsx
-<TextField variant="classic" placeholder="Classic style" />
+<TextField variant="outline" placeholder="Outline style" />
 <TextField variant="surface" placeholder="Surface style" />
 <TextField variant="soft" placeholder="Soft style" />
 ```
@@ -95,9 +107,9 @@ import { TextField } from 'radix-native-ui';
 ### Sizes
 
 ```tsx
-<TextField size={1} placeholder="Small" />
-<TextField size={2} placeholder="Medium (default)" />
-<TextField size={3} placeholder="Large" />
+<TextField size="1" placeholder="Small" />
+<TextField size="2" placeholder="Medium (default)" />
+<TextField size="3" placeholder="Large" />
 ```
 
 ### Email Input
@@ -133,6 +145,39 @@ import { TextField } from 'radix-native-ui';
   onChangeText={setEmail}
   error="Please enter a valid email"
 />
+```
+
+### With Slots
+
+TextField supports slots for adding icons or buttons on the left or right side of the input:
+
+```tsx
+import { TextField } from 'radix-native-ui';
+import { SearchIcon, CrossIcon } from './icons';
+
+// Left slot (auto-detected)
+<TextField.Root placeholder="Search...">
+  <TextField.Slot>
+    <SearchIcon />
+  </TextField.Slot>
+</TextField.Root>
+
+// Right slot (explicit)
+<TextField.Root placeholder="Clear">
+  <TextField.Slot side="right">
+    <CrossIcon />
+  </TextField.Slot>
+</TextField.Root>
+
+// Both sides
+<TextField.Root placeholder="Search...">
+  <TextField.Slot side="left">
+    <SearchIcon />
+  </TextField.Slot>
+  <TextField.Slot side="right">
+    <CrossIcon />
+  </TextField.Slot>
+</TextField.Root>
 ```
 
 ### Disabled
