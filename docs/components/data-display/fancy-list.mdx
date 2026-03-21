@@ -5,7 +5,7 @@ description: Enhanced list component with advanced features.
 
 # FancyList
 
-`FancyList` is an enhanced list component for rendering collections with advanced features like dividers, icons, and interactive items.
+`FancyList` is an enhanced list component that wraps React Native's FlatList with default styling, theming, and divider support.
 
 ## Import
 
@@ -16,32 +16,48 @@ import { FancyList } from 'radix-native-ui';
 ## Usage
 
 ```tsx
-import { FancyList } from 'radix-native-ui';
+import { FancyList, Text } from 'radix-native-ui';
 
-<FancyList>
-  <FancyList.Item>First item</FancyList.Item>
-  <FancyList.Item>Second item</FancyList.Item>
-  <FancyList.Item>Third item</FancyList.Item>
-</FancyList>
+const items = ['Apple', 'Banana', 'Orange'];
+
+<FancyList
+  data={items}
+  renderItem={({ item }) => <Text>{item}</Text>}
+/>
 ```
 
 ## Props
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    List content.
+  <Prop name="data" type="T[]" required>
+    Array of data items to render.
+  </Prop>
+  <Prop name="renderItem" type="(info: { item: T; index: number; key?: string }) => ReactNode" required>
+    Function to render each item.
+  </Prop>
+  <Prop name="keyExtractor" type="(item: T, index: number) => string">
+    Function to extract unique key for each item.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+    Custom styles for the list container.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
-    Size of the list items.
-  </Prop>
-  <Prop name="dividers" type="boolean" default="true">
+  <Prop name="showDividers" type="boolean" default="true">
     Show dividers between items.
   </Prop>
-  <Prop name="color" type="string">
-    Accent color.
+  <Prop name="scrollable" type="boolean" default="true">
+    Whether the list is scrollable.
+  </Prop>
+  <Prop name="itemPadding" type="number">
+    Vertical padding for each list item.
+  </Prop>
+  <Prop name="ListEmptyComponent" type="ReactNode">
+    Component to render when the list is empty.
+  </Prop>
+  <Prop name="ListHeaderComponent" type="ReactNode">
+    Component to render at the top of the list.
+  </Prop>
+  <Prop name="ListFooterComponent" type="ReactNode">
+    Component to render at the bottom of the list.
   </Prop>
 </PropTable>
 
@@ -50,114 +66,135 @@ import { FancyList } from 'radix-native-ui';
 ### Basic List
 
 ```tsx
-<FancyList>
-  <FancyList.Item>Apple</FancyList.Item>
-  <FancyList.Item>Banana</FancyList.Item>
-  <FancyList.Item>Orange</FancyList.Item>
-</FancyList>
+import { FancyList, Text } from 'radix-native-ui';
+
+const items = ['Apple', 'Banana', 'Orange'];
+
+<FancyList
+  data={items}
+  renderItem={({ item }) => <Text>{item}</Text>}
+/>
 ```
 
 ### Without Dividers
 
 ```tsx
-<FancyList dividers={false}>
-  <FancyList.Item>Item 1</FancyList.Item>
-  <FancyList.Item>Item 2</FancyList.Item>
-  <FancyList.Item>Item 3</FancyList.Item>
-</FancyList>
+import { FancyList, Text } from 'radix-native-ui';
+
+const items = ['Item 1', 'Item 2', 'Item 3'];
+
+<FancyList
+  data={items}
+  renderItem={({ item }) => <Text>{item}</Text>}
+  showDividers={false}
+/>
 ```
 
-### With Icons
+### With Objects
 
 ```tsx
-<FancyList>
-  <FancyList.Item icon={<Icon name="home" />}>Home</FancyList.Item>
-  <FancyList.Item icon={<Icon name="settings" />}>Settings</FancyList.Item>
-  <FancyList.Item icon={<Icon name="user" />}>Profile</FancyList.Item>
-</FancyList>
-```
+import { FancyList, Text, Flex } from 'radix-native-ui';
 
-### Interactive List
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
-```tsx
-<FancyList>
-  <FancyList.Item onPress={() => console.log('Pressed item 1')}>
-    <Flex direction="row" justify="between" align="center">
-      <Text>Notifications</Text>
-      <Icon name="chevron-right" />
+const users: User[] = [
+  { id: '1', name: 'John Doe', email: 'john@example.com' },
+  { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
+];
+
+<FancyList
+  data={users}
+  renderItem={({ item }) => (
+    <Flex direction="column">
+      <Text weight="bold">{item.name}</Text>
+      <Text size={2} color="gray">{item.email}</Text>
     </Flex>
-  </FancyList.Item>
-  <FancyList.Item onPress={() => console.log('Pressed item 2')}>
-    <Flex direction="row" justify="between" align="center">
-      <Text>Privacy</Text>
-      <Icon name="chevron-right" />
-    </Flex>
-  </FancyList.Item>
-</FancyList>
+  )}
+/>
 ```
 
 ### Settings List
 
 ```tsx
+import { Card, FancyList, Text, Flex, Switch, Heading } from 'radix-native-ui';
+
+interface Setting {
+  id: string;
+  title: string;
+  description: string;
+  type: 'toggle' | 'info';
+}
+
+const settings: Setting[] = [
+  { id: 'notifications', title: 'Push Notifications', description: 'Receive push notifications', type: 'toggle' },
+  { id: 'dark_mode', title: 'Dark Mode', description: 'Use dark theme', type: 'toggle' },
+  { id: 'version', title: 'Version', description: '1.0.0', type: 'info' },
+];
+
 <Card>
   <Flex direction="column" gap={3}>
     <Heading size={3}>Settings</Heading>
-    <FancyList>
-      <FancyList.Item>
-        <Flex direction="row" justify="between" align="center">
-          <Flex direction="row" gap={2} align="center">
-            <Icon name="bell" />
-            <Text>Notifications</Text>
+    <FancyList
+      data={settings}
+      renderItem={({ item }) => (
+        <Flex align="center" justify="space-between">
+          <Flex direction="column" flex={1}>
+            <Text weight="medium">{item.title}</Text>
+            <Text size={2} color="gray">{item.description}</Text>
           </Flex>
-          <Switch />
+          {item.type === 'toggle' && <Switch />}
         </Flex>
-      </FancyList.Item>
-      <FancyList.Item>
-        <Flex direction="row" justify="between" align="center">
-          <Flex direction="row" gap={2} align="center">
-            <Icon name="moon" />
-            <Text>Dark Mode</Text>
-          </Flex>
-          <Switch />
-        </Flex>
-      </FancyList.Item>
-      <FancyList.Item>
-        <Flex direction="row" justify="between" align="center">
-          <Flex direction="row" gap={2} align="center">
-            <Icon name="globe" />
-            <Text>Language</Text>
-          </Flex>
-          <Text color="gray">English</Text>
-        </Flex>
-      </FancyList.Item>
-    </FancyList>
+      )}
+    />
   </Flex>
 </Card>
 ```
 
-### With Badges
+### With Header and Footer
 
 ```tsx
-<FancyList>
-  <FancyList.Item>
-    <Flex direction="row" justify="between" align="center">
-      <Text>Inbox</Text>
-      <Badge color="blue">12</Badge>
-    </Flex>
-  </FancyList.Item>
-  <FancyList.Item>
-    <Flex direction="row" justify="between" align="center">
-      <Text>Drafts</Text>
-      <Badge color="gray">3</Badge>
-    </Flex>
-  </FancyList.Item>
-  <FancyList.Item>
-    <Flex direction="row" justify="between" align="center">
-      <Text>Spam</Text>
-      <Badge color="red">5</Badge>
-    </Flex>
-  </FancyList.Item>
-</FancyList>
+import { FancyList, Text, Flex, Heading } from 'radix-native-ui';
+
+const items = ['Item 1', 'Item 2', 'Item 3'];
+
+const renderHeader = () => (
+  <Flex direction="column" align="center" gap={2} paddingVertical={4}>
+    <Heading size={4}>List Title</Heading>
+    <Text size={2} color="gray">List description</Text>
+  </Flex>
+);
+
+const renderFooter = () => (
+  <Flex padding={4} gap={8}>
+    <Button variant="surface" style={{ flex: 1 }}>Cancel</Button>
+    <Button style={{ flex: 1 }}>Save</Button>
+  </Flex>
+);
+
+<FancyList
+  data={items}
+  renderItem={({ item }) => <Text>{item}</Text>}
+  ListHeaderComponent={renderHeader}
+  ListFooterComponent={renderFooter}
+/>
+```
+
+### Non-scrollable List
+
+```tsx
+import { FancyList, Text } from 'radix-native-ui';
+
+const items = ['Item 1', 'Item 2', 'Item 3'];
+
+<FancyList
+  data={items}
+  renderItem={({ item }) => <Text>{item}</Text>}
+  scrollable={false}
+/>
 ```
 
 ## Related
