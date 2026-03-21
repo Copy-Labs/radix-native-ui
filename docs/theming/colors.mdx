@@ -73,6 +73,7 @@ function CustomComponent() {
 
 <CardGroup cols={5}>
   <Card>**amber** - Warm yellow-orange</Card>
+  <Card>**black** - Pure black</Card>
   <Card>**blue** - Classic blue</Card>
   <Card>**bronze** - Metallic brown</Card>
   <Card>**brown** - Earth brown</Card>
@@ -96,6 +97,7 @@ function CustomComponent() {
   <Card>**teal** - Blue-green</Card>
   <Card>**tomato** - Red-orange</Card>
   <Card>**violet** - Blue-purple</Card>
+  <Card>**white** - Pure white</Card>
   <Card>**yellow** - Bright yellow</Card>
 </CardGroup>
 
@@ -207,9 +209,38 @@ function Component() {
 }
 ```
 
+### needsDarkText
+
+Check if a color needs dark text (for light backgrounds):
+
+```tsx
+import { needsDarkText } from 'radix-native-ui';
+
+function Component() {
+  // Returns true for colors like sky, mint, lime, yellow, amber
+  const needsDark = needsDarkText('yellow');
+}
+```
+
+### getForegroundColor
+
+Get the appropriate text color for a given background:
+
+```tsx
+import { getForegroundColor, useTheme, useThemeMode } from 'radix-native-ui';
+
+function Component() {
+  const theme = useTheme();
+  const mode = useThemeMode();
+
+  const textColor = getForegroundColor(theme, 'blue', mode, false);
+  // Returns the appropriate text color for the background
+}
+```
+
 ## Best Practices
 
-1. **Use semantic colors** - Use `success` (green), `warning` (amber), `error` (red) for status indicators
+1. **Use appropriate colors** - Use green for success states, red for errors, amber for warnings
 2. **Maintain contrast** - Ensure text has sufficient contrast against backgrounds
 3. **Use highContrast** - Enable for accessibility when needed
 4. **Test both modes** - Always test your UI in both light and dark modes
