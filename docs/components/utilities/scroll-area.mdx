@@ -30,6 +30,8 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 
 ## Props
 
+ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all ScrollView props in addition to Box/Flex native props.
+
 <PropTable>
   <Prop name="children" type="ReactNode">
     Scrollable content.
@@ -37,12 +39,16 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles (must include height or flex).
   </Prop>
-  <Prop name="scrollbars" type="'vertical' | 'horizontal' | 'both' | 'none'" default="'vertical'">
-    Which scrollbars to show.
+  <Prop name="height" type="number | string">
+    Fixed height for the scroll area.
   </Prop>
-  <Prop name="scrollHideDelay" type="number" default="600">
-    Delay before hiding scrollbars (ms).
+  <Prop name="width" type="number | string">
+    Fixed width for the scroll area.
   </Prop>
+  <Prop name="flex" type="number">
+    Flex grow value.
+  </Prop>
+  {/* Additional common ScrollView props */}
   <Prop name="onScroll" type="(event: ScrollEvent) => void">
     Scroll event handler.
   </Prop>
@@ -52,6 +58,9 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
   <Prop name="showsHorizontalScrollIndicator" type="boolean" default="true">
     Show horizontal scroll indicator.
   </Prop>
+  <Prop name="horizontal" type="boolean" default="false">
+    Enable horizontal scrolling.
+  </Prop>
 </PropTable>
 
 ## Examples
@@ -59,8 +68,8 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 ### Basic ScrollArea
 
 ```tsx
-<ScrollArea style={{ height: 200 }}>
-  <Flex direction="column" gap={2} p={3}>
+<ScrollArea height={200}>
+  <Flex direction="column" gap={2} padding={3}>
     {items.map(item => (
       <Card key={item.id}>
         <Text>{item.title}</Text>
@@ -73,10 +82,10 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 ### Horizontal Scroll
 
 ```tsx
-<ScrollArea scrollbars="horizontal" style={{ width: '100%' }}>
-  <Flex direction="row" gap={3} p={3}>
+<ScrollArea horizontal width="100%">
+  <Flex direction="row" gap={3} padding={3}>
     {images.map(image => (
-      <AspectRatio ratio={1} key={image.id} style={{ width: 150 }}>
+      <AspectRatio ratio={1} key={image.id} width={38}>
         <Image source={{ uri: image.url }} />
       </AspectRatio>
     ))}
@@ -87,11 +96,9 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 ### Both Scroll Directions
 
 ```tsx
-<ScrollArea scrollbars="both" style={{ height: 300, width: '100%' }}>
-  <Box style={{ width: 800 }}>
-    <Table.Root>
-      {/* Wide table content */}
-    </Table.Root>
+<ScrollArea horizontal height={300} width="100%">
+  <Box width={200}>
+    {/* Wide content */}
   </Box>
 </ScrollArea>
 ```
@@ -99,10 +106,10 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 ### Chat Messages
 
 ```tsx
-<Card style={{ height: 400 }}>
-  <Flex direction="column" style={{ height: '100%' }}>
-    <ScrollArea style={{ flex: 1 }}>
-      <Flex direction="column" gap={2} p={3}>
+<Card height={400}>
+  <Flex direction="column" height="100%">
+    <ScrollArea flex={1}>
+      <Flex direction="column" gap={2} padding={3}>
         {messages.map(message => (
           <Flex
             key={message.id}
@@ -111,7 +118,7 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
             align={message.isMe ? 'flex-end' : 'flex-start'}
           >
             <Text size={1} color="gray">{message.sender}</Text>
-            <Card size={1} style={{ maxWidth: '80%' }}>
+            <Card size={1} maxWidth="80%">
               <Text>{message.text}</Text>
             </Card>
           </Flex>
@@ -119,8 +126,8 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
       </Flex>
     </ScrollArea>
 
-    <Flex direction="row" gap={2} p={2}>
-      <TextField style={{ flex: 1 }} placeholder="Type a message..." />
+    <Flex direction="row" gap={2} padding={2}>
+      <TextField flex={1} placeholder="Type a message..." />
       <Button>Send</Button>
     </Flex>
   </Flex>
@@ -133,7 +140,7 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 <Card>
   <Flex direction="column" gap={2}>
     <Heading size={3}>Files</Heading>
-    <ScrollArea style={{ height: 250 }}>
+    <ScrollArea height={250}>
       <Flex direction="column" gap={1}>
         {files.map(file => (
           <Flex
@@ -141,10 +148,10 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
             direction="row"
             gap={2}
             align="center"
-            p={2}
+            padding={2}
           >
             <Icon name="file" />
-            <Flex direction="column" style={{ flex: 1 }}>
+            <Flex direction="column" flex={1}>
               <Text size={2}>{file.name}</Text>
               <Text size={1} color="gray">{file.size}</Text>
             </Flex>
@@ -169,10 +176,10 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
       <Button size={1} variant="soft">Clear</Button>
     </Flex>
     <ScrollArea
-      style={{ height: 200 }}
+      height={200}
       showsVerticalScrollIndicator={true}
     >
-      <Box p={2} style={{ backgroundColor: 'gray.2' }}>
+      <Box padding={2} backgroundColor="gray.2">
         {logs.map((log, index) => (
           <Text
             key={index}
@@ -191,10 +198,10 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
 ### Nested ScrollAreas
 
 ```tsx
-<Flex direction="row" gap={3} style={{ height: 400 }}>
-  <Card style={{ flex: 1 }}>
+<Flex direction="row" gap={3} height={400}>
+  <Card flex={1}>
     <Heading size={3}>Categories</Heading>
-    <ScrollArea style={{ flex: 1 }}>
+    <ScrollArea flex={1}>
       <Flex direction="column" gap={1}>
         {categories.map(cat => (
           <Button key={cat.id} variant="ghost" justify="start">
@@ -205,9 +212,9 @@ import { ScrollArea, Text, Flex } from 'radix-native-ui';
     </ScrollArea>
   </Card>
 
-  <Card style={{ flex: 2 }}>
+  <Card flex={2}>
     <Heading size={3}>Products</Heading>
-    <ScrollArea style={{ flex: 1 }}>
+    <ScrollArea flex={1}>
       <Flex direction="column" gap={2}>
         {products.map(product => (
           <Card key={product.id}>
