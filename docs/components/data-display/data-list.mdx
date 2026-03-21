@@ -62,6 +62,12 @@ Value for the data item.
   <Prop name="size" type="1 | 2 | 3" default="2">
     Size of the data list.
   </Prop>
+  <Prop name="orientation" type="'horizontal' | 'vertical'" default="'horizontal'">
+    Layout orientation.
+  </Prop>
+  <Prop name="trim" type="'normal' | 'start' | 'end' | 'both'" default="'normal'">
+    Trim leading/trailing spacing.
+  </Prop>
 </PropTable>
 
 ### DataList.Item
@@ -73,7 +79,7 @@ Value for the data item.
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
-  <Prop name="align" type="'start' | 'center' | 'end'" default="'start'">
+  <Prop name="align" type="'baseline' | 'start' | 'center' | 'end' | 'stretch'" default="'baseline'">
     Vertical alignment.
   </Prop>
 </PropTable>
@@ -84,14 +90,17 @@ Value for the data item.
   <Prop name="children" type="ReactNode">
     Label content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
+  <Prop name="style" type="StyleProp<TextStyle>">
     Custom styles.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="Color">
     Label color.
   </Prop>
-  <Prop name="weight" type="'light' | 'regular' | 'medium' | 'bold'">
-    Font weight.
+  <Prop name="highContrast" type="boolean" default="false">
+    Uses high contrast colors.
+  </Prop>
+  <Prop name="width" type="number | string">
+    Label width.
   </Prop>
 </PropTable>
 
