@@ -51,6 +51,14 @@ The root container component that manages dialog state.
 
 Element that opens the alert dialog.
 
+### AlertDialog.Portal
+
+Renders alert dialog content at the root level using Modal.
+
+### AlertDialog.Overlay
+
+The backdrop that dims the background.
+
 ### AlertDialog.Content
 
 The alert dialog content container.
@@ -87,6 +95,36 @@ Element that confirms the action.
   </Prop>
 </PropTable>
 
+### AlertDialog.Trigger
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Trigger content.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="true">
+    Merge props onto child element.
+  </Prop>
+</PropTable>
+
+### AlertDialog.Portal
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Portal content.
+  </Prop>
+  <Prop name="hostId" type="string">
+    Host ID for portal container.
+  </Prop>
+</PropTable>
+
+### AlertDialog.Overlay
+
+<PropTable>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the overlay.
+  </Prop>
+</PropTable>
+
 ### AlertDialog.Content
 
 <PropTable>
@@ -96,6 +134,12 @@ Element that confirms the action.
   <Prop name="style" type="StyleProp<ViewStyle>">
     Custom styles.
   </Prop>
+  <Prop name="size" type="1 | 2 | 3 | 4" default="2">
+    Size of the alert dialog.
+  </Prop>
+  <Prop name="hideCloseButton" type="boolean" default="true">
+    Hide the close button.
+  </Prop>
 </PropTable>
 
 ### AlertDialog.Title
@@ -104,8 +148,20 @@ Element that confirms the action.
   <Prop name="children" type="ReactNode">
     Title content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="size" type="HeadingSize" default="4">
+    Size of the title.
+  </Prop>
+  <Prop name="weight" type="TextWeight">
+    Font weight.
+  </Prop>
+  <Prop name="align" type="TextAlign">
+    Text alignment.
+  </Prop>
+  <Prop name="color" type="Color">
+    Text color.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto child element.
   </Prop>
 </PropTable>
 
@@ -115,8 +171,39 @@ Element that confirms the action.
   <Prop name="children" type="ReactNode">
     Description content.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
+  <Prop name="size" type="TextSize" default="2">
+    Size of the description text.
+  </Prop>
+  <Prop name="weight" type="TextWeight">
+    Font weight.
+  </Prop>
+  <Prop name="align" type="TextAlign">
+    Text alignment.
+  </Prop>
+  <Prop name="color" type="Color">
+    Text color.
+  </Prop>
+  <Prop name="asChild" type="boolean" default="false">
+    Merge props onto child element.
+  </Prop>
+</PropTable>
+
+### AlertDialog.Cancel
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Cancel button content (defaults to 'Cancel').
+  </Prop>
+</PropTable>
+
+### AlertDialog.Action
+
+<PropTable>
+  <Prop name="children" type="ReactNode">
+    Action button content.
+  </Prop>
+  <Prop name="onPress" type="() => void">
+    Callback when button is pressed.
   </Prop>
 </PropTable>
 
