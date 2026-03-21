@@ -5,32 +5,144 @@ description: Pattern for building flexible, composable components.
 
 # Compound Components
 
-This guide covers the compound components pattern for building flexible, composable UI components.
+This guide covers the compound components pattern used in Radix Themes Native for building flexible, composable UI components.
 
 ## What are Compound Components?
 
-Compound components are a pattern where components work together to form a complete UI element. They share state implicitly and provide a flexible API for composition.
+Compound components are a pattern where components work together to form a complete UI element. They share state implicitly through React Context and provide a flexible API for composition.
 
-## Basic Example
+## Real Examples from Radix Themes Native
+
+### Dialog
+
+The Dialog component uses compound components for its structure:
 
 ```tsx
-// Instead of a single component with many props
-<Card
-  title="Card Title"
-  description="Card description"
-  image="image.jpg"
-  footer={<Button>Action</Button>}
-/>
+import { Dialog, Button } from 'radix-native-ui';
 
-// Use compound components
+<Dialog.Root>
+  <Dialog.Trigger asChild>
+    <Button>Open Dialog</Button>
+  </Dialog.Trigger>
+  <Dialog.Portal>
+    <Dialog.Overlay />
+    <Dialog.Content>
+      <Dialog.Title>Dialog Title</Dialog.Title>
+      <Dialog.Description>
+        This is the dialog description text.
+      </Dialog.Description>
+      <Box direction="row" gap={2}>
+        <Dialog.Close asChild>
+          <Button variant="soft">Cancel</Button>
+        </Dialog.Close>
+        <Dialog.Action>Confirm</Dialog.Action>
+      </Box>
+    </Dialog.Content>
+  </Dialog.Portal>
+</Dialog.Root>
+```
+
+### Popover
+
+The Popover component uses compound components with an arrow:
+
+```tsx
+import { Popover, Button, Text } from 'radix-native-ui';
+
+<Popover.Root>
+  <Popover.Trigger asChild>
+    <Button>Open Popover</Button>
+  </Popover.Trigger>
+  <Popover.Portal>
+    <Popover.Overlay />
+    <Popover.Content>
+      <Popover.Arrow />
+      <Popover.Title>Popover Title</Popover.Title>
+      <Popover.Description>
+        This is the popover content.
+      </Popover.Description>
+      <Popover.Close aria-label="Close">Close</Popover.Close>
+    </Popover.Content>
+  </Popover.Portal>
+</Popover.Root>
+```
+
+### Select
+
+The Select component uses compound components for its structure:
+
+```tsx
+import { Select, Button } from 'radix-native-ui';
+
+const [value, setValue] = useState('');
+
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Trigger>
+    <Select.Value placeholder="Select an option" />
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Content>
+      <Select.Viewport>
+        <Select.Item value="option1">
+          <Select.ItemText>Option 1</Select.ItemText>
+        </Select.Item>
+        <Select.Item value="option2">
+          <Select.ItemText>Option 2</Select.ItemText>
+        </Select.Item>
+        <Select.Separator />
+        <Select.Group>
+          <Select.Label>Group Label</Select.Label>
+          <Select.Item value="option3">
+            <Select.ItemText>Option 3</Select.ItemText>
+          </Select.Item>
+        </Select.Group>
+      </Select.Viewport>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
+```
+
+### Accordion
+
+The Accordion component uses compound components:
+
+```tsx
+import { Accordion, Text } from 'radix-native-ui';
+
+<Accordion.Root>
+  <Accordion.Item value="item1">
+    <Accordion.Header>
+      <Accordion.Trigger>
+        <Text>Section 1</Text>
+      </Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content>
+      <Text>Content for section 1</Text>
+    </Accordion.Content>
+  </Accordion.Item>
+  <Accordion.Item value="item2">
+    <Accordion.Header>
+      <Accordion.Trigger>
+        <Text>Section 2</Text>
+      </Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content>
+      <Text>Content for section 2</Text>
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+### Card
+
+The Card component has compound components for its structure:
+
+```tsx
+import { Card, Button, Text } from 'radix-native-ui';
+
 <Card>
-  <Card.Image src="image.jpg" />
-  <Card.Header>
-    <Card.Title>Card Title</Card.Title>
-    <Card.Description>Card description</Card.Description>
-  </Card.Header>
   <Card.Content>
-    <Text>Card content</Text>
+    <Text>Card content goes here</Text>
   </Card.Content>
   <Card.Footer>
     <Button>Action</Button>
@@ -38,219 +150,48 @@ Compound components are a pattern where components work together to form a compl
 </Card>
 ```
 
-## Creating Compound Components
+### Callout
 
-### Step 1: Create Context
-
-```tsx
-import { createContext, useContext } from 'react';
-
-const CardContext = createContext<{
-  variant: 'elevated' | 'outlined';
-  size: 1 | 2 | 3;
-}>({
-  variant: 'elevated',
-  size: 2
-});
-
-const useCardContext = () => useContext(CardContext);
-```
-
-### Step 2: Create Root Component
+The Callout component uses compound components:
 
 ```tsx
-interface CardRootProps {
-  children: ReactNode;
-  variant?: 'elevated' | 'outlined';
-  size?: 1 | 2 | 3;
-}
+import { Callout, Text } from 'radix-native-ui';
 
-function CardRoot({
-  children,
-  variant = 'elevated',
-  size = 2
-}: CardRootProps) {
-  return (
-    <CardContext.Provider value={{ variant, size }}>
-      <Box style={getCardStyles(variant)}>
-        {children}
-      </Box>
-    </CardContext.Provider>
-  );
-}
+<Callout>
+  <Callout.Icon>
+    <Icon name="info" />
+  </Callout.Icon>
+  <Callout.Text>
+    This is an informational callout
+  </Callout.Text>
+</Callout>
 ```
 
-### Step 3: Create Child Components
+## Compound Component Pattern
+
+### How It Works
+
+1. **Root Component** - Provides context and state to all children
+2. **Child Components** - Access context via hooks and render specific parts
+3. **Context Sharing** - State is shared implicitly through React Context
+
+### asChild Prop
+
+Many compound components support the `asChild` prop, which merges the component's props onto its single child element instead of rendering a wrapper:
 
 ```tsx
-function CardImage({ src }: { src: string }) {
-  const { variant } = useCardContext();
+// Without asChild - renders a wrapper
+<Dialog.Trigger>
+  <Button>Open</Button>
+</Dialog.Trigger>
 
-  return (
-    <AspectRatio ratio={16 / 9}>
-      <Image source={{ uri: src }} />
-    </AspectRatio>
-  );
-}
-
-function CardHeader({ children }: { children: ReactNode }) {
-  return (
-    <Box p={3}>
-      {children}
-    </Box>
-  );
-}
-
-function CardTitle({ children }: { children: ReactNode }) {
-  const { size } = useCardContext();
-
-  return (
-    <Heading size={size + 1}>
-      {children}
-    </Heading>
-  );
-}
-
-function CardDescription({ children }: { children: ReactNode }) {
-  const { size } = useCardContext();
-
-  return (
-    <Text size={size} color="gray">
-      {children}
-    </Text>
-  );
-}
-
-function CardContent({ children }: { children: ReactNode }) {
-  return (
-    <Box p={3}>
-      {children}
-    </Box>
-  );
-}
-
-function CardFooter({ children }: { children: ReactNode }) {
-  return (
-    <Box p={3} style={{ borderTopWidth: 1, borderTopColor: 'gray.5' }}>
-      {children}
-    </Box>
-  );
-}
+// With asChild - merges props onto the child
+<Dialog.Trigger asChild>
+  <Button>Open</Button>
+</Dialog.Trigger>
 ```
 
-### Step 4: Export as Compound Component
-
-```tsx
-export const Card = Object.assign(CardRoot, {
-  Image: CardImage,
-  Header: CardHeader,
-  Title: CardTitle,
-  Description: CardDescription,
-  Content: CardContent,
-  Footer: CardFooter
-});
-```
-
-## Usage Examples
-
-### Basic Card
-
-```tsx
-<Card>
-  <Card.Header>
-    <Card.Title>Simple Card</Card.Title>
-    <Card.Description>Just a title and description</Card.Description>
-  </Card.Header>
-</Card>
-```
-
-### Full Card
-
-```tsx
-<Card variant="outlined" size={3}>
-  <Card.Image src="https://example.com/image.jpg" />
-  <Card.Header>
-    <Card.Title>Featured Article</Card.Title>
-    <Card.Description>Published yesterday</Card.Description>
-  </Card.Header>
-  <Card.Content>
-    <Text>This is the article content...</Text>
-  </Card.Content>
-  <Card.Footer>
-    <Flex gap={2}>
-      <Button variant="soft">Share</Button>
-      <Button>Read More</Button>
-    </Flex>
-  </Card.Footer>
-</Card>
-```
-
-### Product Card
-
-```tsx
-<Card>
-  <Card.Image src={product.image} />
-  <Card.Header>
-    <Flex direction="row" justify="between" align="start">
-      <Flex direction="column" gap={1}>
-        <Card.Title>{product.name}</Card.Title>
-        <Card.Description>{product.category}</Card.Description>
-      </Flex>
-      <Badge color="green">New</Badge>
-    </Flex>
-  </Card.Header>
-  <Card.Footer>
-    <Flex direction="row" justify="between" align="center">
-      <Text weight="bold" size={4}>${product.price}</Text>
-      <Button size={1}>Add to Cart</Button>
-    </Flex>
-  </Card.Footer>
-</Card>
-```
-
-## Real Examples from Radix Themes Native
-
-### Dialog
-
-```tsx
-<Dialog.Root>
-  <Dialog.Trigger>
-    <Button>Open</Button>
-  </Dialog.Trigger>
-  <Dialog.Content>
-    <Dialog.Title>Dialog Title</Dialog.Title>
-    <Dialog.Description>Dialog description</Dialog.Description>
-    <Dialog.Close>Close</Dialog.Close>
-  </Dialog.Content>
-</Dialog.Root>
-```
-
-### Tabs
-
-```tsx
-<Tabs.Root defaultValue="tab1">
-  <Tabs.List>
-    <Tabs.Trigger value="tab1">Tab 1</Tabs.Trigger>
-    <Tabs.Trigger value="tab2">Tab 2</Tabs.Trigger>
-  </Tabs.List>
-  <Tabs.Content value="tab1">Content 1</Tabs.Content>
-  <Tabs.Content value="tab2">Content 2</Tabs.Content>
-</Tabs.Root>
-```
-
-### Select
-
-```tsx
-<Select.Root value={value} onValueChange={setValue}>
-  <Select.Trigger>
-    <Select.Value placeholder="Select..." />
-  </Select.Trigger>
-  <Select.Content>
-    <Select.Item value="1">Option 1</Select.Item>
-    <Select.Item value="2">Option 2</Select.Item>
-  </Select.Content>
-</Select.Root>
-```
+This is useful when you want to customize the trigger element while maintaining the component's behavior.
 
 ## Benefits
 
@@ -259,11 +200,10 @@ export const Card = Object.assign(CardRoot, {
 Users can compose components in any order:
 
 ```tsx
-<Card>
-  <Card.Header>...</Card.Header>
-  <Card.Image src="..." />
-  <Card.Footer>...</Card.Footer>
-</Card>
+<Dialog.Content>
+  <Dialog.Description>...</Dialog.Description>
+  <Dialog.Title>...</Dialog.Title>
+</Dialog.Content>
 ```
 
 ### 2. Separation of Concerns
@@ -271,15 +211,11 @@ Users can compose components in any order:
 Each component handles its own rendering:
 
 ```tsx
-// CardTitle only handles title styling
-function CardTitle({ children }) {
-  return <Heading size={3}>{children}</Heading>;
-}
+// Dialog.Title only handles title styling
+<Dialog.Title>Title Text</Dialog.Title>
 
-// CardDescription only handles description styling
-function CardDescription({ children }) {
-  return <Text color="gray">{children}</Text>;
-}
+// Dialog.Description only handles description styling
+<Dialog.Description>Description Text</Dialog.Description>
 ```
 
 ### 3. Implicit State Sharing
@@ -287,88 +223,81 @@ function CardDescription({ children }) {
 Child components share state through context:
 
 ```tsx
-function CardTitle({ children }) {
-  const { size } = useCardContext();
-  // Size is automatically inherited from parent
-  return <Heading size={size + 1}>{children}</Heading>;
-}
+// Trigger automatically knows about open state
+<Dialog.Trigger>Open</Dialog.Trigger>
+
+// Content automatically receives open state
+<Dialog.Content>Content</Dialog.Content>
 ```
 
 ### 4. Custom Composition
 
-Users can add custom elements:
+Users can customize with the `asChild` prop:
 
 ```tsx
-<Card>
-  <Card.Header>
-    <Card.Title>Title</Card.Title>
-    <Badge color="blue">Custom Badge</Badge>
-  </Card.Header>
-  <Card.Content>
-    <CustomComponent />
-  </Card.Content>
-</Card>
+<Dialog.Trigger asChild>
+  <Pressable onPress={customHandler}>
+    <Icon name="menu" />
+  </Pressable>
+</Dialog.Trigger>
 ```
 
 ## Best Practices
 
 ### 1. Use Context for Shared State
 
+Components share state through React Context:
+
 ```tsx
 // Good - Share state through context
-const TabsContext = createContext({ value: '', onChange: () => {} });
-
-// Avoid - Pass props through every component
-<Tabs value={value} onChange={onChange}>
-  <TabsList value={value} onChange={onChange}>
-    <TabsTrigger value={value} onChange={onChange} />
-  </TabsList>
-</Tabs>
+<Dialog.Root>
+  <Dialog.Trigger>...</Dialog.Trigger>
+  <Dialog.Content>...</Dialog.Content>
+</Dialog.Root>
 ```
 
 ### 2. Provide Sensible Defaults
 
+Components come with default values:
+
 ```tsx
-function CardRoot({ variant = 'elevated', size = 2, children }) {
-  // Default values make the component easier to use
-}
+// Default size is 2
+<Card>...</Card>
+
+// Override with custom size
+<Card size={3}>...</Card>
 ```
 
-### 3. Keep Components Focused
+### 3. Use asChild for Custom Elements
+
+When you need custom elements, use `asChild`:
 
 ```tsx
-// Good - Each component has one responsibility
-Card.Title = function Title({ children }) {
-  return <Heading size={3}>{children}</Heading>;
-};
-
-// Avoid - Component doing too much
-Card.Header = function Header({ title, description, image }) {
-  return (
-    <Box>
-      <Image src={image} />
-      <Heading>{title}</Heading>
-      <Text>{description}</Text>
-    </Box>
-  );
-};
+// Merge props onto custom element
+<Dialog.Trigger asChild>
+  <CustomButton>Open</CustomButton>
+</Dialog.Trigger>
 ```
 
-### 4. Use TypeScript for Type Safety
+### 4. Compose Components Freely
+
+Components can be composed in many ways:
 
 ```tsx
-interface CardContextValue {
-  variant: 'elevated' | 'outlined';
-  size: 1 | 2 | 3;
-}
-
-const CardContext = createContext<CardContextValue>({
-  variant: 'elevated',
-  size: 2
-});
+<Popover.Content>
+  <Box padding={3}>
+    <Popover.Title>Title</Popover.Title>
+    <Popover.Description>Description</Popover.Description>
+  </Box>
+  <Popover.Close>Close</Popover.Close>
+</Popover.Content>
 ```
 
 ## Related
 
-- [Slot](/components/utilities/slot) - Slot component
-- [Primitives](/api-reference/primitives) - Primitive components
+- [Slot](/components/utilities/slot) - Slot component for merging props
+- [Dialog](/components/overlays/dialog) - Dialog component
+- [Popover](/components/overlays/popover) - Popover component
+- [Select](/components/forms/select) - Select component
+- [Accordion](/components/disclosure/accordion) - Accordion component
+- [Card](/components/data-display/card) - Card component
