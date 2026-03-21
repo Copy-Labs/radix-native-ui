@@ -39,14 +39,14 @@ import { RadioGroup } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether all radios are disabled.
   </Prop>
-  <Prop name="color" type="Color">
-    Accent color for all radios.
-  </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
     Size of all radios.
   </Prop>
   <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'soft'">
     Visual variant for all radios.
+  </Prop>
+  <Prop name="color" type="Color">
+    Accent color for all radios.
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
@@ -56,6 +56,9 @@ import { RadioGroup } from 'radix-native-ui';
   </Prop>
   <Prop name="gap" type="number">
     Gap between radio items.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the container.
   </Prop>
 </PropTable>
 
@@ -70,6 +73,21 @@ import { RadioGroup } from 'radix-native-ui';
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether this specific item is disabled.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'">
+    Visual variant (overrides group variant).
+  </Prop>
+  <Prop name="color" type="Color">
+    Custom color (overrides group color).
+  </Prop>
+  <Prop name="highContrast" type="boolean">
+    High contrast mode (overrides group setting).
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
 </PropTable>
 

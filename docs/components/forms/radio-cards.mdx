@@ -45,26 +45,41 @@ import { RadioCards } from 'radix-native-ui';
   <Prop name="value" type="string">
     Currently selected value.
   </Prop>
+  <Prop name="defaultValue" type="string">
+    Default selected value (uncontrolled).
+  </Prop>
   <Prop name="onValueChange" type="(value: string) => void">
     Called when selection changes.
   </Prop>
-  <Prop name="defaultValue" type="string">
-    Default selected value (uncontrolled).
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'surface'">
+    Visual variant for all cards.
+  </Prop>
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+    Size of the cards.
+  </Prop>
+  <Prop name="color" type="Color">
+    Accent color.
+  </Prop>
+  <Prop name="highContrast" type="boolean" default="false">
+    Uses high contrast colors.
+  </Prop>
+  <Prop name="radius" type="RadiusSize" default="'medium'">
+    Border radius of the cards.
+  </Prop>
+  <Prop name="direction" type="'row' | 'column'" default="'column'">
+    Layout direction of the cards.
+  </Prop>
+  <Prop name="gap" type="number">
+    Gap between cards.
+  </Prop>
+  <Prop name="side" type="'left' | 'right'" default="'right'">
+    Indicator position.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether all items are disabled.
   </Prop>
-  <Prop name="color" type="string">
-    Accent color.
-  </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
-    Size of the cards.
-  </Prop>
-  <Prop name="columns" type="number" default="1">
-    Number of columns.
-  </Prop>
-  <Prop name="highContrast" type="boolean" default="false">
-    Uses high contrast colors.
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for the container.
   </Prop>
 </PropTable>
 
@@ -77,33 +92,31 @@ import { RadioCards } from 'radix-native-ui';
   <Prop name="value" type="string" required>
     Unique value for this item.
   </Prop>
+  <Prop name="side" type="'left' | 'right'">
+    Indicator position (overrides group setting).
+  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether this item is disabled.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback when selected.
   </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles for this card.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
+  </Prop>
 </PropTable>
 
-### Animation & Haptics
+### Animation
 
-Radio card items include subtle press animations and haptic feedback for a tactile feel:
+Radio card items include subtle press animations for a tactile feel:
 
-- **Press Animation**: Cards scale down slightly (0.97x) when pressed
-- **Haptic Feedback**: 10ms vibration when an item is selected (enabled by default)
-
-Disable haptic feedback on individual items:
-
-```tsx
-<RadioCards.Root value={value} onValueChange={setValue}>
-  <RadioCards.Item value="1" hapticFeedback={false}>
-    <Text>No haptic feedback</Text>
-  </RadioCards.Item>
-  <RadioCards.Item value="2">
-    <Text>With haptic feedback</Text>
-  </RadioCards.Item>
-</RadioCards.Root>
-```
+- **Press Animation**: Cards scale down slightly (0.975x) when pressed
 
 ## Examples
 

@@ -16,34 +16,64 @@ import { Radio } from 'radix-native-ui';
 ## Usage
 
 ```tsx
-import { Radio, RadioGroup } from 'radix-native-ui';
+import { Radio } from 'radix-native-ui';
 
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="option1">Option 1</Radio>
-  <Radio value="option2">Option 2</Radio>
-</RadioGroup>
+// With label prop
+<Radio value="option1" label="Option 1" />
+
+// With children (custom content)
+<Radio value="option1">
+  <Text>Custom content</Text>
+</Radio>
+
+// Controlled
+<Radio value="option1" selected={isSelected} onSelect={handleSelect} />
+
+// Uncontrolled (with defaultChecked)
+<Radio value="option1" defaultChecked />
 ```
 
 ## Props
 
 <PropTable>
-  <Prop name="children" type="ReactNode">
-    Label content.
+  <Prop name="defaultChecked" type="boolean" default="false">
+    Whether the radio is checked by default (uncontrolled mode).
   </Prop>
   <Prop name="value" type="string" required>
     Value for this radio option.
   </Prop>
+  <Prop name="selected" type="boolean">
+    Whether the radio is selected (controlled mode).
+  </Prop>
+  <Prop name="onSelect" type="(value: string) => void">
+    Callback when radio is selected.
+  </Prop>
   <Prop name="disabled" type="boolean" default="false">
     Whether this radio is disabled.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+    Size of the radio.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'solid'">
+    Visual style variant.
+  </Prop>
+  <Prop name="color" type="Color">
     Accent color.
   </Prop>
-  <Prop name="size" type="1 | 2 | 3" default="2">
-    Size of the radio.
+  <Prop name="label" type="string">
+    Label text displayed next to the radio.
+  </Prop>
+  <Prop name="children" type="ReactNode">
+    Custom content displayed next to the radio (overrides label).
   </Prop>
   <Prop name="highContrast" type="boolean" default="false">
     Uses high contrast colors.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string">
+    Accessibility label.
+  </Prop>
+  <Prop name="accessibilityHint" type="string">
+    Accessibility hint.
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Enable haptic feedback when selected.
@@ -55,10 +85,8 @@ import { Radio, RadioGroup } from 'radix-native-ui';
 Radio buttons provide haptic feedback by default when selected. You can disable this with the `hapticFeedback` prop:
 
 ```tsx
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="1" hapticFeedback={false}>No haptic</Radio>
-  <Radio value="2">With haptic</Radio>
-</RadioGroup>
+<Radio value="1" label="No haptic" hapticFeedback={false} />
+<Radio value="2" label="With haptic" />
 ```
 
 ## Examples
@@ -66,39 +94,40 @@ Radio buttons provide haptic feedback by default when selected. You can disable 
 ### Basic Radio
 
 ```tsx
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="apple">Apple</Radio>
-  <Radio value="banana">Banana</Radio>
-  <Radio value="orange">Orange</Radio>
-</RadioGroup>
+<Radio value="apple" label="Apple" />
+<Radio value="banana" label="Banana" />
+<Radio value="orange" label="Orange" />
 ```
 
 ### Sizes
 
 ```tsx
-<RadioGroup defaultValue="1">
-  <Radio value="1" size={1}>Small</Radio>
-  <Radio value="2" size={2}>Medium</Radio>
-  <Radio value="3" size={3}>Large</Radio>
-</RadioGroup>
+<Radio value="1" size="1" label="Small" />
+<Radio value="2" size="2" label="Medium" />
+<Radio value="3" size="3" label="Large" />
 ```
 
 ### With Color
 
 ```tsx
-<RadioGroup color="blue" value={value} onValueChange={setValue}>
-  <Radio value="1">Option 1</Radio>
-  <Radio value="2">Option 2</Radio>
-</RadioGroup>
+<Radio value="1" color="blue" label="Option 1" />
+<Radio value="2" color="blue" label="Option 2" />
 ```
 
 ### Disabled Option
 
 ```tsx
-<RadioGroup value={value} onValueChange={setValue}>
-  <Radio value="1">Available</Radio>
-  <Radio value="2" disabled>Unavailable</Radio>
-</RadioGroup>
+<Radio value="1" label="Available" />
+<Radio value="2" label="Unavailable" disabled />
+```
+
+### Variants
+
+```tsx
+<Radio value="1" variant="solid" label="Solid" defaultChecked />
+<Radio value="2" variant="soft" label="Soft" defaultChecked />
+<Radio value="3" variant="surface" label="Surface" defaultChecked />
+<Radio value="4" variant="outline" label="Outline" defaultChecked />
 ```
 
 ## Related
