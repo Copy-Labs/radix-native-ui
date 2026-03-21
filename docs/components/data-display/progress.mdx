@@ -24,26 +24,38 @@ import { Progress } from 'radix-native-ui';
 ## Props
 
 <PropTable>
-  <Prop name="value" type="number" default="0">
+  <Prop name="value" type="number" required>
     Current progress value (0-100).
   </Prop>
   <Prop name="max" type="number" default="100">
     Maximum value.
   </Prop>
-  <Prop name="style" type="StyleProp<ViewStyle>">
-    Custom styles.
-  </Prop>
   <Prop name="size" type="1 | 2 | 3" default="2">
     Size of the progress bar.
   </Prop>
-  <Prop name="color" type="string" default="'accent'">
-    Color of the progress bar.
-  </Prop>
-  <Prop name="radius" type="'none' | 'small' | 'medium' | 'large' | 'full'">
-    Border radius override.
-  </Prop>
-  <Prop name="variant" type="'soft' | 'surface' | 'gradient'" default="'soft'">
+  <Prop name="variant" type="'surface' | 'solid' | 'soft' | 'outline'" default="'solid'">
     Visual style variant.
+  </Prop>
+  <Prop name="color" type="Color">
+    Color of the progress bar (uses theme accent color by default).
+  </Prop>
+  <Prop name="radius" type="RadiusSize" default="'full'">
+    Border radius variant.
+  </Prop>
+  <Prop name="highContrast" type="boolean" default="false">
+    High contrast mode for accessibility.
+  </Prop>
+  <Prop name="duration" type="number" default="300">
+    Duration of the animation in milliseconds.
+  </Prop>
+  <Prop name="style" type="StyleProp<ViewStyle>">
+    Custom styles.
+  </Prop>
+  <Prop name="accessibilityLabel" type="string" default="'Progress'">
+    Accessibility label for screen readers.
+  </Prop>
+  <Prop name="testID" type="string">
+    Test ID for testing.
   </Prop>
 </PropTable>
 
@@ -69,16 +81,18 @@ import { Progress } from 'radix-native-ui';
 <Progress color="blue" value={60} />
 <Progress color="green" value={60} />
 <Progress color="red" value={60} />
-<Progress color="yellow" value={60} />
+<Progress color="amber" value={60} />
 <Progress color="purple" value={60} />
+<Progress color="indigo" value={60} />
 ```
 
 ### Variants
 
 ```tsx
-<Progress variant="soft" value={60} />
+<Progress variant="solid" value={60} />
 <Progress variant="surface" value={60} />
-<Progress variant="gradient" value={60} />
+<Progress variant="soft" value={60} />
+<Progress variant="outline" value={60} />
 ```
 
 ### With Label
