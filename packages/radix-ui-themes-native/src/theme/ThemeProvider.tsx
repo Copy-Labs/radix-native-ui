@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useMemo, useCallback, useRef, ReactNode } from 'react';
-import type { Theme, ThemeMode, Color, RadiusSize } from './types';
+import type { Theme, ThemeMode, Color, RadiusSize, ThemeAppearance } from './types';
 import { createTheme, defaultTheme } from './index';
 import { useDeviceColorScheme } from '../hooks/useColorScheme';
 import type { ToastConfig, ToastData, ToastOptions } from '../components/overlays/Toast.types';
@@ -12,7 +12,8 @@ type GrayColor = 'mauve' | 'olive' | 'sage' | 'sand' | 'slate' | 'gray';
 interface ThemeContextValue {
   theme: Theme;
   mode: ThemeMode;
-  setMode: (mode: ThemeMode) => void;
+  appearance: ThemeAppearance;
+  setMode: (mode: ThemeAppearance) => void;
   toggleMode: () => void;
   // Haptics setting
   haptics: boolean;
@@ -183,9 +184,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     }
   }, [forcedMode, resolvedInitialMode, parentContext?.mode, deviceColorScheme]);
 
-  const handleSetMode = (newMode: ThemeMode) => {
-    setMode(newMode);
-    onModeChange?.(newMode);
+  const handleSetMode = (newAppearance: ThemeAppearance) => {
+    // Store the appearance preference
+    if (newAppearance === 'inherit') {
+      // When 'inherit', fall back to the device color scheme
+      setMode(deviceColorScheme ?? 'light');
+    } else {
+      setMode(newAppearance);
+    }
+    onModeChange?.(newAppearance === 'inherit' ? deviceColorScheme ?? 'light' : newAppearance);
   };
 
   const toggleMode = () => {
@@ -286,6 +293,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     () => ({
       theme,
       mode,
+      appearance: appearance ?? 'inherit',
       setMode: handleSetMode,
       toggleMode,
       // Haptics setting
@@ -298,7 +306,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       hideAllToasts,
       updateToast,
     }),
-    [theme, mode, toggleMode, resolvedHaptics, toastConfig, toasts, showToast, hideToast, hideAllToasts, updateToast]
+    [theme, mode, appearance, toggleMode, resolvedHaptics, toastConfig, toasts, showToast, hideToast, hideAllToasts, updateToast]
   );
 
   return (
@@ -327,8 +335,8 @@ export const useThemeMode = (): ThemeMode => {
  * Hook to access theme mode setter and toggle
  */
 export const useThemeActions = () => {
-  const { setMode, toggleMode, mode } = useThemeContext();
-  return { setMode, toggleMode, mode };
+  const { setMode, toggleMode, mode, appearance } = useThemeContext();
+  return { setMode, toggleMode, mode, appearance };
 };
 
 /**
