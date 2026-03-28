@@ -145,7 +145,7 @@ const TableHeader = React.forwardRef<
         styles.header,
         {
           backgroundColor: isDark ? grayAlpha['3'] : grayAlpha['2'],
-          borderBottomWidth: 1,
+          borderBottomWidth: 0,
           borderBottomColor: isDark ? grayAlpha['6'] : grayAlpha['5'],
         },
         style,
@@ -216,6 +216,7 @@ const TableRow = React.forwardRef<
       style={[
         styles.row,
         {
+          flex: 1,
           borderBottomWidth: 1,
           borderBottomColor: isDark ? grayAlpha['6'] : grayAlpha['5'],
         },
@@ -305,7 +306,8 @@ const TableColumnHeaderCell = React.forwardRef<
         styles.cell,
         {
           width: width as any,
-          justifyContent: alignStyle[align],
+          // justifyContent: alignStyle[align],
+          alignItems: alignStyle[align],
           ...padding,
         },
         style,
@@ -397,7 +399,8 @@ const TableCell = React.forwardRef<
       style={[
         styles.cell,
         {
-          justifyContent: alignStyle[align],
+          // justifyContent: alignStyle[align],
+          alignItems: alignStyle[align],
           ...padding,
         },
         style,

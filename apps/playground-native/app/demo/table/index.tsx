@@ -20,9 +20,7 @@ export default function TableDemo() {
           <PageHeading>
             <Box>
               <Heading size={6}>Table</Heading>
-              <Text color={'gray'}>
-                Component for displaying tabular data.
-              </Text>
+              <Text color={'gray'}>Component for displaying tabular data.</Text>
             </Box>
           </PageHeading>
         </PageHeader>
@@ -36,10 +34,16 @@ export default function TableDemo() {
                   <View>
                     <Table.Root>
                       <Table.Header>
-                        <Table.Row>
-                          <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-                          <Table.ColumnHeaderCell>Email</Table.ColumnHeaderCell>
-                          <Table.ColumnHeaderCell>Role</Table.ColumnHeaderCell>
+                        <Table.Row style={{ backgroundColor: 'gray' }}>
+                          <Table.ColumnHeaderCell style={{ backgroundColor: 'orange' }}>
+                            Full Name
+                          </Table.ColumnHeaderCell>
+                          <Table.ColumnHeaderCell align={'left'} style={{ backgroundColor: 'green' }}>
+                            Email
+                          </Table.ColumnHeaderCell>
+                          <Table.ColumnHeaderCell align={'left'} style={{ backgroundColor: 'blue' }}>
+                            Role
+                          </Table.ColumnHeaderCell>
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
@@ -140,7 +144,7 @@ export default function TableDemo() {
                 {/* In Card */}
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>In Card</Heading>
-                  <Card size={2}>
+                  <Card color={'orange'} size={2} variant={'soft'}>
                     <Flex direction="column" gap={12}>
                       <Heading size={3}>Users</Heading>
                       <Table.Root>
@@ -221,7 +225,9 @@ export default function TableDemo() {
                   <Heading size={4}>Sizes</Heading>
                   <View style={{ gap: 16, flexDirection: 'column' }}>
                     <View>
-                      <Text size={2} color="gray" mb={2}>Size 1 (Small)</Text>
+                      <Text size={2} color="gray">
+                        Size 1 (Small)
+                      </Text>
                       <Table.Root size="1">
                         <Table.Header>
                           <Table.Row>
@@ -238,7 +244,9 @@ export default function TableDemo() {
                       </Table.Root>
                     </View>
                     <View>
-                      <Text size={2} color="gray" mb={2}>Size 2 (Medium - Default)</Text>
+                      <Text size={2} color="gray">
+                        Size 2 (Medium - Default)
+                      </Text>
                       <Table.Root size="2">
                         <Table.Header>
                           <Table.Row>
@@ -255,7 +263,9 @@ export default function TableDemo() {
                       </Table.Root>
                     </View>
                     <View>
-                      <Text size={2} color="gray" mb={2}>Size 3 (Large)</Text>
+                      <Text size={2} color="gray">
+                        Size 3 (Large)
+                      </Text>
                       <Table.Root size="3">
                         <Table.Header>
                           <Table.Row>
