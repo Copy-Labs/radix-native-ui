@@ -302,7 +302,7 @@ const RadioCardsItem = React.forwardRef<
     const cardStyle: ViewStyle = {
       padding: sizeValues.padding,
       borderRadius: radius === 'full' ? 9999 : radii,
-      borderWidth: isSelected ? 1.5 : 1,
+      borderWidth: isSelected ? 1.5 : ['outline', 'surface'].includes(variant) ? 1 : 0,
       borderColor: isSelected
         ? variantColors.borderColor
         : isDark
