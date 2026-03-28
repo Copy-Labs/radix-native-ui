@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Animated,
   Dimensions,
@@ -40,7 +39,7 @@ import {
   type ToastActionProps,
   DEFAULT_TOAST_CONFIG,
 } from './Toast.types';
-import { Button } from '../../components';
+import { Button, Text } from '../../components';
 
 // ============================================================================
 // Toast Context - Uses ThemeContext from ThemeProvider
@@ -244,7 +243,7 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
         { translateX },
       ],
       backgroundColor: colors.backgroundColor,
-      borderColor: colors.borderColor,
+      borderColor: 'transparent', // colors.borderColor,
       borderWidth: 1,
       borderRadius: theme.radii.large,
       padding: theme.space[4],
@@ -315,7 +314,7 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
 
           {/* Close button */}
           {toast.showClose && (
-            <Button style={{ backgroundColor: colors.textColor }} radius={'large'} size={1} onPress={() => handleDismiss(true)}>Close</Button>
+            <Button color={getVariantColorName(toast.variant)} radius={'large'} size={1} onPress={() => handleDismiss(true)}>Close</Button>
             /*<Pressable
               onPress={() => handleDismiss(true)}
               style={({ pressed }) => [
@@ -535,7 +534,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   description: {
-    marginTop: 2,
+    marginTop: 1,
     opacity: 0.8,
   },
   actionButton: {
