@@ -285,6 +285,8 @@ export interface Theme extends ThemeTokens {
 
 export type ThemeMode = 'light' | 'dark';
 
+export type ThemeAppearance = 'light' | 'dark' | 'inherit';
+
 export type Color =
   | 'white'
   | 'black'
