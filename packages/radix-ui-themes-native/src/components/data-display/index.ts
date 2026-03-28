@@ -47,4 +47,4 @@ export type { SkeletonProps } from './Skeleton';
 
 // Table
 export { Table } from './Table';
-export type { TableProps, TableColumn, TheadProps, TbodyProps, TrProps, ThProps, TdProps } from './Table';
+export type { TableRootProps, TableHeaderProps, TableBodyProps, TableRowProps, TableColumnHeaderCellProps, TableCellProps, TableSize } from './Table';
