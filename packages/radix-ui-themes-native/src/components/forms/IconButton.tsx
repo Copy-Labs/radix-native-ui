@@ -209,7 +209,7 @@ const IconButton = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, 
         ) : React.isValidElement(children) ? (
           React.cloneElement(children as React.ReactElement<any>, {
             size: children.props?.size || sizeValues.iconSize,
-            color: variantColors.textColor,
+            color: children.props?.color || variantColors.textColor,
           })
         ) : (
           children
