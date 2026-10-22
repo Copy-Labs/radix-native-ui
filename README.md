@@ -310,16 +310,24 @@ radix-native-ui/
 
 ## Development
 
+This repo is a pnpm workspace (`pnpm-workspace.yaml` + Turborepo).
+
 ```bash
-# Install dependencies
+# Install all workspace dependencies (run at the repo root)
 pnpm install
 
 # Build the library
 pnpm build:radix-native
 
-# Run the playground app
+# Watch the library (tsdown --watch) while running the playground
+pnpm dev
+
+# Run the playground app (resolves radix-native-ui via the workspace link)
 cd apps/playground-native && pnpm start
 ```
+
+> [!NOTE]
+> The playground consumes the library directly through the workspace (`"radix-native-ui": "workspace:*"`) — no yalc needed. yalc scripts in the library package (`yalc:publish`, `yalc:push`, `yalc:watch`) are kept for consuming an unreleased build from **external** projects (e.g. other apps outside this repo).
 
 ---
 
