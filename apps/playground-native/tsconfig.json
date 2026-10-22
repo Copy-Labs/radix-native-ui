@@ -6,8 +6,8 @@
     "paths": {
       "@/*": ["./*"],
       // Map the package to its source folder for development
-//      "@radix-ui/themes-native": ["../../packages/radix-ui-themes-native/src/index.ts"],
-//      "@radix-ui/themes-native/*": ["../../packages/radix-ui-themes-native/src/*"]
+//      "radix-native-ui": ["../../packages/radix-ui-themes-native/src/index.ts"],
+//      "radix-native-ui/*": ["../../packages/radix-ui-themes-native/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

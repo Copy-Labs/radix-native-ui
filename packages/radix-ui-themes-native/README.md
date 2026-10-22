@@ -1,6 +1,6 @@
 # radix-native-ui
 
-Radix Themes for React Native and Expo. A port of the popular Radix Themes component library to support mobile development with React Native.
+A React Native component library inspired by the Radix Themes design system, with a native-first API for React Native and Expo.
 
 > **Documentation**: https://copylabs.mintlify.app
 
@@ -138,7 +138,9 @@ function MyComponent() {
 - **Popover** - Popover tooltip component
 - **Tooltip** - Tooltip component
 - **DropdownMenu** - Dropdown menu component
-- **ContextMenu** - Context menu component
+- **ContextMenu** - Long-press context menu component
+- **Toast** - Brief notification messages
+- **BottomSheet** - Native slide-up sheet with gesture dismissal
 - **Portal** - Render content outside component hierarchy
 
 ## Example: Button Component

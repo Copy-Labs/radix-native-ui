@@ -1,6 +1,6 @@
 # Component API Reference
 
-This document provides detailed API documentation for all components in @radix-ui/themes-native.
+This document provides detailed API documentation for all components in radix-native-ui.
 
 ## ThemeProvider
 
@@ -85,7 +85,7 @@ const { gray, background, surface, panel } = useThemeColors();
 Get colors for a specific variant with highContrast support.
 
 ```typescript
-import { getVariantColors } from '@radix-ui/themes-native';
+import { getVariantColors } from 'radix-native-ui';
 
 const colors = getVariantColors(
   theme,           // Theme object
@@ -110,7 +110,7 @@ const colors = getVariantColors(
 Returns the high contrast text color (`blackAlpha[12]`).
 
 ```typescript
-import { getHighContrastTextColor } from '@radix-ui/themes-native';
+import { getHighContrastTextColor } from 'radix-native-ui';
 
 const textColor = getHighContrastTextColor(theme);
 // Returns: string (blackAlpha[12])
@@ -121,7 +121,7 @@ const textColor = getHighContrastTextColor(theme);
 Returns the high contrast background color (`color[11]`).
 
 ```typescript
-import { getHighContrastBackground } from '@radix-ui/themes-native';
+import { getHighContrastBackground } from 'radix-native-ui';
 
 const bgColor = getHighContrastBackground(theme, color, mode);
 // Returns: string (color[11])
@@ -132,7 +132,7 @@ const bgColor = getHighContrastBackground(theme, color, mode);
 Returns the appropriate contrast color for a given color.
 
 ```typescript
-import { getContrast } from '@radix-ui/themes-native';
+import { getContrast } from 'radix-native-ui';
 
 const textColor = getContrast(theme, color, mode, highContrast);
 // Returns: appropriate contrast color based on color and mode
@@ -143,7 +143,7 @@ const textColor = getContrast(theme, color, mode, highContrast);
 Returns the color scale for any color name.
 
 ```typescript
-import { getColorScale } from '@radix-ui/themes-native';
+import { getColorScale } from 'radix-native-ui';
 
 const scale = getColorScale(theme, color, mode);
 // Returns: ColorScale object with keys 1-12, dark, and alpha
@@ -154,7 +154,7 @@ const scale = getColorScale(theme, color, mode);
 Returns the alpha color scale for any color name.
 
 ```typescript
-import { getColorAlpha } from '@radix-ui/themes-native';
+import { getColorAlpha } from 'radix-native-ui';
 
 const alpha = getColorAlpha(theme, color);
 // Returns: AlphaColorScale object with keys 1-12
@@ -167,7 +167,7 @@ const alpha = getColorAlpha(theme, color);
 Primitive container component with comprehensive styling props.
 
 ```tsx
-import { Box } from '@radix-ui/themes-native';
+import { Box } from 'radix-native-ui';
 
 <Box
   asChild={false}
@@ -212,7 +212,7 @@ import { Box } from '@radix-ui/themes-native';
 Flexbox layout component.
 
 ```tsx
-import { Flex } from '@radix-ui/themes-native';
+import { Flex } from 'radix-native-ui';
 
 <Flex
   asChild={false}
@@ -246,7 +246,7 @@ import { Flex } from '@radix-ui/themes-native';
 CSS Grid layout component.
 
 ```tsx
-import { Grid } from '@radix-ui/themes-native';
+import { Grid } from 'radix-native-ui';
 
 <Grid
   children={undefined}
@@ -268,7 +268,7 @@ import { Grid } from '@radix-ui/themes-native';
 Responsive container with max-width.
 
 ```tsx
-import { Container } from '@radix-ui/themes-native';
+import { Container } from 'radix-native-ui';
 
 <Container
   children={undefined}
@@ -285,7 +285,7 @@ import { Container } from '@radix-ui/themes-native';
 Padding component for consistent spacing with overflow clipping support.
 
 ```tsx
-import { Inset } from '@radix-ui/themes-native';
+import { Inset } from 'radix-native-ui';
 
 <Inset
   asChild={false}
@@ -339,7 +339,7 @@ import { Inset } from '@radix-ui/themes-native';
 Versatile text component with size, weight, and color props.
 
 ```tsx
-import { Text } from '@radix-ui/themes-native';
+import { Text } from 'radix-native-ui';
 
 <Text
   asChild={false}
@@ -367,7 +367,7 @@ import { Text } from '@radix-ui/themes-native';
 Semantic heading component (h1-h5).
 
 ```tsx
-import { Heading } from '@radix-ui/themes-native';
+import { Heading } from 'radix-native-ui';
 
 <Heading
   asChild={false}
@@ -391,7 +391,7 @@ import { Heading } from '@radix-ui/themes-native';
 Bold text for emphasis.
 
 ```tsx
-import { Strong } from '@radix-ui/themes-native';
+import { Strong } from 'radix-native-ui';
 
 <Strong
   children={undefined}
@@ -407,7 +407,7 @@ import { Strong } from '@radix-ui/themes-native';
 Italic text for emphasis.
 
 ```tsx
-import { Em } from '@radix-ui/themes-native';
+import { Em } from 'radix-native-ui';
 
 <Em
   children={undefined}
@@ -423,7 +423,7 @@ import { Em } from '@radix-ui/themes-native';
 Inline code styling.
 
 ```tsx
-import { Code } from '@radix-ui/themes-native';
+import { Code } from 'radix-native-ui';
 
 <Code
   children={undefined}
@@ -441,7 +441,7 @@ import { Code } from '@radix-ui/themes-native';
 Keyboard shortcut styling.
 
 ```tsx
-import { Kbd } from '@radix-ui/themes-native';
+import { Kbd } from 'radix-native-ui';
 
 <Kbd
   children={undefined}
@@ -458,7 +458,7 @@ import { Kbd } from '@radix-ui/themes-native';
 Quote block styling.
 
 ```tsx
-import { Blockquote } from '@radix-ui/themes-native';
+import { Blockquote } from 'radix-native-ui';
 
 <Blockquote
   children={undefined}
@@ -477,7 +477,7 @@ import { Blockquote } from '@radix-ui/themes-native';
 Pressable link component.
 
 ```tsx
-import { Link } from '@radix-ui/themes-native';
+import { Link } from 'radix-native-ui';
 
 <Link
   children={undefined}
@@ -499,7 +499,7 @@ import { Link } from '@radix-ui/themes-native';
 Interactive button with multiple variants.
 
 ```tsx
-import { Button } from '@radix-ui/themes-native';
+import { Button } from 'radix-native-ui';
 
 <Button
   children={undefined}
@@ -522,7 +522,7 @@ import { Button } from '@radix-ui/themes-native';
 Button with icon support.
 
 ```tsx
-import { IconButton } from '@radix-ui/themes-native';
+import { IconButton } from 'radix-native-ui';
 
 <IconButton
   icon={ReactNode}
@@ -542,7 +542,7 @@ import { IconButton } from '@radix-ui/themes-native';
 Text input component.
 
 ```tsx
-import { TextField } from '@radix-ui/themes-native';
+import { TextField } from 'radix-native-ui';
 
 <TextField
   value={string}
@@ -565,7 +565,7 @@ import { TextField } from '@radix-ui/themes-native';
 Toggle switch component.
 
 ```tsx
-import { Switch } from '@radix-ui/themes-native';
+import { Switch } from 'radix-native-ui';
 
 <Switch
   checked={boolean}
@@ -581,7 +581,7 @@ import { Switch } from '@radix-ui/themes-native';
 Radio button component.
 
 ```tsx
-import { Radio } from '@radix-ui/themes-native';
+import { Radio } from 'radix-native-ui';
 
 <Radio
   checked={boolean}
@@ -596,7 +596,7 @@ import { Radio } from '@radix-ui/themes-native';
 Group of radio buttons.
 
 ```tsx
-import { RadioGroup } from '@radix-ui/themes-native';
+import { RadioGroup } from 'radix-native-ui';
 
 <RadioGroup
   value={string}
@@ -614,7 +614,7 @@ import { RadioGroup } from '@radix-ui/themes-native';
 Dropdown select component.
 
 ```tsx
-import { Select } from '@radix-ui/themes-native';
+import { Select } from 'radix-native-ui';
 
 <Select
   value={string}
@@ -633,7 +633,7 @@ import { Select } from '@radix-ui/themes-native';
 User avatar with image support.
 
 ```tsx
-import { Avatar } from '@radix-ui/themes-native';
+import { Avatar } from 'radix-native-ui';
 
 <Avatar
   src={string}
@@ -649,7 +649,7 @@ import { Avatar } from '@radix-ui/themes-native';
 Status badge component with color and highContrast support.
 
 ```tsx
-import { Badge } from '@radix-ui/themes-native';
+import { Badge } from 'radix-native-ui';
 
 <Badge
   children={undefined}
@@ -675,7 +675,7 @@ Available colors include: `gray`, `gold`, `bronze`, `brown`, `orange`, `tomato`,
 Card container component.
 
 ```tsx
-import { Card } from '@radix-ui/themes-native';
+import { Card } from 'radix-native-ui';
 
 <Card
   children={undefined}
@@ -692,7 +692,7 @@ import { Card } from '@radix-ui/themes-native';
 Data table component.
 
 ```tsx
-import { Table } from '@radix-ui/themes-native';
+import { Table } from 'radix-native-ui';
 
 <Table
   data={Array<Record<string, any>>}
@@ -705,7 +705,7 @@ import { Table } from '@radix-ui/themes-native';
 Key-value list component.
 
 ```tsx
-import { DataList } from '@radix-ui/themes-native';
+import { DataList } from 'radix-native-ui';
 
 <DataList
   data={Array<{ label: string; value: ReactNode }>}
@@ -718,7 +718,7 @@ import { DataList } from '@radix-ui/themes-native';
 Loading indicator.
 
 ```tsx
-import { Spinner } from '@radix-ui/themes-native';
+import { Spinner } from 'radix-native-ui';
 
 <Spinner
   size="small" | "medium" | "large"
@@ -731,7 +731,7 @@ import { Spinner } from '@radix-ui/themes-native';
 Progress bar component.
 
 ```tsx
-import { Progress } from '@radix-ui/themes-native';
+import { Progress } from 'radix-native-ui';
 
 <Progress
   value={number} // 0-100
@@ -749,7 +749,7 @@ import { Progress } from '@radix-ui/themes-native';
 Tab navigation component.
 
 ```tsx
-import { Tabs } from '@radix-ui/themes-native';
+import { Tabs } from 'radix-native-ui';
 
 <Tabs
   value={string}
@@ -770,7 +770,7 @@ import { Tabs } from '@radix-ui/themes-native';
 Tab navigation with router support.
 
 ```tsx
-import { TabNav } from '@radix-ui/themes-native';
+import { TabNav } from 'radix-native-ui';
 
 <TabNav
   tabs={Array<{ name: string; label: string; icon: ReactNode; component: ReactNode }>}
@@ -785,7 +785,7 @@ import { TabNav } from '@radix-ui/themes-native';
 iOS-style segmented control.
 
 ```tsx
-import { SegmentedControl } from '@radix-ui/themes-native';
+import { SegmentedControl } from 'radix-native-ui';
 
 <SegmentedControl
   value={string}
@@ -803,7 +803,7 @@ import { SegmentedControl } from '@radix-ui/themes-native';
 A vertically stacked set of interactive headings that each reveal associated content sections.
 
 ```tsx
-import { Accordion } from '@radix-ui/themes-native';
+import { Accordion } from 'radix-native-ui';
 
 // Single mode - only one item open at a time
 <Accordion.Root type="single" defaultValue="item-1" collapsible>
@@ -888,7 +888,7 @@ import { Accordion } from '@radix-ui/themes-native';
 Render content outside component hierarchy.
 
 ```tsx
-import { Portal } from '@radix-ui/themes-native';
+import { Portal } from 'radix-native-ui';
 
 <Portal>
   <Overlay />
@@ -900,7 +900,7 @@ import { Portal } from '@radix-ui/themes-native';
 Modal dialog component.
 
 ```tsx
-import { Dialog } from '@radix-ui/themes-native';
+import { Dialog } from 'radix-native-ui';
 
 <Dialog.Root open={boolean} onOpenChange={(open: boolean) => void}>
   <Dialog.Trigger>Open Dialog</Dialog.Trigger>
@@ -920,7 +920,7 @@ import { Dialog } from '@radix-ui/themes-native';
 Confirmation dialog.
 
 ```tsx
-import { AlertDialog } from '@radix-ui/themes-native';
+import { AlertDialog } from 'radix-native-ui';
 
 <AlertDialog.Root open={boolean} onOpenChange={(open: boolean) => void}>
   <AlertDialog.Trigger>Show Alert</AlertDialog.Trigger>
@@ -941,7 +941,7 @@ import { AlertDialog } from '@radix-ui/themes-native';
 Popover tooltip component.
 
 ```tsx
-import { Popover } from '@radix-ui/themes-native';
+import { Popover } from 'radix-native-ui';
 
 <Popover.Root open={boolean} onOpenChange={(open: boolean) => void}>
   <Popover.Trigger>Open Popover</Popover.Trigger>
@@ -959,7 +959,7 @@ import { Popover } from '@radix-ui/themes-native';
 Tooltip component.
 
 ```tsx
-import { Tooltip } from '@radix-ui/themes-native';
+import { Tooltip } from 'radix-native-ui';
 
 <Tooltip.Root>
   <Tooltip.Trigger>Hover me</Tooltip.Trigger>
@@ -976,7 +976,7 @@ import { Tooltip } from '@radix-ui/themes-native';
 Dropdown menu component.
 
 ```tsx
-import { DropdownMenu } from '@radix-ui/themes-native';
+import { DropdownMenu } from 'radix-native-ui';
 
 <DropdownMenu.Root open={boolean} onOpenChange={(open: boolean) => void}>
   <DropdownMenu.Trigger>Open Menu</DropdownMenu.Trigger>
@@ -996,7 +996,7 @@ import { DropdownMenu } from '@radix-ui/themes-native';
 Context menu component.
 
 ```tsx
-import { ContextMenu } from '@radix-ui/themes-native';
+import { ContextMenu } from 'radix-native-ui';
 
 <ContextMenu.Root>
   <ContextMenu.Trigger>Long press me</ContextMenu.Trigger>
@@ -1027,7 +1027,7 @@ Direct access to React Native primitives:
 - `ActivityIndicator` - Base ActivityIndicator component
 
 ```tsx
-import { View, Text, Pressable, TouchableOpacity, TextInput, Image, ScrollView, FlatList, ActivityIndicator } from '@radix-ui/themes-native/primitives';
+import { View, Text, Pressable, TouchableOpacity, TextInput, Image, ScrollView, FlatList, ActivityIndicator } from 'radix-native-ui/primitives';
 ```
 
 ## Theme Colors Reference

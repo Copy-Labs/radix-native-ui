@@ -1,4 +1,4 @@
-// Main entry point for @radix-ui/themes-native
+// Main entry point for radix-native-ui
 
 export * from './components';
 export * from './theme';
