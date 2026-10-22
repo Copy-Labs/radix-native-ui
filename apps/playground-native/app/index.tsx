@@ -22,7 +22,7 @@ export default function App() {
               Copy Native UI
             </Heading>
             <Text color={'gray'} align={'center'} size={3}>
-              A React Native port of the popular Radix Themes component library.
+              A React Native component library inspired by the Radix Themes design system.
             </Text>
           </Flex>
           {/*<Flex
