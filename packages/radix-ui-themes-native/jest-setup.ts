@@ -1,51 +1,7 @@
-// Jest setup file for @radix-ui/themes-native
+// Jest setup file for radix-native-ui
 // @ts-nocheck
 
 import '@testing-library/jest-native/extend-expect';
-
-// Mock React Native
-jest.mock('react-native', () => ({
-  StyleSheet: {
-    create: (styles: any) => styles,
-    flatten: (style: any) => style,
-  },
-  View: 'View',
-  Text: 'Text',
-  Pressable: 'Pressable',
-  TouchableOpacity: 'TouchableOpacity',
-  TouchableHighlight: 'TouchableHighlight',
-  TextInput: 'TextInput',
-  Image: 'Image',
-  ScrollView: 'ScrollView',
-  FlatList: 'FlatList',
-  ActivityIndicator: 'ActivityIndicator',
-  Platform: {
-    OS: 'ios',
-    select: (obj: any) => obj.ios,
-  },
-  Dimensions: {
-    get: (name: string) => {
-      if (name === 'window') {
-        return { width: 375, height: 812 };
-      }
-      return { width: 375, height: 812 };
-    },
-  },
-  PixelRatio: {
-    get: () => 2,
-  },
-}));
-
-// Mock async storage
-jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
-);
-
-// Mock expo-font or any font-related modules
-jest.mock('expo-font', () => ({
-  useFonts: () => [true, null],
-  isLoaded: () => true,
-}));
 
 // Extend Jest with custom matchers
 declare global {
