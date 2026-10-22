@@ -12,7 +12,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!(.pnpm/)?(react-native|@react-native|react-native-.*|@react-native-.*|@react-native-community)/)',
+    'node_modules/\\.pnpm/(?!@?react-native)',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],

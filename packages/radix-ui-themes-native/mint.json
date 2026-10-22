@@ -24,7 +24,7 @@
   ],
   "topbarCtaButton": {
     "name": "npm",
-    "url": "https://www.npmjs.com/package/@radix-ui/themes-native"
+    "url": "https://www.npmjs.com/package/radix-native-ui"
   },
   "tabs": [
     {
@@ -53,7 +53,7 @@
     {
       "name": "npm",
       "icon": "npm",
-      "url": "https://www.npmjs.com/package/@radix-ui/themes-native"
+      "url": "https://www.npmjs.com/package/radix-native-ui"
     }
   ],
   "navigation": [

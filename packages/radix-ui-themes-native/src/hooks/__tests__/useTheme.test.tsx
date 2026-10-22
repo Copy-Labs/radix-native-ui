@@ -1,5 +1,6 @@
 import { renderHook, act } from '@testing-library/react-native';
-import { ThemeProvider, useTheme, useThemeMode, useThemeActions, useThemeColors } from '../theme/ThemeProvider';
+import { ThemeProvider, useTheme, useThemeMode, useThemeActions } from '../../theme/ThemeProvider';
+import { useThemeColors } from '../../hooks/useTheme';
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <ThemeProvider>{children}</ThemeProvider>
@@ -23,7 +24,7 @@ describe('useTheme hook', () => {
 
     expect(() => {
       renderHook(() => useTheme());
-    }).toThrow('useTheme must be used within a ThemeProvider');
+    }).toThrow('useThemeContext must be used within a ThemeProvider');
 
     console.error = consoleError;
   });
@@ -43,7 +44,7 @@ describe('useThemeMode hook', () => {
 
     expect(() => {
       renderHook(() => useThemeMode());
-    }).toThrow('useThemeMode must be used within a ThemeProvider');
+    }).toThrow('useThemeContext must be used within a ThemeProvider');
 
     console.error = consoleError;
   });
@@ -89,7 +90,7 @@ describe('useThemeActions hook', () => {
 
     expect(() => {
       renderHook(() => useThemeActions());
-    }).toThrow('useThemeActions must be used within a ThemeProvider');
+    }).toThrow('useThemeContext must be used within a ThemeProvider');
 
     console.error = consoleError;
   });

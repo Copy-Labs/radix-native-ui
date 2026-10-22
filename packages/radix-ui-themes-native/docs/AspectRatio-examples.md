@@ -5,7 +5,7 @@ The `AspectRatio` component is a utility component that maintains a consistent a
 ## Import
 
 ```tsx
-import { AspectRatio } from '@radix-ui/themes-native';
+import { AspectRatio } from 'radix-native-ui';
 ```
 
 ## Basic Usage

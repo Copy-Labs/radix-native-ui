@@ -4,8 +4,8 @@
   "packageManager": "pnpm@10.0.0",
   "scripts": {
     "build": "turbo run build",
-    "build:pkg": "pnpm --filter @radix-ui/themes build",
-    "build:radix-native": "pnpm --filter @radix-ui/themes-native build:tsdown",
+    "build:pkg": "pnpm -C packages/radix-ui-themes-native build",
+    "build:radix-native": "pnpm -C packages/radix-ui-themes-native build:tsdown",
     "dev": "turbo run dev --no-cache --continue",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules .turbo"

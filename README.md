@@ -1,11 +1,11 @@
-# Radix Themes Native
+# radix-native-ui
 
-[![npm version](https://img.shields.io/npm/v/@radix-ui/themes-native.svg)](https://www.npmjs.com/package/@radix-ui/themes-native)
+[![npm version](https://img.shields.io/npm/v/radix-native-ui.svg)](https://www.npmjs.com/package/radix-native-ui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**A React Native port of [Radix Themes](https://www.radix-ui.com/themes) - An open-source component library optimized for fast development, easy maintenance, and accessibility.**
+**A React Native component library inspired by the [Radix Themes](https://www.radix-ui.com/themes) design system - Open-source, optimized for fast development, easy maintenance, and accessibility.**
 
-This library brings the beautiful design system and developer experience of Radix Themes to React Native and Expo applications.
+This library brings the beautiful look and theming model of Radix Themes to React Native and Expo applications, with a native-first API: the theme system (accent colors, gray scales, radius, scaling) is deliberately compatible with web Radix Themes, while components are designed idiomatically for React Native.
 
 ---
 
@@ -18,11 +18,11 @@ This library brings the beautiful design system and developer experience of Radi
 ## Installation
 
 ```bash
-npm install @radix-ui/themes-native
+npm install radix-native-ui
 # or
-yarn add @radix-ui/themes-native
+yarn add radix-native-ui
 # or
-pnpm add @radix-ui/themes-native
+pnpm add radix-native-ui
 ```
 
 ## Peer Dependencies
@@ -44,7 +44,7 @@ npm install react react-native expo
 Wrap your app with the `ThemeProvider` to enable theming:
 
 ```tsx
-import { ThemeProvider } from '@radix-ui/themes-native';
+import { ThemeProvider } from 'radix-native-ui';
 
 export default function App() {
   return (
@@ -58,7 +58,7 @@ export default function App() {
 Now you can use any of the components:
 
 ```tsx
-import { Button, Text, Flex, Card } from '@radix-ui/themes-native';
+import { Button, Text, Flex, Card } from 'radix-native-ui';
 
 function Example() {
   return (
@@ -151,6 +151,7 @@ function Example() {
 | `DropdownMenu` | Dropdown menu with keyboard navigation |
 | `ContextMenu` | Long-press context menu |
 | `Toast` | Brief notification messages |
+| `BottomSheet` | Native slide-up sheet with gesture dismissal |
 | `Portal` | Render content at root level |
 
 ### Disclosure
@@ -190,7 +191,7 @@ function Example() {
 ### Using Theme Hooks
 
 ```tsx
-import { useTheme, useThemeMode, useThemeActions } from '@radix-ui/themes-native';
+import { useTheme, useThemeMode, useThemeActions } from 'radix-native-ui';
 
 function MyComponent() {
   const theme = useTheme();
@@ -259,7 +260,10 @@ function MyComponent() {
 
 ---
 
-## Migration from Web Radix Themes
+## Migrating from Web Radix Themes
+
+> [!NOTE]
+> `radix-native-ui` is **inspired by** Radix Themes, not a strict API-parity port. The theme system and design tokens are compatible, but component APIs follow React Native conventions and some components (like `BottomSheet` and `TabNav`) exist only here.
 
 ### Key Differences
 
@@ -289,9 +293,9 @@ function MyComponent() {
 ## Monorepo Structure
 
 ```
-radix-ui-native-kilo/
+radix-native-ui/
 ├── packages/
-│   └── radix-ui-themes-native/    # Main component library
+│   └── radix-ui-themes-native/    # Main component library (published as radix-native-ui)
 │       ├── src/
 │       │   ├── components/        # All UI components
 │       │   ├── theme/             # Theme system and provider
@@ -329,7 +333,7 @@ For the original Radix Themes documentation, visit [radix-ui.com/themes/docs](ht
 
 ## Acknowledgments
 
-This project is a React Native port of the amazing [Radix Themes](https://www.radix-ui.com/themes) library by the [WorkOS](https://workos.com) team. 
+This project is inspired by the amazing [Radix Themes](https://www.radix-ui.com/themes) library by the [WorkOS](https://workos.com) team. It adopts their design system and theming model, with a native-first React Native API. 
 
 Special thanks to the original Radix UI team:
 - Benoît Grélard ([@benoitgrelard](https://twitter.com/benoitgrelard))
