@@ -17,11 +17,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm exec tsc",
-    "dev": "pnpm exec tsc --watch",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "build:tsdown": "tsdown",
     "dev:tsdown": "tsdown --watch",
     "test": "jest",
+    "clean": "rm -rf dist .turbo coverage",
     "yalc:publish": "yalc publish",
     "yalc:push": "yalc push",
     "yalc:watch": "yalc publish --watch",
