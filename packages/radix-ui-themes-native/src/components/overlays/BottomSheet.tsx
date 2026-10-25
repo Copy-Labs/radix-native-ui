@@ -259,14 +259,18 @@ export const BottomSheetRoot = ({
   // nearest snap), drag up promotes to a higher snap when snapPoints has
   // more than one entry.
   const panResponder = useMemo(() => {
+    const isVerticalDrag = (_: any, gestureState: any) =>
+      Math.abs(gestureState.dy) > 10 &&
+      Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        return (
-          Math.abs(gestureState.dy) > 10 &&
-          Math.abs(gestureState.dy) > Math.abs(gestureState.dx)
-        );
-      },
+      onMoveShouldSetPanResponder: isVerticalDrag,
+      // Steal the gesture from interactive children (Button, TextField, …)
+      // that claimed the touch on press-down, so dragging works anywhere on
+      // the sheet — including over controls. A tap without vertical movement
+      // never trips this, so buttons keep firing onPress.
+      onMoveShouldSetPanResponderCapture: isVerticalDrag,
       onPanResponderGrant: () => {
         isSwiping.current = true;
         baseOffsetRef.current = offsetRef.current;

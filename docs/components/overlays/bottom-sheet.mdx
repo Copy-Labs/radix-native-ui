@@ -208,6 +208,10 @@ The sheet drags between resting heights. Drag the handle (or the sheet body) up 
 
 At a lower snap the sheet is clipped — its content is laid out at the tallest snap height and slides behind the screen edge, so put anything critical (buttons, footers) near the top of the content.
 
+### Drag Behavior
+
+The sheet is draggable from **anywhere on its surface**, not just the handle — including over buttons and other controls: a vertical drag steals the gesture from the pressed child, while a tap without vertical movement still fires the control's `onPress`. Because the sheet captures all vertical gestures, avoid putting a scrollable region (e.g. `ScrollView`/list) directly inside `BottomSheet.Content` — scrolling and sheet-dragging will fight for the same gesture.
+
 ### Controlled State
 
 Manage the open state externally:
