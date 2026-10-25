@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `Badge`: runtime crash `Text strings must be rendered within a <Text> component` when given non-string text children (numbers, or mixed arrays like `{count} messages`). Only pure-string children were previously wrapped in `Text`; numbers and arrays containing text primitives are now wrapped too. Element children (e.g. `<Badge><Text/></Badge>`, icon+label arrays) keep rendering as before.
+
 ## [0.1.4] - 2026-10-25
 
 ### Added

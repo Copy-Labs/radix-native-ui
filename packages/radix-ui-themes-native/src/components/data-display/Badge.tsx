@@ -137,7 +137,13 @@ const Badge = React.forwardRef<any, BadgeProps>(
         accessibilityRole="none"
         {...rest}
       >
-        {typeof children === 'string' ? (
+        {typeof children === 'string' ||
+        typeof children === 'number' ||
+        (Array.isArray(children) &&
+          children.some((c) => typeof c === 'string' || typeof c === 'number')) ? (
+          // Text primitives (incl. mixed arrays like `{count} messages`) must be
+          // wrapped in a Text host element; raw strings inside the badge View
+          // crash with "Text strings must be rendered within a <Text> component".
           <Text style={[styles.text, textStyle]}>{children}</Text>
         ) : (
           children
