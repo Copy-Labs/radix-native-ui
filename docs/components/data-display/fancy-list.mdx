@@ -59,9 +59,32 @@ const items = ['Apple', 'Banana', 'Orange'];
   <Prop name="ListFooterComponent" type="ReactNode">
     Component to render at the bottom of the list.
   </Prop>
+  <Prop name="ListBackend" type="React.ComponentType<any>" default="FlatList">
+    Virtualized list implementation to use as the backend. Any FlatList-compatible component (LegendList, FlashList v2, …) can be supplied.
+  </Prop>
+  <Prop name="backendProps" type="Record<string, unknown>">
+    Extra props forwarded to the list backend (e.g. `estimatedItemSize`). Applied before FancyList's own wiring.
+  </Prop>
 </PropTable>
 
 ## Examples
+
+### Swapping the list backend
+
+By default FancyList virtualizes with `FlatList`. For very large datasets you can plug in any FlatList-compatible list (LegendList, FlashList v2) to get true native-style cell recycling — styling, dividers, and the `renderItem` contract stay identical:
+
+```tsx
+import { LegendList } from '@legendapp/list';
+
+<FancyList
+  data={products}
+  ListBackend={LegendList}
+  backendProps={{ estimatedItemSize: 80 }}
+  renderItem={({ item }) => <Text>{item.name}</Text>}
+/>;
+```
+
+`backendProps` are forwarded to the backend (applied *before* FancyList's own wiring, so `data`/`renderItem`/`keyExtractor` can't be clobbered). Note the `scrollable={false}` branch never mounts a backend — it renders plain views.
 
 ### Basic List
 
