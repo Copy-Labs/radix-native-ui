@@ -472,7 +472,7 @@ const messages: Message[] = [
 For very large datasets, swap the virtualization engine without losing FancyList's styling/dividers. The library stays dependency-free — your app installs the backend:
 
 ```tsx
-import { LegendList } from '@legendapp/list';
+import { LegendList } from '@legendapp/list/react-native';
 
 <FancyList
   data={products}
