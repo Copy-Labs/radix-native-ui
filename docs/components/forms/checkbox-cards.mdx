@@ -51,7 +51,7 @@ import { CheckboxCards } from 'radix-native-ui';
   <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'surface'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the cards.
   </Prop>
   <Prop name="color" type="Color">
@@ -149,14 +149,14 @@ Disable haptic feedback on individual items:
 ```tsx
 <CheckboxCards.Root value={selected} onValueChange={setSelected}>
   <CheckboxCards.Item value="starter">
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text weight="medium">Starter Plan</Text>
       <Text size={2} color="gray">Perfect for individuals</Text>
       <Text size={3} weight="bold">$9/month</Text>
     </Flex>
   </CheckboxCards.Item>
   <CheckboxCards.Item value="pro">
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text weight="medium">Pro Plan</Text>
       <Text size={2} color="gray">Best for small teams</Text>
       <Text size={3} weight="bold">$29/month</Text>

@@ -42,7 +42,7 @@ import { Heading } from 'radix-native-ui';
   <Prop name="align" type="'left' | 'center' | 'right'">
     Text alignment.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="ColorValue">
     Text color.
   </Prop>
   <Prop name="truncate" type="boolean">
@@ -103,7 +103,7 @@ import { Heading } from 'radix-native-ui';
 ### Page Header
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <Heading size={5}>Page Title</Heading>
   <Text color="gray">Page description goes here.</Text>
 </Flex>
@@ -113,7 +113,7 @@ import { Heading } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Card Title</Heading>
     <Text>Card content goes here.</Text>
   </Flex>

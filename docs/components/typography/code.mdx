@@ -35,7 +35,7 @@ import { Text, Code } from 'radix-native-ui';
   <Prop name="size" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9" default="2">
     Font size from theme scale.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="ColorValue">
     Text color.
   </Prop>
   <Prop name="backgroundColor" type="string">
@@ -48,7 +48,7 @@ import { Text, Code } from 'radix-native-ui';
 ### Sizes
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <Code size={1}>Small code</Code>
   <Code size={2}>Default code</Code>
   <Code size={3}>Medium code</Code>

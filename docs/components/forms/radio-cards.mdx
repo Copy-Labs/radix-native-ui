@@ -54,7 +54,7 @@ import { RadioCards } from 'radix-native-ui';
   <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'surface'">
     Visual variant for all cards.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the cards.
   </Prop>
   <Prop name="color" type="Color">
@@ -141,15 +141,15 @@ Radio card items include subtle press animations for a tactile feel:
 ```tsx
 <RadioCards.Root value={plan} onValueChange={setPlan}>
   <RadioCards.Item value="starter">
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text weight="medium">Starter</Text>
       <Text size={2} color="gray">For individuals</Text>
       <Text size={4} weight="bold">$9/mo</Text>
     </Flex>
   </RadioCards.Item>
   <RadioCards.Item value="pro">
-    <Flex direction="column" gap={1}>
-      <Flex align="center" gap={2}>
+    <Flex direction="column" gap={4}>
+      <Flex align="center" gap={8}>
         <Text weight="medium">Pro</Text>
         <Badge color="green">Popular</Badge>
       </Flex>
@@ -158,7 +158,7 @@ Radio card items include subtle press animations for a tactile feel:
     </Flex>
   </RadioCards.Item>
   <RadioCards.Item value="enterprise">
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text weight="medium">Enterprise</Text>
       <Text size={2} color="gray">For organizations</Text>
       <Text size={4} weight="bold">Custom</Text>

@@ -173,7 +173,7 @@ Optional arrow indicator.
 ### Positioned Tooltips
 
 ```tsx
-<Flex gap={4}>
+<Flex gap={16}>
   <Tooltip content="Top tooltip" side="top">
     <Button>Top</Button>
   </Tooltip>
@@ -195,7 +195,7 @@ Optional arrow indicator.
 ### Icon Button Tooltips
 
 ```tsx
-<Flex gap={2}>
+<Flex gap={8}>
   <Tooltip content="Copy">
     <IconButton>
       <Icon name="copy" />
@@ -229,7 +229,7 @@ Optional arrow indicator.
 ```tsx
 <Tooltip
   content={
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text weight="medium">Keyboard Shortcut</Text>
       <Text size={1}>Press ⌘ + C to copy</Text>
     </Flex>
@@ -245,7 +245,7 @@ Optional arrow indicator.
 
 ```tsx
 <Card>
-  <Flex gap={1}>
+  <Flex gap={4}>
     <Tooltip content="Bold (⌘B)">
       <IconButton variant="soft">
         <Icon name="bold" />
@@ -276,8 +276,8 @@ Optional arrow indicator.
 ### Form Field Help
 
 ```tsx
-<Flex direction="column" gap={1}>
-  <Flex direction="row" gap={1} align="center">
+<Flex direction="column" gap={4}>
+  <Flex direction="row" gap={4} align="center">
     <Text size={2} weight="medium">API Key</Text>
     <Tooltip content="Your API key is found in the Developer Settings">
       <IconButton size={1} variant="ghost">

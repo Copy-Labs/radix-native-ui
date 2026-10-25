@@ -40,7 +40,7 @@ import { TextField } from 'radix-native-ui';
   <Prop name="variant" type="'surface' | 'soft' | 'outline'" default="'outline'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the input.
   </Prop>
   <Prop name="color" type="Color">
@@ -107,9 +107,9 @@ import { TextField } from 'radix-native-ui';
 ### Sizes
 
 ```tsx
-<TextField size="1" placeholder="Small" />
-<TextField size="2" placeholder="Medium (default)" />
-<TextField size="3" placeholder="Large" />
+<TextField size={1} placeholder="Small" />
+<TextField size={2} placeholder="Medium (default)" />
+<TextField size={3} placeholder="Large" />
 ```
 
 ### Email Input
@@ -192,7 +192,7 @@ import { SearchIcon, CrossIcon } from './icons';
 ### Form Example
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <TextField
     placeholder="Email"
     value={email}

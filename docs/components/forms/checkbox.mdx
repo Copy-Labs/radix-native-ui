@@ -49,7 +49,7 @@ import { Checkbox } from 'radix-native-ui';
   <Prop name="color" type="Color">
     Accent color.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the checkbox.
   </Prop>
   <Prop name="indeterminate" type="boolean" default="false">
@@ -98,9 +98,9 @@ Checkboxes provide haptic feedback by default when toggled. You can disable this
 ### Sizes
 
 ```tsx
-<Checkbox size="1" label="Small" />
-<Checkbox size="2" label="Medium (default)" />
-<Checkbox size="3" label="Large" />
+<Checkbox size={1} label="Small" />
+<Checkbox size={2} label="Medium (default)" />
+<Checkbox size={3} label="Large" />
 ```
 
 ### With Color
@@ -133,7 +133,7 @@ Checkboxes provide haptic feedback by default when toggled. You can disable this
 ### Form Example
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <Checkbox checked={terms} onCheckedChange={setTerms} label="I agree to the Terms of Service" />
   <Checkbox checked={privacy} onCheckedChange={setPrivacy} label="I agree to the Privacy Policy" />
   <Checkbox checked={newsletter} onCheckedChange={setNewsletter} label="Subscribe to newsletter" />

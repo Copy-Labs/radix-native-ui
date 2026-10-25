@@ -20,7 +20,7 @@ import { Stack, VStack, HStack } from 'radix-native-ui';
 ```tsx
 import { Stack, Text } from 'radix-native-ui';
 
-<Stack gap={3}>
+<Stack gap={12}>
   <Text>Item 1</Text>
   <Text>Item 2</Text>
   <Text>Item 3</Text>
@@ -30,7 +30,7 @@ import { Stack, Text } from 'radix-native-ui';
 ### Horizontal Stack
 
 ```tsx
-<Stack direction="horizontal" gap={2}>
+<Stack direction="horizontal" gap={8}>
   <Button>Cancel</Button>
   <Button>Confirm</Button>
 </Stack>
@@ -42,13 +42,13 @@ Convenience wrappers for common directions:
 
 ```tsx
 // VStack - Vertical stack
-<VStack gap={4}>
+<VStack gap={16}>
   <Text>Vertical item 1</Text>
   <Text>Vertical item 2</Text>
 </VStack>
 
 // HStack - Horizontal stack
-<HStack gap={2} align="center">
+<HStack gap={8} align="center">
   <Text>Horizontal item 1</Text>
   <Text>Horizontal item 2</Text>
 </HStack>
@@ -67,8 +67,8 @@ Convenience wrappers for common directions:
     - `vertical`: stack items in a column
   </Prop>
 
-  <Prop name="gap" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
-    Gap between items using theme.space scale.
+  <Prop name="gap" type="number">
+    Gap between items in pixels — same semantics as `Flex` and `Grid`.
   </Prop>
 
   <Prop name="align" type="'flex-start' | 'center' | 'flex-end' | 'stretch' | 'baseline'">
@@ -99,8 +99,8 @@ Convenience wrappers for common directions:
     Height of the stack container.
   </Prop>
 
-  <Prop name="padding" type="1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9">
-    Padding using theme.space scale.
+  <Prop name="padding" type="number">
+    Padding in pixels.
   </Prop>
 
   <Prop name="backgroundColor" type="string">
@@ -114,13 +114,13 @@ Convenience wrappers for common directions:
 
 ```tsx
 <Card>
-  <VStack gap={3}>
+  <VStack gap={12}>
     <HStack justify="between" align="center">
       <Heading size={3}>Card Title</Heading>
       <Badge>New</Badge>
     </HStack>
     <Text color="gray">Card description goes here.</Text>
-    <HStack gap={2}>
+    <HStack gap={8}>
       <Button variant="soft">Cancel</Button>
       <Button>Confirm</Button>
     </HStack>
@@ -131,18 +131,18 @@ Convenience wrappers for common directions:
 ### Form Layout
 
 ```tsx
-<VStack gap={4}>
-  <VStack gap={1}>
+<VStack gap={16}>
+  <VStack gap={4}>
     <Text size={2} weight="medium">Email</Text>
     <TextField placeholder="Enter email" />
   </VStack>
 
-  <VStack gap={1}>
+  <VStack gap={4}>
     <Text size={2} weight="medium">Password</Text>
     <TextField placeholder="Enter password" secureTextEntry />
   </VStack>
 
-  <HStack justify="end" gap={2}>
+  <HStack justify="end" gap={8}>
     <Button variant="outline">Cancel</Button>
     <Button>Sign In</Button>
   </HStack>
@@ -152,7 +152,7 @@ Convenience wrappers for common directions:
 ### Wrapping Items
 
 ```tsx
-<HStack gap={2} wrap="wrap">
+<HStack gap={8} wrap="wrap">
   <Badge>Tag 1</Badge>
   <Badge>Tag 2</Badge>
   <Badge>Tag 3</Badge>
@@ -165,19 +165,19 @@ Convenience wrappers for common directions:
 
 ```tsx
 // Align to start
-<HStack align="flex-start" gap={2}>
+<HStack align="flex-start" gap={8}>
   <Box height={50}>Short</Box>
   <Box height={100}>Tall</Box>
 </HStack>
 
 // Center align
-<HStack align="center" gap={2}>
+<HStack align="center" gap={8}>
   <Box height={50}>Short</Box>
   <Box height={100}>Tall</Box>
 </HStack>
 
 // Stretch to fill
-<HStack align="stretch" gap={2}>
+<HStack align="stretch" gap={8}>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
 </HStack>
@@ -193,12 +193,12 @@ Convenience wrappers for common directions:
 </HStack>
 
 // Center
-<HStack justify="center" gap={2}>
+<HStack justify="center" gap={8}>
   <Text>Centered</Text>
 </HStack>
 
 // Space around
-<HStack justify="space-around" gap={2}>
+<HStack justify="space-around" gap={8}>
   <Text>A</Text>
   <Text>B</Text>
   <Text>C</Text>
@@ -212,21 +212,21 @@ Convenience wrappers for common directions:
 | `vertical` | Stack items vertically | `column` |
 | `horizontal` | Stack items horizontally | `row` |
 
-## Gap Scale
+## Gap
 
-Gap uses the theme.space scale:
+`gap` takes raw pixel values, consistent with `Flex` and `Grid`. Handy reference points from the theme space scale:
 
-| Value | Size |
-|-------|------|
-| `1` | ~4px |
-| `2` | ~8px |
-| `3` | ~12px |
-| `4` | ~16px |
-| `5` | ~24px |
-| `6` | ~32px |
-| `7` | ~40px |
-| `8` | ~48px |
-| `9` | ~64px |
+| Space step | Pixels |
+|------------|--------|
+| `space[1]` | 4 |
+| `space[2]` | 8 |
+| `space[3]` | 12 |
+| `space[4]` | 16 |
+| `space[5]` | 24 |
+| `space[6]` | 32 |
+| `space[7]` | 40 |
+| `space[8]` | 48 |
+| `space[9]` | 64 |
 
 ## Related
 

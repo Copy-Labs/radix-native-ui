@@ -19,7 +19,7 @@ import { ScrollArea } from 'radix-native-ui';
 import { ScrollArea, Text, Flex } from 'radix-native-ui';
 
 <ScrollArea style={{ height: 200 }}>
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Text>Item 1</Text>
     <Text>Item 2</Text>
     <Text>Item 3</Text>
@@ -69,7 +69,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 
 ```tsx
 <ScrollArea height={200}>
-  <Flex direction="column" gap={2} padding={3}>
+  <Flex direction="column" gap={8} padding={12}>
     {items.map(item => (
       <Card key={item.id}>
         <Text>{item.title}</Text>
@@ -83,7 +83,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 
 ```tsx
 <ScrollArea horizontal width="100%">
-  <Flex direction="row" gap={3} padding={3}>
+  <Flex direction="row" gap={12} padding={12}>
     {images.map(image => (
       <AspectRatio ratio={1} key={image.id} width={38}>
         <Image source={{ uri: image.url }} />
@@ -109,7 +109,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 <Card height={400}>
   <Flex direction="column" height="100%">
     <ScrollArea flex={1}>
-      <Flex direction="column" gap={2} padding={3}>
+      <Flex direction="column" gap={8} padding={12}>
         {messages.map(message => (
           <Flex
             key={message.id}
@@ -126,7 +126,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
       </Flex>
     </ScrollArea>
 
-    <Flex direction="row" gap={2} padding={2}>
+    <Flex direction="row" gap={8} padding={8}>
       <TextField flex={1} placeholder="Type a message..." />
       <Button>Send</Button>
     </Flex>
@@ -138,10 +138,10 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Heading size={3}>Files</Heading>
     <ScrollArea height={250}>
-      <Flex direction="column" gap={1}>
+      <Flex direction="column" gap={4}>
         {files.map(file => (
           <Flex
             key={file.id}
@@ -170,7 +170,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Flex direction="row" justify="between" align="center">
       <Heading size={3}>Logs</Heading>
       <Button size={1} variant="soft">Clear</Button>
@@ -198,11 +198,11 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
 ### Nested ScrollAreas
 
 ```tsx
-<Flex direction="row" gap={3} height={400}>
+<Flex direction="row" gap={12} height={400}>
   <Card flex={1}>
     <Heading size={3}>Categories</Heading>
     <ScrollArea flex={1}>
-      <Flex direction="column" gap={1}>
+      <Flex direction="column" gap={4}>
         {categories.map(cat => (
           <Button key={cat.id} variant="ghost" justify="start">
             {cat.name}
@@ -215,7 +215,7 @@ ScrollArea is a thin wrapper around React Native's ScrollView. It accepts all Sc
   <Card flex={2}>
     <Heading size={3}>Products</Heading>
     <ScrollArea flex={1}>
-      <Flex direction="column" gap={2}>
+      <Flex direction="column" gap={8}>
         {products.map(product => (
           <Card key={product.id}>
             <Text>{product.name}</Text>

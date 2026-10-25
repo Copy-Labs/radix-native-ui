@@ -94,7 +94,7 @@ Content that is shown/hidden.
   <Prop name="dir" type="'ltr' | 'rtl'" default="'ltr'">
     Direction for chevron rotation.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size variant.
   </Prop>
   <Prop name="style" type="StyleProp<ViewStyle>">
@@ -228,7 +228,7 @@ Accordion triggers provide haptic feedback by default when expanded or collapsed
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={4}>Frequently Asked Questions</Heading>
 
     <Accordion.Root type="single" collapsible>
@@ -291,14 +291,14 @@ Accordion triggers provide haptic feedback by default when expanded or collapsed
   <Accordion.Item value="appearance">
     <Accordion.Header>
       <Accordion.Trigger>
-        <Flex gap={2} align="center">
+        <Flex gap={8} align="center">
           <Icon name="palette" />
           <Text weight="medium">Appearance</Text>
         </Flex>
       </Accordion.Trigger>
     </Accordion.Header>
     <Accordion.Content>
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={12}>
         <Flex direction="row" justify="between" align="center">
           <Text>Dark Mode</Text>
           <Switch />
@@ -314,14 +314,14 @@ Accordion triggers provide haptic feedback by default when expanded or collapsed
   <Accordion.Item value="notifications">
     <Accordion.Header>
       <Accordion.Trigger>
-        <Flex gap={2} align="center">
+        <Flex gap={8} align="center">
           <Icon name="bell" />
           <Text weight="medium">Notifications</Text>
         </Flex>
       </Accordion.Trigger>
     </Accordion.Header>
     <Accordion.Content>
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={12}>
         <Flex direction="row" justify="between" align="center">
           <Text>Push Notifications</Text>
           <Switch />

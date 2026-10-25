@@ -107,9 +107,9 @@ function ColorPalette({ colorName }) {
   const shades = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   return (
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Heading size={3}>{colorName}</Heading>
-      <Flex direction="row" gap={1}>
+      <Flex direction="row" gap={4}>
         {shades.map(shade => (
           <Box
             key={shade}
@@ -138,7 +138,7 @@ function BarChart({ data }) {
   const colors = ['blue', 'green', 'yellow', 'red'];
 
   return (
-    <Flex direction="row" gap={2} align="end" style={{ height: 200 }}>
+    <Flex direction="row" gap={8} align="end" style={{ height: 200 }}>
       {data.map((value, index) => (
         <Box
           key={index}

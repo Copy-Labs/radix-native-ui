@@ -24,7 +24,7 @@ import { Popover, Button, Text, Flex } from 'radix-native-ui';
   </Popover.Trigger>
 
   <Popover.Content>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text weight="medium">Popover Title</Text>
       <Text size={2}>This is the popover content.</Text>
     </Flex>
@@ -230,8 +230,8 @@ Optional anchor element for positioning.
   </Popover.Trigger>
 
   <Popover.Content>
-    <Flex direction="column" gap={3}>
-      <Flex direction="row" gap={3} align="center">
+    <Flex direction="column" gap={12}>
+      <Flex direction="row" gap={12} align="center">
         <Avatar src="https://i.pravatar.cc/150" fallback="JD" size={4} />
         <Flex direction="column">
           <Text weight="medium">John Doe</Text>
@@ -239,7 +239,7 @@ Optional anchor element for positioning.
         </Flex>
       </Flex>
 
-      <Flex direction="column" gap={1}>
+      <Flex direction="column" gap={4}>
         <Button variant="ghost" justify="start">Profile</Button>
         <Button variant="ghost" justify="start">Settings</Button>
         <Button variant="ghost" justify="start" color="red">Sign Out</Button>
@@ -260,9 +260,9 @@ const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
   </Popover.Trigger>
 
   <Popover.Content>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text size={2} weight="medium">Select Color</Text>
-      <Flex wrap="wrap" gap={2}>
+      <Flex wrap="wrap" gap={8}>
         {colors.map(color => (
           <Box
             key={color}
@@ -293,7 +293,7 @@ function ControlledPopover() {
       </Popover.Trigger>
 
       <Popover.Content>
-        <Flex direction="column" gap={2}>
+        <Flex direction="column" gap={8}>
           <Text>Popover content</Text>
           <Button size={1} onPress={() => setOpen(false)}>
             Close
@@ -316,7 +316,7 @@ function ControlledPopover() {
   </Popover.Trigger>
 
   <Popover.Content>
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Popover.Close>
         <Button variant="ghost" justify="start">
           <Icon name="pencil" /> Edit

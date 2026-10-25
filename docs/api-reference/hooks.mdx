@@ -99,7 +99,7 @@ function ThemeToggle() {
   const { setMode, toggleMode, mode } = useThemeActions();
 
   return (
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text>Current: {mode}</Text>
       <Button onPress={toggleMode}>Toggle Theme</Button>
       <Button onPress={() => setMode('dark')}>Dark Mode</Button>

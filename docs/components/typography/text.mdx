@@ -42,7 +42,7 @@ import { Text } from 'radix-native-ui';
   <Prop name="align" type="'left' | 'center' | 'right'">
     Text alignment.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="ColorValue">
     Text color (e.g., 'gray', 'blue', 'tomato').
   </Prop>
   <Prop name="truncate" type="boolean | 'character' | 'token'">
@@ -143,7 +143,7 @@ import { Text } from 'radix-native-ui';
 ### With Icon
 
 ```tsx
-<Flex align="center" gap={2}>
+<Flex align="center" gap={8}>
   <Icon name="info" />
   <Text>Text with icon</Text>
 </Flex>

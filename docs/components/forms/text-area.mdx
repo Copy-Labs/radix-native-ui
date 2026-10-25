@@ -40,7 +40,7 @@ import { TextArea } from 'radix-native-ui';
   <Prop name="variant" type="'surface' | 'soft' | 'outline'" default="'outline'">
     Visual style variant.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the input.
   </Prop>
   <Prop name="color" type="Color">
@@ -107,9 +107,9 @@ import { TextArea } from 'radix-native-ui';
 ### Different Sizes
 
 ```tsx
-<TextArea size="1" placeholder="Small" />
-<TextArea size="2" placeholder="Medium (default)" />
-<TextArea size="3" placeholder="Large" />
+<TextArea size={1} placeholder="Small" />
+<TextArea size={2} placeholder="Medium (default)" />
+<TextArea size={3} placeholder="Large" />
 ```
 
 ### With Error
@@ -126,7 +126,7 @@ import { TextArea } from 'radix-native-ui';
 ### Contact Form
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <TextField placeholder="Your Name" />
   <TextField placeholder="Email" keyboardType="email-address" />
   <TextArea

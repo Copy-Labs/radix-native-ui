@@ -140,7 +140,7 @@ For centering with absolute positioning:
 
 ```tsx
 <Center style={{ height: 200 }}>
-  <VStack align="center" gap={2}>
+  <VStack align="center" gap={8}>
     <Spinner size={24} />
     <Text color="gray">Loading...</Text>
   </VStack>
@@ -151,7 +151,7 @@ For centering with absolute positioning:
 
 ```tsx
 <Center style={{ height: 300 }}>
-  <VStack align="center" gap={2}>
+  <VStack align="center" gap={8}>
     <Text size={6}>📭</Text>
     <Text weight="bold">No items found</Text>
     <Text color="gray" size={2}>Try adjusting your search</Text>
@@ -162,7 +162,7 @@ For centering with absolute positioning:
 ### Icon Buttons
 
 ```tsx
-<HStack gap={2}>
+<HStack gap={8}>
   <Center width={44} height={44} backgroundColor="#f0f0f0" radius="full">
     <Text size={5}>🏠</Text>
   </Center>
@@ -179,7 +179,7 @@ For centering with absolute positioning:
 
 ```tsx
 <Center width="100%" height="100%">
-  <VStack align="center" gap={2}>
+  <VStack align="center" gap={8}>
     <Text size={8}>🎯</Text>
     <Text weight="bold">Welcome</Text>
     <Text color="gray">Centered on full screen</Text>
@@ -191,7 +191,7 @@ For centering with absolute positioning:
 
 ```tsx
 <Box style={{ position: 'relative', height: 200 }}>
-  <VStack padding={3}>
+  <VStack padding={12}>
     <Text>Background content</Text>
     <Text color="gray" size={2}>This is behind the overlay</Text>
   </VStack>
@@ -217,7 +217,7 @@ For centering with absolute positioning:
 ### With Background and Radius
 
 ```tsx
-<HStack gap={3}>
+<HStack gap={12}>
   <Center width={60} height={60} backgroundColor="#3b82f6" radius="medium">
     <Text style={{ color: 'white' }}>1</Text>
   </Center>

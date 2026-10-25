@@ -55,7 +55,7 @@ import { Badge } from 'radix-native-ui';
 ### Variants
 
 ```tsx
-<Flex direction="row" gap={2}>
+<Flex direction="row" gap={8}>
   <Badge variant="solid">Solid</Badge>
   <Badge variant="soft">Soft</Badge>
   <Badge variant="surface">Surface</Badge>
@@ -66,7 +66,7 @@ import { Badge } from 'radix-native-ui';
 ### Colors
 
 ```tsx
-<Flex direction="row" gap={2} wrap="wrap">
+<Flex direction="row" gap={8} wrap="wrap">
   <Badge color="green">Success</Badge>
   <Badge color="red">Error</Badge>
   <Badge color="yellow">Warning</Badge>
@@ -78,7 +78,7 @@ import { Badge } from 'radix-native-ui';
 ### Sizes
 
 ```tsx
-<Flex direction="row" gap={2} align="center">
+<Flex direction="row" gap={8} align="center">
   <Badge size={1}>Small</Badge>
   <Badge size={2}>Medium</Badge>
   <Badge size={3}>Large</Badge>
@@ -89,7 +89,7 @@ import { Badge } from 'radix-native-ui';
 ### High Contrast
 
 ```tsx
-<Flex direction="row" gap={2}>
+<Flex direction="row" gap={8}>
   <Badge color="blue">Normal</Badge>
   <Badge color="blue" highContrast>High Contrast</Badge>
 </Flex>
@@ -98,16 +98,16 @@ import { Badge } from 'radix-native-ui';
 ### Status Indicators
 
 ```tsx
-<Flex direction="column" gap={2}>
-  <Flex direction="row" gap={2} align="center">
+<Flex direction="column" gap={8}>
+  <Flex direction="row" gap={8} align="center">
     <Badge color="green">Active</Badge>
     <Text>Account is active</Text>
   </Flex>
-  <Flex direction="row" gap={2} align="center">
+  <Flex direction="row" gap={8} align="center">
     <Badge color="yellow">Pending</Badge>
     <Text>Verification pending</Text>
   </Flex>
-  <Flex direction="row" gap={2} align="center">
+  <Flex direction="row" gap={8} align="center">
     <Badge color="red">Suspended</Badge>
     <Text>Account suspended</Text>
   </Flex>
@@ -117,10 +117,10 @@ import { Badge } from 'radix-native-ui';
 ### With Avatar
 
 ```tsx
-<Flex direction="row" gap={3} align="center">
+<Flex direction="row" gap={12} align="center">
   <Avatar fallback="JD" />
   <Flex direction="column">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Text weight="medium">John Doe</Text>
       <Badge size={1} color="green">Pro</Badge>
     </Flex>

@@ -59,7 +59,7 @@ import { VisuallyHidden, IconButton } from 'radix-native-ui';
 ### Form Labels
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <VisuallyHidden>
     <Text nativeID="search-label">Search</Text>
   </VisuallyHidden>
@@ -75,7 +75,7 @@ import { VisuallyHidden, IconButton } from 'radix-native-ui';
 ```tsx
 function StatusIndicator({ status }) {
   return (
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Badge color={status === 'success' ? 'green' : 'red'}>
         {status === 'success' ? '✓' : '✗'}
       </Badge>

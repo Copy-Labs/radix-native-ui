@@ -39,7 +39,7 @@ import { RadioGroup } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether all radios are disabled.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of all radios.
   </Prop>
   <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'soft'">
@@ -106,7 +106,7 @@ import { RadioGroup } from 'radix-native-ui';
 ### With Label
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <Text weight="medium">Select your favorite fruit:</Text>
   <RadioGroup.Root value={value} onValueChange={setValue}>
     <RadioGroup.Item value="apple" label="Apple" />
@@ -121,13 +121,13 @@ import { RadioGroup } from 'radix-native-ui';
 ```tsx
 <RadioGroup.Root value={method} onValueChange={setMethod}>
   <RadioGroup.Item value="card">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Icon name="credit-card" />
       <Text>Credit Card</Text>
     </Flex>
   </RadioGroup.Item>
   <RadioGroup.Item value="paypal">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Icon name="paypal" />
       <Text>PayPal</Text>
     </Flex>
@@ -162,7 +162,7 @@ import { RadioGroup } from 'radix-native-ui';
   onValueChange={setValue}
   color="indigo"
   variant="surface"
-  size="3"
+  size={3}
   gap={12}
 >
   <RadioGroup.Item value="1" label="Surface Indigo" />

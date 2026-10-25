@@ -136,7 +136,7 @@ const settings: Setting[] = [
 ];
 
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Settings</Heading>
     <FancyList
       data={settings}
@@ -162,14 +162,14 @@ import { FancyList, Text, Flex, Heading } from 'radix-native-ui';
 const items = ['Item 1', 'Item 2', 'Item 3'];
 
 const renderHeader = () => (
-  <Flex direction="column" align="center" gap={2} paddingVertical={4}>
+  <Flex direction="column" align="center" gap={8} paddingVertical={4}>
     <Heading size={4}>List Title</Heading>
     <Text size={2} color="gray">List description</Text>
   </Flex>
 );
 
 const renderFooter = () => (
-  <Flex padding={4} gap={8}>
+  <Flex padding={16} gap={48}>
     <Button variant="surface" style={{ flex: 1 }}>Cancel</Button>
     <Button style={{ flex: 1 }}>Save</Button>
   </Flex>
