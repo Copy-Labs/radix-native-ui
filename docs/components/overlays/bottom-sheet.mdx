@@ -103,7 +103,7 @@ The BottomSheet follows the Radix compound component pattern:
 
 ### BottomSheet.Scrollable
 
-A scroll region inside the sheet that the drag gesture stands down for. Extends all `ScrollView` props.
+A scroll region inside the sheet. Touches in it scroll the content; a downward pull that starts (or reaches) the top of the content hands the gesture to the sheet for dismiss continuity. Extends all `ScrollView` props.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -224,7 +224,13 @@ At a lower snap the sheet is clipped — its content is laid out at the tallest 
 
 The sheet is draggable from **anywhere on its surface**, not just the handle — including over buttons and other controls: a vertical drag steals the gesture from the pressed child, while a tap without vertical movement still fires the control's `onPress`.
 
-Because the sheet captures vertical gestures, a plain `ScrollView` placed inside `BottomSheet.Content` would never scroll — the sheet would eat every drag. Use **`BottomSheet.Scrollable`** for scroll regions instead: touches starting inside it are exempt from the gesture steal and scroll the content normally.
+Because the sheet captures vertical gestures, a plain `ScrollView` placed inside `BottomSheet.Content` would never scroll — the sheet would eat every drag. Use **`BottomSheet.Scrollable`** for scroll regions instead. Inside the zone the gesture split follows the iOS sheet model:
+
+| Gesture inside `Scrollable` | Result |
+|---|---|
+| Scroll content (any direction, content not at top) | list scrolls, sheet stays put |
+| Pull **down** while the content is **at the top** | gesture hands over to the sheet — drag/flick it down to snap lower or dismiss |
+| Everything **outside** the zone | sheet drag-anywhere behavior as usual |
 
 ```tsx
 <BottomSheet.Content>
@@ -238,7 +244,7 @@ Because the sheet captures vertical gestures, a plain `ScrollView` placed inside
 </BottomSheet.Content>
 ```
 
-Rule of thumb: drag the sheet from its chrome (handle, titles, footer), scroll inside `BottomSheet.Scrollable`.
+The handover is mid-gesture and jump-free: the sheet starts dragging from the moment the list crosses the top, not from where the finger first landed. Rule of thumb: scroll inside `BottomSheet.Scrollable`, and keep pulling down at the top to dismiss.
 
 ### Controlled State
 
