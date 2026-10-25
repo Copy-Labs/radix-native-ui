@@ -141,16 +141,15 @@ export default function HomeScreen() {
               <Text size={2} weight="bold">
                 Radio Group
               </Text>
-              <RadioGroup
+              <RadioGroup.Root
                 gap={8}
                 size={'3'}
                 value={radioValue}
                 onValueChange={setRadioValue}
-                items={[
-                  { value: 'option1', label: 'Option 1' },
-                  { value: 'option2', label: 'Option 2' },
-                ]}
-              />
+              >
+                <RadioGroup.Item value="option1">Option 1</RadioGroup.Item>
+                <RadioGroup.Item value="option2">Option 2</RadioGroup.Item>
+              </RadioGroup.Root>
             </Box>
 
             <Box paddingVertical={8}>

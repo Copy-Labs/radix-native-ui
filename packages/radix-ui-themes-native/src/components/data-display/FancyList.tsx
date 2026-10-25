@@ -62,7 +62,7 @@ interface FancyListProps<T = any> {
   ListFooterComponent?: any;
 }
 
-const FancyList = <T extends object>({
+const FancyList = <T extends unknown>({
   data,
   renderItem,
   keyExtractor,
@@ -86,7 +86,7 @@ const FancyList = <T extends object>({
 
   const defaultKeyExtractor = (item: T, index: number): string => {
     if (keyExtractor) return keyExtractor(item, index);
-    if ('id' in item) return String((item as any).id);
+    if (item && typeof item === 'object' && 'id' in item) return String((item as any).id);
     return String(index);
   };
 

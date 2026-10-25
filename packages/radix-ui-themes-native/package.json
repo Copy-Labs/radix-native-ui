@@ -1,6 +1,6 @@
 {
   "name": "radix-native-ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A React Native component library inspired by the Radix Themes design system",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -8,9 +8,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "files": [
