@@ -15,6 +15,7 @@ const areEqual = (prevProps: BoxProps, nextProps: BoxProps) => {
     prevProps.backgroundColor === nextProps.backgroundColor &&
     prevProps.display === nextProps.display &&
     prevProps.flexDirection === nextProps.flexDirection &&
+    prevProps.flex === nextProps.flex &&
     prevProps.opacity === nextProps.opacity &&
     prevProps.radius === nextProps.radius
   ) {
@@ -37,6 +38,7 @@ const Box = React.memo(
         justifyContent,
         alignItems,
         flexWrap,
+        flex,
         flexGrow,
         flexShrink,
         flexBasis,
@@ -118,6 +120,7 @@ const Box = React.memo(
           justifyContent,
           alignItems,
           flexWrap,
+          flex,
           flexGrow,
           flexShrink,
           flexBasis,
@@ -162,6 +165,7 @@ const Box = React.memo(
           justifyContent,
           alignItems,
           flexWrap,
+          flex,
           flexGrow,
           flexShrink,
           flexBasis,

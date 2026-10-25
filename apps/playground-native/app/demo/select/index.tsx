@@ -167,7 +167,7 @@ export default function SelectDemo() {
                   <Text weight="medium" style={styles.label}>
                     With Disabled Items
                   </Text>
-                  <Select.Root value={null} onValueChange={() => {}}>
+                  <Select.Root value={undefined} onValueChange={() => {}}>
                     <Select.Trigger asChild>
                       <Button variant="outline" style={styles.trigger}>
                         <Button.Label>
@@ -198,7 +198,7 @@ export default function SelectDemo() {
                     Size Variants
                   </Text>
                   <View style={styles.row}>
-                    <Select.Root value={null} onValueChange={() => {}}>
+                    <Select.Root value={undefined} onValueChange={() => {}}>
                       <Select.Trigger asChild>
                         <Button variant="outline" size={1}>
                           <Button.Label>
@@ -215,7 +215,7 @@ export default function SelectDemo() {
                       </Select.Portal>
                     </Select.Root>
 
-                    <Select.Root value={null} onValueChange={() => {}}>
+                    <Select.Root value={undefined} onValueChange={() => {}}>
                       <Select.Trigger asChild>
                         <Button variant="outline" size={2}>
                           <Button.Label>
@@ -232,7 +232,7 @@ export default function SelectDemo() {
                       </Select.Portal>
                     </Select.Root>
 
-                    <Select.Root value={null} onValueChange={() => {}}>
+                    <Select.Root value={undefined} onValueChange={() => {}}>
                       <Select.Trigger asChild>
                         <Button variant="outline" size={3}>
                           <Button.Label>

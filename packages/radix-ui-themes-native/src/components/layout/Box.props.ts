@@ -47,6 +47,10 @@ export interface BoxProps {
    */
   flexWrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
   /**
+   * Flex shorthand (maps to React Native's style `flex`)
+   */
+  flex?: number;
+  /**
    * Flex grow
    */
   flexGrow?: number;

@@ -91,7 +91,7 @@ export default function SettingsPage() {
               onValueChange={(value) => setSettings((prev) => ({ ...prev, accentColor: value }))}
             >
               <Select.Trigger>
-                <Text capitalize>{settings.accentColor}</Text>
+                <Text>{settings.accentColor.charAt(0).toUpperCase() + settings.accentColor.slice(1)}</Text>
               </Select.Trigger>
               <Select.Content>
                 <Select.Item value="blue">Blue</Select.Item>
@@ -239,7 +239,7 @@ export default function SettingsPage() {
                 cannot be undone.
               </AlertDialog.Description>
 
-              <Flex gap={3} mt={4} justify="flex-end">
+              <Flex gap={3} marginTop={4} justify="flex-end">
                 <AlertDialog.Cancel>
                   <Button variant="soft" color="gray">
                     Cancel

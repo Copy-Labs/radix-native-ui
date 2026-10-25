@@ -193,7 +193,7 @@ export default function Skeletons() {
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Mixed Usage</Heading>
                   <Box maxWidth={350}>
-                    <Card radius="large" size="2" variant="outline">
+                    <Card radius="large" size={2} variant="outline">
                       <Flex gap={12} align="center">
                         <Skeleton loading={isLoading}>
                           <Avatar size={3} fallback="JD" radius="full" />

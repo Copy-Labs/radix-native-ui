@@ -1,7 +1,6 @@
 import { Link } from 'expo-router';
 import { Box, Button, Card, Flex, Heading, Text, ThemeProvider } from 'radix-native-ui';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/core';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { PageBody, PageContainer } from '@/components/PageSection';

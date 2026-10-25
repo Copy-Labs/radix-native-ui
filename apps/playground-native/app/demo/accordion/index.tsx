@@ -10,7 +10,7 @@ import {
 import { PageBody, PageContainer, PageHeader, PageHeading } from '@/components/PageSection';
 
 export default function AccordionScreen() {
-  const [singleValue, setSingleValue] = useState<string>('item-1');
+  const [singleValue, setSingleValue] = useState<string | string[]>('item-1');
   const [multipleValue, setMultipleValue] = useState<string[]>(['item-1']);
 
   return (

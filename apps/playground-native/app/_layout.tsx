@@ -8,7 +8,7 @@ import { ThemeProvider, useTheme, useThemeActions, useThemeMode } from 'radix-na
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: 'index',
 };
 
 function AppContent() {
@@ -21,7 +21,6 @@ function AppContent() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="demo" options={{ headerShown: false }} />
-        <Stack.Screen name="profile" options={{ headerShown: false }} />
         <Stack.Screen name="tabs" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
       </Stack>
