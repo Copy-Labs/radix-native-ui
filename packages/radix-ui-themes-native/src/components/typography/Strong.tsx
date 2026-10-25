@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React, { useMemo } from 'react';
 import { type TextStyle, Text as RNText } from 'react-native';
 import { Text } from '../../components';
@@ -16,7 +17,7 @@ interface StrongProps {
   /**
    * Text color
    */
-  color?: Color;
+  color?: ColorValue;
 }
 
 type StyleProp<T> = T | T[];

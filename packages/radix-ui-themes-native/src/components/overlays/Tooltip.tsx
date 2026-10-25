@@ -1,9 +1,26 @@
-import React, { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react';
-import { View, StyleSheet, Pressable, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback } from 'react-native';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  type ReactNode,
+} from 'react';
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  type StyleProp,
+  ViewStyle,
+  Modal,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 import { Text } from '../typography';
 import { getGrayAlpha } from '../../theme/color-helpers';
-import type { BaseColorScale, ColorScale, RadiusScale } from '../../theme';
+import type { BaseColorScale, ColorScale, RadiusScale, RadiusSize } from '../../theme';
 import {
   useAnchorPosition,
   calculatePopoverPosition,
@@ -64,12 +81,15 @@ const TooltipRoot = ({
   const [internalOpen, setInternalOpen] = useState(defaultOpen);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
 
-  const handleOpenChange = useCallback((newOpen: boolean) => {
-    if (controlledOpen === undefined) {
-      setInternalOpen(newOpen);
-    }
-    onOpenChange?.(newOpen);
-  }, [controlledOpen, onOpenChange]);
+  const handleOpenChange = useCallback(
+    (newOpen: boolean) => {
+      if (controlledOpen === undefined) {
+        setInternalOpen(newOpen);
+      }
+      onOpenChange?.(newOpen);
+    },
+    [controlledOpen, onOpenChange]
+  );
 
   const theme = useTheme();
   const mode = useThemeMode();
@@ -80,18 +100,20 @@ const TooltipRoot = ({
   const { anchorRef, anchorPosition, measureAnchor } = useAnchorPosition();
 
   return (
-    <TooltipContext.Provider value={{
-      open,
-      onOpenChange: handleOpenChange,
-      colors,
-      grayAlpha,
-      radii,
-      delayDuration,
-      longPressDuration,
-      anchorRef,
-      anchorPosition,
-      measureAnchor,
-    }}>
+    <TooltipContext.Provider
+      value={{
+        open,
+        onOpenChange: handleOpenChange,
+        colors,
+        grayAlpha,
+        radii,
+        delayDuration,
+        longPressDuration,
+        anchorRef,
+        anchorPosition,
+        measureAnchor,
+      }}
+    >
       {children}
     </TooltipContext.Provider>
   );
@@ -232,9 +254,7 @@ const TooltipPortal = ({ children }: TooltipPortalProps) => {
       hardwareAccelerated={false}
     >
       <TouchableWithoutFeedback onPress={() => onOpenChange(false)}>
-        <View style={styles.overlay}>
-          {children}
-        </View>
+        <View style={styles.overlay}>{children}</View>
       </TouchableWithoutFeedback>
     </Modal>
   );
@@ -256,7 +276,7 @@ interface TooltipContentProps {
   style?: StyleProp<ViewStyle>;
   avoidCollisions?: boolean;
   /** Radius variant for the tooltip. Inherits from theme by default. */
-  radius?: 'none' | 'small' | 'medium' | 'large' | 'full';
+  radius?: RadiusSize;
 }
 
 const TooltipContent = ({
@@ -310,7 +330,17 @@ const TooltipContent = ({
       left: calculatedPosition.left,
     });
     setActualSide(calculatedPosition.actualSide);
-  }, [anchorPosition, contentSize, screenWidth, screenHeight, side, align, sideOffset, alignOffset, avoidCollisions]);
+  }, [
+    anchorPosition,
+    contentSize,
+    screenWidth,
+    screenHeight,
+    side,
+    align,
+    sideOffset,
+    alignOffset,
+    avoidCollisions,
+  ]);
 
   // Update position when dependencies change
   useEffect(() => {
@@ -318,10 +348,13 @@ const TooltipContent = ({
   }, [updatePosition]);
 
   // Handle content layout to get size
-  const handleLayout = useCallback((event: { nativeEvent: { layout: { width: number; height: number } } }) => {
-    const { width, height } = event.nativeEvent.layout;
-    setContentSize({ width, height });
-  }, []);
+  const handleLayout = useCallback(
+    (event: { nativeEvent: { layout: { width: number; height: number } } }) => {
+      const { width, height } = event.nativeEvent.layout;
+      setContentSize({ width, height });
+    },
+    []
+  );
 
   // Don't render until we have valid anchor position
   const hasValidPosition = anchorPosition.x !== 0 || anchorPosition.y !== 0;
@@ -342,15 +375,17 @@ const TooltipContent = ({
           paddingHorizontal: theme.space[3],
           paddingVertical: theme.space[2],
           // Only apply position styles when we have valid measurements
-          ...(hasValidPosition && hasContentSize ? {
-            position: 'absolute',
-            top: position.top ?? 0,
-            left: position.left ?? 0,
-          } : {
-            position: 'absolute',
-            left: -9999, // Off-screen until positioned
-            opacity: 0,
-          }),
+          ...(hasValidPosition && hasContentSize
+            ? {
+                position: 'absolute',
+                top: position.top ?? 0,
+                left: position.left ?? 0,
+              }
+            : {
+                position: 'absolute',
+                left: -9999, // Off-screen until positioned
+                opacity: 0,
+              }),
         },
         style,
       ]}
@@ -370,8 +405,22 @@ const TooltipContent = ({
           styles.arrow,
           actualSide === 'top' && [styles.arrowBottom, { borderTopColor: arrowColor }],
           actualSide === 'bottom' && [styles.arrowTop, { borderBottomColor: arrowColor }],
-          actualSide === 'left' && [styles.arrowRight, { borderLeftColor: arrowColor, borderTopColor: 'transparent', borderBottomColor: 'transparent' }],
-          actualSide === 'right' && [styles.arrowLeft, { borderRightColor: arrowColor, borderTopColor: 'transparent', borderBottomColor: 'transparent' }],
+          actualSide === 'left' && [
+            styles.arrowRight,
+            {
+              borderLeftColor: arrowColor,
+              borderTopColor: 'transparent',
+              borderBottomColor: 'transparent',
+            },
+          ],
+          actualSide === 'right' && [
+            styles.arrowLeft,
+            {
+              borderRightColor: arrowColor,
+              borderTopColor: 'transparent',
+              borderBottomColor: 'transparent',
+            },
+          ],
         ]}
       />
     </View>
@@ -430,7 +479,7 @@ interface SimpleTooltipProps {
   longPressDuration?: number;
   avoidCollisions?: boolean;
   /** Radius variant for the tooltip. Inherits from theme by default. */
-  radius?: 'none' | 'small' | 'medium' | 'large' | 'full';
+  radius?: RadiusSize;
 }
 
 const Tooltip = ({

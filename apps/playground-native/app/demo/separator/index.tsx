@@ -30,9 +30,9 @@ export default function SeparatorDemo() {
         <PageBody>
           <ScrollView>
             <View style={{ flex: 1 }}>
-              <VStack gap={2} padding={2}>
+              <VStack gap={8} padding={8}>
                 {/* Basic Horizontal Separator */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Horizontal Separator (default)</Heading>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 12 }}>
                     <Text>Section 1</Text>
@@ -44,13 +44,13 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Vertical Separator */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Vertical Separator</Heading>
                   <Text color="gray" size={2}>
                     Use orientation="vertical" for vertical separators
                   </Text>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 12 }}>
-                    <HStack align="center" gap={2}>
+                    <HStack align="center" gap={8}>
                       <Text>Left</Text>
                       <Separator orientation="vertical" style={{ height: 20 }} />
                       <Text>Center</Text>
@@ -61,7 +61,7 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Color Variations */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Color Variations</Heading>
                   <Text color="gray" size={2}>
                     Separator supports the Color type from theme
@@ -80,7 +80,7 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Size Variations */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Size (Thickness)</Heading>
                   <Text color="gray" size={2}>
                     Control the thickness of the separator
@@ -99,7 +99,7 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Margin */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Margin</Heading>
                   <Text color="gray" size={2}>
                     Add margin using theme.space scale
@@ -127,17 +127,17 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* In Card */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>In Card</Heading>
                   <Card variant="outline" style={{ padding: 12 }}>
-                    <VStack gap={2}>
+                    <VStack gap={8}>
                       <Text weight="bold">Card Title</Text>
                       <Separator />
                       <Text color="gray">
                         This is the card content. The separator helps divide sections.
                       </Text>
                       <Separator marginVertical={2} />
-                      <HStack align="center" gap={2}>
+                      <HStack align="center" gap={8}>
                         <Text size={2} color="gray">
                           Action 1
                         </Text>
@@ -155,7 +155,7 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* In List */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>In List</Heading>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, overflow: 'hidden' }}>
                     <VStack>
@@ -179,7 +179,7 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Decorative vs Semantic */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Decorative vs Semantic</Heading>
                   <Text color="gray" size={2}>
                     decorative=true (default) - purely visual, no accessibility role
@@ -200,12 +200,12 @@ export default function SeparatorDemo() {
                 </VStack>
 
                 {/* Practical Examples */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Practical Examples</Heading>
 
                   {/* Divider in settings */}
                   <Card variant="surface" style={{ padding: 12 }}>
-                    <VStack gap={2}>
+                    <VStack gap={8}>
                       <Text weight="bold">Settings</Text>
                       <Separator marginVertical={2} />
                       <HStack justify="space-between">
@@ -227,7 +227,7 @@ export default function SeparatorDemo() {
 
                   {/* Toolbar separator */}
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 8 }}>
-                    <HStack align="center" gap={2}>
+                    <HStack align="center" gap={8}>
                       <Text size={2}>Bold</Text>
                       <Text size={2}>Italic</Text>
                       <Text size={2}>Underline</Text>
@@ -239,7 +239,7 @@ export default function SeparatorDemo() {
                   </Box>
 
                   {/* Section divider */}
-                  <VStack gap={2}>
+                  <VStack gap={8}>
                     <Text weight="bold">Introduction</Text>
                     <Text color="gray">
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.

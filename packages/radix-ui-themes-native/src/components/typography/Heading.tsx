@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React, { useMemo } from 'react';
 import { type TextStyle, Text as RNText } from 'react-native';
 import { Slot, Text } from '../../components';
@@ -33,7 +34,7 @@ interface HeadingProps {
   /**
    * Text color
    */
-  color?: string;
+  color?: ColorValue;
   /**
    * Whether to truncate text
    */

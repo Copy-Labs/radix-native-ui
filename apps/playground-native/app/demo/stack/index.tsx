@@ -34,15 +34,15 @@ export default function StackDemo() {
         <PageBody>
           <ScrollView>
             <View style={{ flex: 1 }}>
-              <VStack gap={4} padding={3}>
+              <VStack gap={16} padding={12}>
                 {/* Basic Stack */}
-                <VStack gap={2}>
+                <VStack gap={48}>
                   <Heading size={4}>Basic Stack</Heading>
                   <Text color="gray" size={2}>
                     Default direction is vertical
                   </Text>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 8 }}>
-                    <Stack gap={3}>
+                    <Stack gap={12}>
                       <Box style={{ backgroundColor: '#3b82f6', padding: 12, borderRadius: 4 }}>
                         <Text style={{ color: 'white' }}>Item 1</Text>
                       </Box>
@@ -57,13 +57,13 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* VStack - Vertical Stack */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>VStack (Vertical Stack)</Heading>
                   <Text color="gray" size={2}>
                     VStack is a convenience wrapper with direction="vertical"
                   </Text>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 8 }}>
-                    <VStack gap={2}>
+                    <VStack gap={48}>
                       <Text weight="bold">Vertical Items:</Text>
                       <Badge color="blue">Badge 1</Badge>
                       <Badge color="green">Badge 2</Badge>
@@ -73,13 +73,13 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* HStack - Horizontal Stack */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>HStack (Horizontal Stack)</Heading>
                   <Text color="gray" size={2}>
                     HStack is a convenience wrapper with direction="horizontal"
                   </Text>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 8 }}>
-                    <HStack gap={2}>
+                    <HStack gap={48}>
                       <Badge color="blue">Badge 1</Badge>
                       <Badge color="green">Badge 2</Badge>
                       <Badge color="orange">Badge 3</Badge>
@@ -88,7 +88,7 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Gap Variations */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Gap Variations</Heading>
                   <Text color="gray" size={2}>
                     Gap uses theme.space scale (1-9)
@@ -117,7 +117,7 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Alignment */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Alignment (align prop)</Heading>
                   <Text color="gray" size={2}>
                     Cross-axis alignment
@@ -130,7 +130,7 @@ export default function StackDemo() {
                       <Text size={1} color="gray">
                         align="{align}"
                       </Text>
-                      <HStack gap={2} align={align} style={{ height: 60 }}>
+                      <HStack gap={48} align={align} style={{ height: 60 }}>
                         <Box style={{ backgroundColor: '#3b82f6', padding: 8, borderRadius: 4 }}>
                           <Text style={{ color: 'white' }}>Short</Text>
                         </Box>
@@ -146,7 +146,7 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Justify Content */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Justify Content</Heading>
                   <Text color="gray" size={2}>
                     Main-axis alignment
@@ -161,7 +161,7 @@ export default function StackDemo() {
                       <Text size={1} color="gray">
                         justify="{justify}"
                       </Text>
-                      <HStack gap={2} justify={justify}>
+                      <HStack gap={48} justify={justify}>
                         <Box style={{ backgroundColor: '#3b82f6', padding: 8, borderRadius: 4 }}>
                           <Text style={{ color: 'white' }}>1</Text>
                         </Box>
@@ -177,7 +177,7 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Wrap */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Wrap</Heading>
                   <Text color="gray" size={2}>
                     Items wrap to next line when needed
@@ -186,7 +186,7 @@ export default function StackDemo() {
                     <Text size={1} color="gray">
                       wrap="wrap"
                     </Text>
-                    <HStack gap={2} wrap="wrap">
+                    <HStack gap={48} wrap="wrap">
                       {Array.from({ length: 10 }, (_, i) => (
                         <Badge key={i} color="blue">
                           <Text>Tag {i + 1}</Text>
@@ -197,10 +197,10 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Nested Stacks */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Nested Stacks</Heading>
                   <Card variant="outline" style={{ padding: 12 }}>
-                    <VStack gap={3}>
+                    <VStack gap={12}>
                       <HStack justify="space-between" align="center">
                         <Text weight="bold">Card Title</Text>
                         <Badge>New</Badge>
@@ -208,7 +208,7 @@ export default function StackDemo() {
                       <Text color="gray">
                         This card demonstrates nested stacks for complex layouts.
                       </Text>
-                      <HStack gap={2} justify={'flex-end'}>
+                      <HStack gap={48} justify={'flex-end'}>
                         <Button size={1} variant="soft">
                           Cancel
                         </Button>
@@ -219,11 +219,11 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Form Layout */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Form Layout</Heading>
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, padding: 12 }}>
-                    <VStack gap={4}>
-                      <VStack gap={1}>
+                    <VStack gap={16}>
+                      <VStack gap={4}>
                         <Text size={2} weight="medium">
                           Email
                         </Text>
@@ -239,7 +239,7 @@ export default function StackDemo() {
                           <Text color="gray">email@example.com</Text>
                         </Box>
                       </VStack>
-                      <VStack gap={1}>
+                      <VStack gap={4}>
                         <Text size={2} weight="medium">
                           Password
                         </Text>
@@ -255,7 +255,7 @@ export default function StackDemo() {
                           <Text color="gray">••••••••</Text>
                         </Box>
                       </VStack>
-                      <HStack justify="flex-end" gap={2}>
+                      <HStack justify="flex-end" gap={48}>
                         <Button size={1} variant="outline">
                           Cancel
                         </Button>
@@ -266,7 +266,7 @@ export default function StackDemo() {
                 </VStack>
 
                 {/* Direction Prop */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Direction Prop</Heading>
                   <Text color="gray" size={2}>
                     Use "horizontal" or "vertical" instead of row/column
@@ -275,7 +275,7 @@ export default function StackDemo() {
                     <Text size={1} color="gray">
                       direction="horizontal"
                     </Text>
-                    <Stack direction="horizontal" gap={2}>
+                    <Stack direction="horizontal" gap={48}>
                       <Box style={{ backgroundColor: '#3b82f6', padding: 8, borderRadius: 4 }}>
                         <Text style={{ color: 'white' }}>A</Text>
                       </Box>
@@ -288,7 +288,7 @@ export default function StackDemo() {
                     <Text size={1} color="gray">
                       direction="vertical"
                     </Text>
-                    <Stack direction="vertical" gap={4}>
+                    <Stack direction="vertical" gap={16}>
                       <Box style={{ backgroundColor: '#3b82f6', padding: 8, borderRadius: 4 }}>
                         <Text style={{ color: 'white' }}>A</Text>
                       </Box>

@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React, { useMemo } from 'react';
 import { type ViewStyle, type TextStyle, Text as RNText } from 'react-native';
 import { View } from '../primitives';
@@ -20,7 +21,7 @@ interface BlockquoteProps {
   /**
    * Text color
    */
-  color?: string;
+  color?: ColorValue;
   /**
    * Border color
    */

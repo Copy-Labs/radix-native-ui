@@ -316,3 +316,10 @@ export type Color =
   | 'lime'
   | 'mint'
   | 'sky';
+
+/**
+ * A color value: a theme color token (autocomplete-friendly) or any valid
+ * CSS/React Native color string such as '#ff8800' or 'rgba(...).'
+ */
+type ColorToken = Color;
+export type ColorValue = ColorToken | (string & {});

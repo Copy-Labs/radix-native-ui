@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **`size` prop unified around numeric canonical.** `TextField`, `TextArea`, `Checkbox`, `CheckboxGroup`, `CheckboxCards`, `Radio`, `RadioGroup`, `RadioCards`, `Switch`, `Slider`, `Accordion`, and `Table` previously accepted *only* string sizes (`size="2"`) while the rest of the library used numbers (`size={2}`). They now accept both (`SizeInput<1 | 2 | 3>`); numeric is the documented canonical form everywhere, and string support will be deprecated in a future release.
+- **All `gap` and `padding` props on layout primitives now mean pixels.** `Stack` (incl. `VStack`/`HStack`) previously interpreted `gap`/`padding` as `theme.space` scale indices (so `<Stack gap={3}>` = 12px) while `Flex` and `Grid` treated the same numbers as pixels (`<Flex gap={3}>` = 3px) — identical props, identical types, quadrupled spacing. `Stack` now uses pixels like its siblings; pass pixel values directly (the old scale was 1→4, 2→8, 3→12, 4→16, 5→24, 6→32, 7→40, 8→48, 9→64). `Separator` margin, `Spacer` size, and `Inset` `paddingSize` intentionally remain scale-index APIs. `StackGap` is now an alias for `number`.
+- Typography `color` props (`Text`, `Heading`, `Code`, `Em`, `Strong`, `Blockquote`, `Link`, icons) now accept the new `ColorValue` type: a theme color token with autocomplete, or any CSS color string — matching what the runtime already supported. `CheckboxGroup.color` was tightened from `string` to `Color` (it forwards to Checkbox accent tokens).
+- `Tooltip` radius props now use the shared `RadiusSize` type instead of inline unions.
 
 ### Fixed
 - `Skeleton` pulse colors were hardcoded hex values (`#E5E7EB`/`#D1D5DB`) that ignored the theme: it now interpolates between steps 3 and 5 of the active gray ramp, so it follows `grayColor` selection and dark mode like every other component.

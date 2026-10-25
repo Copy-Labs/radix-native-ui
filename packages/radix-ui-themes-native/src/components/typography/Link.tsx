@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React from 'react';
 import { type TextStyle, Pressable as RNPressable } from 'react-native';
 import { Pressable } from '../primitives';
@@ -23,7 +24,7 @@ interface LinkProps {
   /**
    * Text color
    */
-  color?: string;
+  color?: ColorValue;
   /**
    * Whether the link is disabled
    */
