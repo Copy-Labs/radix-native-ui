@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, StyleSheet, type StyleProp, ViewStyle, type TextStyle, type AnimatedSyntheticEvent } from 'react-native';
+import { useTheme, useThemeMode } from '../../hooks/useTheme';
 
 interface SkeletonProps {
   /**
@@ -46,12 +47,6 @@ const PULSE_ANIMATION = {
   useNativeDriver: true,
 };
 
-// Interpolate between gray-200 (#E5E7EB) and gray-300 (#D1D5DB)
-const SKELEON_COLORS = {
-  light: '#E5E7EB',
-  dark: '#D1D5DB',
-};
-
 const Skeleton = React.forwardRef<any, SkeletonProps>(
   (
     {
@@ -66,6 +61,12 @@ const Skeleton = React.forwardRef<any, SkeletonProps>(
     },
     ref
   ) => {
+    const theme = useTheme();
+    const mode = useThemeMode();
+    const isDark = mode === 'dark';
+    // Pulse between adjacent steps of the theme's gray ramp so the skeleton
+    // follows grayColor selection and dark mode instead of hardcoded grays.
+    const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     // Animated value for pulse effect
     const pulseAnim = useRef(new Animated.Value(0)).current;
 
@@ -95,7 +96,7 @@ const Skeleton = React.forwardRef<any, SkeletonProps>(
     const pulseStyle = {
       backgroundColor: pulseAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [SKELEON_COLORS.light, SKELEON_COLORS.dark],
+        outputRange: [grayScale[3], grayScale[5]],
       }),
     };
 
