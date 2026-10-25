@@ -20,7 +20,8 @@
   },
   "pnpm": {
     "overrides": {
-      "string-width": "4.2.3"
+      "string-width": "4.2.3",
+      "@types/react": "19.1.17"
     }
   },
   "dependencies": {
