@@ -57,8 +57,9 @@ The BottomSheet follows the Radix compound component pattern:
 |------|------|---------|-------------|
 | `open` | `boolean` | `false` | Controlled open state |
 | `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
-| `snapPoints` | `(string \| number)[]` | `['50%']` | Height snap points (e.g., `['25%', '50%', '90%']`) |
-| `defaultSnapPoint` | `number` | `0` | Initial snap point index |
+| `snapPoints` | `(string \| number)[]` | `['50%']` | Resting heights — percentages or pixels, e.g. `['25%', '60%', '90%']`. The sheet can be dragged between them; the tallest entry defines the sheet's laid-out height |
+| `defaultSnapPoint` | `number` | `0` | Index into `snapPoints` the sheet opens at |
+| `onSnapPointChange` | `(index: number) => void` | - | Fires whenever the sheet settles on a snap point (also on open) |
 
 ### BottomSheet.Trigger
 
@@ -88,7 +89,7 @@ The BottomSheet follows the Radix compound component pattern:
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Sheet content |
-| `snapPoints` | `(string \| number)[]` | - | Override root snap points |
+| `snapPoints` | `(string \| number)[]` | - | **Deprecated no-op** — snap points are owned by `BottomSheet.Root` |
 | `style` | `StyleProp<ViewStyle>` | - | Custom styles |
 | `size` | `1 \| 2 \| 3 \| 4` | `2` | Padding size |
 | `hideHandle` | `boolean` | `false` | Hide drag handle |
@@ -182,24 +183,30 @@ You can disable haptic feedback on individual components:
 
 ### Snap Points
 
-Control the height of the bottom sheet using snap points:
+The sheet drags between resting heights. Drag the handle (or the sheet body) up or down — it settles at the nearest snap point; dragging below the smallest snap or flicking down dismisses:
 
 ```tsx
-<BottomSheet.Root snapPoints={['25%', '50%', '90%']}>
+<BottomSheet.Root
+  snapPoints={['25%', '60%', '90%']}
+  defaultSnapPoint={0}
+  onSnapPointChange={(index) => console.log('settled at snap', index)}
+>
   <BottomSheet.Trigger>
     <Button>Open</Button>
   </BottomSheet.Trigger>
   <BottomSheet.Portal>
     <BottomSheet.Overlay />
-    <BottomSheet.Content snapPoints={['25%', '50%', '90%']}>
+    <BottomSheet.Content>
       <BottomSheet.Title>Select Height</BottomSheet.Title>
       <BottomSheet.Description>
-        This sheet can snap to 25%, 50%, or 90% of screen height.
+        This sheet can snap to 25%, 60%, or 90% of screen height.
       </BottomSheet.Description>
     </BottomSheet.Content>
   </BottomSheet.Portal>
 </BottomSheet.Root>
 ```
+
+At a lower snap the sheet is clipped — its content is laid out at the tallest snap height and slides behind the screen edge, so put anything critical (buttons, footers) near the top of the content.
 
 ### Controlled State
 
@@ -232,7 +239,7 @@ Create an action sheet style bottom sheet:
   </BottomSheet.Trigger>
   <BottomSheet.Portal>
     <BottomSheet.Overlay />
-    <BottomSheet.Content snapPoints={['40%']}>
+    <BottomSheet.Content>
       <BottomSheet.Title color="red">Confirm Deletion</BottomSheet.Title>
       <BottomSheet.Description>
         This action cannot be undone.
@@ -281,10 +288,10 @@ The BottomSheet automatically adapts to the current theme:
 
 The following features are planned for future releases:
 
-- **Gesture-based interactions**: Drag to dismiss and snap
 - **Keyboard handling**: Automatic adjustment when keyboard appears
-- **Dynamic snapping**: Velocity-based snap point selection
 - **Backdrop blur**: Native blur effect for overlay
+
+Drag-to-dismiss, multi-snap dragging, and velocity-based snap selection shipped in 0.1.5.
 
 ## Related Components
 

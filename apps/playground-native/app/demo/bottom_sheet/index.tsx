@@ -13,6 +13,51 @@ import {
 } from 'radix-native-ui';
 import { PageBody, PageContainer, PageHeader } from '@/components/PageSection';
 
+const SNAP_LABELS = ['Peek · 25%', 'Half · 60%', 'Tall · 90%'];
+
+function MultiSnapSheet() {
+  const [snapIndex, setSnapIndex] = React.useState(0);
+
+  return (
+    <BottomSheet.Root snapPoints={['25%', '60%', '90%']} onSnapPointChange={setSnapIndex}>
+      <BottomSheet.Trigger>
+        <Button>Multi-Snap Sheet</Button>
+      </BottomSheet.Trigger>
+      <BottomSheet.Portal>
+        <BottomSheet.Overlay />
+        <BottomSheet.Content>
+          <Flex align="center" justify="space-between">
+            <BottomSheet.Title>Drag me between snaps</BottomSheet.Title>
+            <Badge color="blue" size={1}>
+              {SNAP_LABELS[snapIndex]}
+            </Badge>
+          </Flex>
+          <BottomSheet.Description>
+            This sheet rests at 25%, 60% or 90% of the screen. Drag the handle (or the sheet body)
+            up and down — it settles on the nearest snap point. Dragging below the smallest snap or
+            flicking down dismisses it.
+          </BottomSheet.Description>
+          <Separator />
+          <Flex direction="column" gap={8} style={{ paddingVertical: 12 }}>
+            {Array.from({ length: 10 }, (_, i) => (
+              <Text key={i} size={3} color="gray">
+                Content row {i + 1} — visible as you snap the sheet taller
+              </Text>
+            ))}
+          </Flex>
+          <BottomSheet.Footer>
+            <BottomSheet.Close>
+              <Button variant="soft" color="gray">
+                Close
+              </Button>
+            </BottomSheet.Close>
+          </BottomSheet.Footer>
+        </BottomSheet.Content>
+      </BottomSheet.Portal>
+    </BottomSheet.Root>
+  );
+}
+
 export default function BottomSheetDemo() {
   return (
     <PageContainer>
@@ -61,7 +106,7 @@ export default function BottomSheetDemo() {
                   </BottomSheet.Trigger>
                   <BottomSheet.Portal>
                     <BottomSheet.Overlay />
-                    <BottomSheet.Content snapPoints={['25%']}>
+                    <BottomSheet.Content>
                       <BottomSheet.Title>25% Height</BottomSheet.Title>
                       <BottomSheet.Description>
                         This sheet takes up 25% of the screen height.
@@ -81,7 +126,7 @@ export default function BottomSheetDemo() {
                   </BottomSheet.Trigger>
                   <BottomSheet.Portal>
                     <BottomSheet.Overlay />
-                    <BottomSheet.Content snapPoints={['50%']}>
+                    <BottomSheet.Content>
                       <BottomSheet.Title>50% Height</BottomSheet.Title>
                       <BottomSheet.Description>
                         This sheet takes up 50% of the screen height.
@@ -101,7 +146,7 @@ export default function BottomSheetDemo() {
                   </BottomSheet.Trigger>
                   <BottomSheet.Portal>
                     <BottomSheet.Overlay />
-                    <BottomSheet.Content snapPoints={['90%']}>
+                    <BottomSheet.Content>
                       <BottomSheet.Title>90% Height</BottomSheet.Title>
                       <BottomSheet.Description>
                         This sheet takes up 90% of the screen height, almost covering the entire
@@ -116,6 +161,11 @@ export default function BottomSheetDemo() {
                   </BottomSheet.Portal>
                 </BottomSheet.Root>
               </View>
+            </Card>
+
+            {/* Multi-Snap Points */}
+            <Card>
+              <MultiSnapSheet />
             </Card>
 
             {/* Without Handle */}

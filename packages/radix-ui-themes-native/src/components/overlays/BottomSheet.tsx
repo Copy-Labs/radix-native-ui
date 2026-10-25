@@ -60,8 +60,10 @@ interface BottomSheetContextValue {
   translateY: Animated.Value;
   snapHeights: number[];
   targetSnapHeight: number;
+  maxSnapHeight: number;
   screenHeight: number;
   panHandlers: GestureResponderHandlers;
+  requestClose: () => void;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
@@ -132,6 +134,8 @@ interface BottomSheetRootProps {
   onOpenChange?: (open: boolean) => void;
   snapPoints?: SnapPoint[];
   defaultSnapPoint?: number;
+  /** Fires whenever the sheet settles on a snap point (index into snapPoints). */
+  onSnapPointChange?: (index: number) => void;
 }
 
 export const BottomSheetRoot = ({
@@ -140,6 +144,7 @@ export const BottomSheetRoot = ({
   onOpenChange,
   snapPoints = ['50%'],
   defaultSnapPoint = 0,
+  onSnapPointChange,
 }: BottomSheetRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const [currentSnapIndex, setCurrentSnapIndex] = useState(defaultSnapPoint);
@@ -156,13 +161,25 @@ export const BottomSheetRoot = ({
   // Get the target height for the current snap point
   const targetSnapHeight = snapHeights[currentSnapIndex] || snapHeights[0];
 
+  // Fully-extended height. The sheet is always laid out at this height and
+  // positioned purely through translateY: resting offset for snap i is
+  // maxSnapHeight - snapHeights[i]; maxSnapHeight itself means fully hidden.
+  const maxSnapHeight = useMemo(
+    () => (snapHeights.length ? Math.max(...snapHeights) : 0),
+    [snapHeights]
+  );
+
   // Animation value - shared across components
-  const translateY = useRef(new Animated.Value(targetSnapHeight)).current;
+  const translateY = useRef(new Animated.Value(maxSnapHeight)).current;
+
+  // Animated.Value with useNativeDriver does not reliably sync __getValue back
+  // to JS, so gesture math tracks the authoritative offset ourselves.
+  const offsetRef = useRef(maxSnapHeight);
+  const baseOffsetRef = useRef(maxSnapHeight);
+  const grantIndexRef = useRef(defaultSnapPoint);
 
   // Swipe state refs
-  const swipeDistance = useRef(0);
   const isSwiping = useRef(false);
-  const startY = useRef(0);
 
   const handleOpenChange = useCallback(
     (newOpen: boolean) => {
@@ -178,131 +195,6 @@ export const BottomSheetRoot = ({
     setCurrentSnapIndex(index);
   }, []);
 
-  // Animate to a specific snap point
-  const animateToSnapPoint = useCallback(
-    (index: number, animated: boolean = true) => {
-      const targetHeight = snapHeights[index];
-      if (animated) {
-        Animated.spring(translateY, {
-          toValue: 0,
-          useNativeDriver: true,
-          tension: 65,
-          friction: 11,
-        }).start();
-      } else {
-        translateY.setValue(0);
-      }
-    },
-    [translateY, snapHeights]
-  );
-
-  // Close animation
-  const animateClose = useCallback(() => {
-    Animated.timing(translateY, {
-      toValue: targetSnapHeight,
-      duration: ANIMATION_DURATION,
-      useNativeDriver: true,
-    }).start(() => {
-      handleOpenChange(false);
-    });
-  }, [translateY, targetSnapHeight, handleOpenChange]);
-
-  // Find the nearest snap point based on drag position
-  const findNearestSnapPoint = useCallback(
-    (dragDistance: number) => {
-      // Current position = targetSnapHeight - dragDistance
-      // But since we're using translateY from 0 (open), dragDistance is how much we've dragged down
-      // The visible height is targetSnapHeight - dragDistance
-      const currentVisibleHeight = targetSnapHeight - dragDistance;
-
-      // Find the closest snap height
-      let closestIndex = 0;
-      let closestDistance = Infinity;
-
-      snapHeights.forEach((height, index) => {
-        const distance = Math.abs(height - currentVisibleHeight);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      return closestIndex;
-    },
-    [targetSnapHeight, snapHeights]
-  );
-
-  // Pan responder for swipe/drag gestures - shared between Handle and Content
-  const panResponder = useMemo(() => {
-    return PanResponder.create({
-      onStartShouldSetPanResponder: () => false,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        // Only respond to vertical swipes DOWN (positive dy)
-        return (
-          gestureState.dy > 10 &&
-          Math.abs(gestureState.dy) > Math.abs(gestureState.dx)
-        );
-      },
-      onPanResponderGrant: () => {
-        startY.current = 0;
-        isSwiping.current = true;
-      },
-      onPanResponderMove: (_, gestureState) => {
-        // Only allow swipe DOWN (positive dy)
-        if (gestureState.dy > 0) {
-          isSwiping.current = true;
-          swipeDistance.current = gestureState.dy;
-          translateY.setValue(gestureState.dy);
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        const threshold = 100; // Minimum distance to trigger close
-        const velocityThreshold = 500; // Velocity threshold for quick swipes
-
-        // Only close if swiped DOWN with enough distance or velocity
-        if (gestureState.dy > threshold || gestureState.vy > velocityThreshold / 1000) {
-          // Trigger haptic feedback when dismissing via swipe
-          if (globalHaptics) {
-            triggerHaptic('selection')
-          }
-          // Animate to closed position
-          Animated.timing(translateY, {
-            toValue: targetSnapHeight,
-            duration: 200,
-            useNativeDriver: true,
-          }).start(() => {
-            handleOpenChange(false);
-          });
-        } else {
-          // Snap back to open position
-          Animated.spring(translateY, {
-            toValue: 0,
-            tension: 65,
-            friction: 11,
-            useNativeDriver: true,
-          }).start();
-        }
-        isSwiping.current = false;
-      },
-    });
-  }, [
-    translateY,
-    targetSnapHeight,
-    handleOpenChange,
-  ]);
-
-  // Reset animation when opening
-  useEffect(() => {
-    if (open) {
-      translateY.setValue(targetSnapHeight);
-      // Animate open after a small delay
-      const timer = setTimeout(() => {
-        animateToSnapPoint(currentSnapIndex);
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [open]);
-
   const theme = useTheme();
   const mode = useThemeMode();
   const globalHaptics = useHaptics();
@@ -310,6 +202,143 @@ export const BottomSheetRoot = ({
   const colors = isDark ? theme.colors.gray.dark : theme.colors.gray;
   const grayAlpha = getGrayAlpha(theme);
   const radii = theme.radii;
+
+  // Animate to a specific snap point
+  const animateToSnapPoint = useCallback(
+    (index: number, animated: boolean = true) => {
+      const target = maxSnapHeight - snapHeights[index];
+      if (target === undefined) return;
+      offsetRef.current = target;
+      setCurrentSnapIndex(index);
+      onSnapPointChange?.(index);
+      if (animated) {
+        Animated.spring(translateY, {
+          toValue: target,
+          useNativeDriver: true,
+          tension: 65,
+          friction: 11,
+        }).start();
+      } else {
+        translateY.setValue(target);
+      }
+    },
+    [translateY, snapHeights, maxSnapHeight, onSnapPointChange]
+  );
+
+  // Close animation
+  const animateClose = useCallback(() => {
+    offsetRef.current = maxSnapHeight;
+    Animated.timing(translateY, {
+      toValue: maxSnapHeight,
+      duration: ANIMATION_DURATION,
+      useNativeDriver: true,
+    }).start(() => {
+      handleOpenChange(false);
+    });
+  }, [translateY, maxSnapHeight, handleOpenChange]);
+
+  // Find the nearest snap point based on the current translateY offset
+  const findNearestSnapIndex = useCallback(
+    (offset: number) => {
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+      snapHeights.forEach((height, index) => {
+        const distance = Math.abs(maxSnapHeight - height - offset);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+      return closestIndex;
+    },
+    [snapHeights, maxSnapHeight]
+  );
+
+  // Pan responder for drag gestures - shared between Handle and Content.
+  // Supports both directions: drag down dismisses (or falls back to the
+  // nearest snap), drag up promotes to a higher snap when snapPoints has
+  // more than one entry.
+  const panResponder = useMemo(() => {
+    return PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return (
+          Math.abs(gestureState.dy) > 10 &&
+          Math.abs(gestureState.dy) > Math.abs(gestureState.dx)
+        );
+      },
+      onPanResponderGrant: () => {
+        isSwiping.current = true;
+        baseOffsetRef.current = offsetRef.current;
+        grantIndexRef.current = currentSnapIndex;
+      },
+      onPanResponderMove: (_, gestureState) => {
+        const next = Math.min(
+          Math.max(baseOffsetRef.current + gestureState.dy, 0),
+          maxSnapHeight
+        );
+        isSwiping.current = true;
+        offsetRef.current = next;
+        translateY.setValue(next);
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        isSwiping.current = false;
+
+        // Project the gesture forward with its release velocity so a short
+        // fast flick still reaches the snap (or dismissal) it was aimed at,
+        // while a long slow drag settles exactly where it was left.
+        const projected = Math.min(
+          Math.max(offsetRef.current + gestureState.vy * 120, 0),
+          maxSnapHeight
+        );
+        const visibleHeight = maxSnapHeight - projected;
+        // Dismiss only once the projected position drops below the smallest
+        // snap — dragging down from a tall snap to a lower one must snap,
+        // not close.
+        if (visibleHeight < snapHeights[0] * 0.6) {
+          // Trigger haptic feedback when dismissing via swipe
+          if (globalHaptics) {
+            triggerHaptic('selection');
+          }
+          animateClose();
+        } else {
+          const nearest = findNearestSnapIndex(projected);
+          // Haptic when the gesture changed the resting snap point
+          if (globalHaptics && nearest !== grantIndexRef.current) {
+            triggerHaptic('selection');
+          }
+          animateToSnapPoint(nearest);
+        }
+      },
+    });
+  }, [
+    translateY,
+    maxSnapHeight,
+    snapHeights,
+    currentSnapIndex,
+    globalHaptics,
+    animateClose,
+    animateToSnapPoint,
+    findNearestSnapIndex,
+  ]);
+
+  // Reset animation when opening; snap the transform to the hidden position
+  // immediately whenever the sheet is closed (even for controlled/immediate
+  // closes) so the first frame of the next open never paints at the open
+  // position (that stale translateY was the re-open flicker).
+  useEffect(() => {
+    if (open) {
+      translateY.setValue(maxSnapHeight);
+      offsetRef.current = maxSnapHeight;
+      // Animate open after a small delay
+      const timer = setTimeout(() => {
+        animateToSnapPoint(currentSnapIndex);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+    translateY.setValue(maxSnapHeight);
+    offsetRef.current = maxSnapHeight;
+  }, [open]);
 
   return (
     <BottomSheetContext.Provider
@@ -325,8 +354,10 @@ export const BottomSheetRoot = ({
         translateY,
         snapHeights,
         targetSnapHeight,
+        maxSnapHeight,
         screenHeight,
         panHandlers: panResponder.panHandlers,
+        requestClose: animateClose,
       }}
     >
       {children}
@@ -423,7 +454,7 @@ interface BottomSheetOverlayProps {
 }
 
 export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheetOverlayProps) => {
-  const { onOpenChange } = useBottomSheet();
+  const { requestClose } = useBottomSheet();
   const mode = useThemeMode();
   const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
@@ -432,7 +463,9 @@ export const BottomSheetOverlay = ({ style, hapticFeedback = true }: BottomSheet
   const overlayColor = isDark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(10, 10, 10, 0.6)';
 
   const handlePress = () => {
-    onOpenChange(false);
+    // Animate the sheet down before unmounting the Modal — matches the
+    // swipe-dismiss lifecycle and keeps translateY in sync for the next open.
+    requestClose();
     // Trigger haptic feedback when closing via overlay
     if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
@@ -494,6 +527,7 @@ export const BottomSheetHandle = ({ style }: BottomSheetHandleProps) => {
 interface BottomSheetContentProps {
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
+  /** @deprecated Snap points are owned by BottomSheet.Root — setting them here has no effect. */
   snapPoints?: SnapPoint[];
   size?: 1 | 2 | 3 | 4;
   hideHandle?: boolean;
@@ -502,21 +536,13 @@ interface BottomSheetContentProps {
 export const BottomSheetContent = ({
   children,
   style,
-  snapPoints: localSnapPoints,
   size = 2,
   hideHandle = false,
 }: BottomSheetContentProps) => {
-  const { radii, snapPoints: contextSnapPoints, currentSnapIndex, translateY, snapHeights, panHandlers } =
-    useBottomSheet();
+  const { radii, translateY, panHandlers, maxSnapHeight } = useBottomSheet();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
-
-  const effectiveSnapPoints = localSnapPoints || contextSnapPoints;
-
-  // Get the target height for the current snap point
-  const targetSnapHeight = snapHeights[currentSnapIndex] || snapHeights[0];
-  const maxTargetSnapHeight = snapHeights[effectiveSnapPoints.length-1] || snapHeights[0];
 
   // Get size-specific styles
   const sizeStyles = getSizeStyles(size, theme.space, radii);
@@ -539,10 +565,10 @@ export const BottomSheetContent = ({
           backgroundColor,
           borderTopLeftRadius,
           borderTopRightRadius,
-          flex: 1,
+          // Always laid out at the tallest snap height; translateY positions
+          // it (this is what makes multi-snap dragging work in both directions).
+          height: maxSnapHeight,
           paddingHorizontal: sizeStyles.paddingHorizontal,
-          minHeight: targetSnapHeight,
-          maxHeight: maxTargetSnapHeight,
           transform: [{ translateY }],
           ...(shadow || {}),
         },
@@ -732,11 +758,11 @@ export const BottomSheetClose = ({
   hapticFeedback = false,
   ...buttonProps
 }: BottomSheetCloseProps) => {
-  const { onOpenChange } = useBottomSheet();
+  const { requestClose } = useBottomSheet();
   const globalHaptics = useHaptics();
 
   const handlePress = () => {
-    onOpenChange(false);
+    requestClose();
     // Trigger haptic feedback when closing
     if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
@@ -776,12 +802,12 @@ export const BottomSheetAction = ({
   hapticFeedback = true,
   ...buttonProps
 }: BottomSheetActionProps) => {
-  const { onOpenChange } = useBottomSheet();
+  const { requestClose } = useBottomSheet();
   const globalHaptics = useHaptics();
 
   const handlePress = () => {
     onPress?.();
-    onOpenChange(false);
+    requestClose();
     // Trigger haptic feedback when action is pressed
     if (globalHaptics && hapticFeedback) {
       triggerHaptic('selection');
