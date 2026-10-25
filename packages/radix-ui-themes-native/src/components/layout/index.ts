@@ -22,7 +22,22 @@ export { Separator } from './Separator';
 export type { SeparatorProps, SeparatorOrientation, SeparatorMarginSize } from './Separator';
 
 export { Stack, VStack, HStack } from './Stack';
-export type { StackProps, VStackProps, HStackProps, StackDirection, StackGap, StackAlign, StackJustify, StackWrap } from './Stack';
+export type {
+  StackProps,
+  VStackProps,
+  HStackProps,
+  StackDirection,
+  StackGap,
+  StackAlign,
+  StackJustify,
+  StackWrap,
+} from './Stack';
 
 export { Center, HCenter, VCenter, AbsoluteCenter } from './Center';
-export type { CenterProps, HCenterProps, VCenterProps, AbsoluteCenterProps, CenterAxis } from './Center';
+export type {
+  CenterProps,
+  HCenterProps,
+  VCenterProps,
+  AbsoluteCenterProps,
+  CenterAxis,
+} from './Center';

@@ -1,5 +1,11 @@
 import React, { useMemo } from 'react';
-import { DimensionValue, StyleSheet, type StyleProp, type ViewStyle, View as RNView } from 'react-native';
+import {
+  DimensionValue,
+  StyleSheet,
+  type StyleProp,
+  type ViewStyle,
+  View as RNView,
+} from 'react-native';
 import { Slot } from '../utilities/Slot';
 import { View } from '../primitives';
 import { useTheme } from '../../hooks/useTheme';
@@ -31,12 +37,24 @@ interface FlexProps {
   /**
    * Align content on cross axis (multi-line)
    */
-  alignContent?: 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'space-between' | 'space-around';
+  alignContent?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'stretch'
+    | 'space-between'
+    | 'space-around';
   /**
    * Justify content on main axis
    * @default 'flex-start'
    */
-  justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  justify?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
   /**
    * Flex wrap
    * @default 'nowrap'
@@ -196,24 +214,6 @@ interface FlexProps {
   opacity?: number;
 }
 
-// Custom areEqual function for Flex to optimize re-renders
-const areEqual = (prevProps: FlexProps, nextProps: FlexProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.direction === nextProps.direction &&
-    prevProps.align === nextProps.align &&
-    prevProps.justify === nextProps.justify &&
-    prevProps.wrap === nextProps.wrap &&
-    prevProps.gap === nextProps.gap &&
-    prevProps.backgroundColor === nextProps.backgroundColor &&
-    prevProps.opacity === nextProps.opacity
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Flex = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNView>, FlexProps>(
     (
@@ -369,17 +369,12 @@ const Flex = React.memo(
       const Comp = asChild ? Slot : View;
 
       return (
-        <Comp
-          ref={ref}
-          style={[flexStyle, style]}
-          {...rest}
-        >
+        <Comp ref={ref} style={[flexStyle, style]} {...rest}>
           {children}
         </Comp>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Flex.displayName = 'Flex';

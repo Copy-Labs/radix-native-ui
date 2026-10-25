@@ -21,18 +21,6 @@ interface EmProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Em to optimize re-renders
-const areEqual = (prevProps: EmProps, nextProps: EmProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.color === nextProps.color
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Em = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, EmProps>(
     ({ children, style = {}, color, ...rest }, ref) => {
@@ -58,8 +46,7 @@ const Em = React.memo(
         </Text>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Em.displayName = 'Em';

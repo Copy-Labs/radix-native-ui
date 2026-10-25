@@ -25,10 +25,10 @@ interface ContainerProps {
 
 // Container max widths matching Radix Themes
 const containerMaxWidths = {
-  1: 448,   // Small
-  2: 512,   // Medium (default)
-  3: 640,   // Large
-  4: 896,   // XLarge
+  1: 448, // Small
+  2: 512, // Medium (default)
+  3: 640, // Large
+  4: 896, // XLarge
 };
 
 // Breakpoint widths for responsive behavior
@@ -38,31 +38,9 @@ const breakpoints = {
   desktop: 1024,
 };
 
-// Custom areEqual function for Container to optimize re-renders
-const areEqual = (prevProps: ContainerProps, nextProps: ContainerProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.size === nextProps.size &&
-    prevProps.responsive === nextProps.responsive
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Container = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNView>, ContainerProps>(
-    (
-      {
-        children,
-        style,
-        size = 2,
-        responsive = true,
-        ...rest
-      },
-      ref
-    ) => {
+    ({ children, style, size = 2, responsive = true, ...rest }, ref) => {
       const theme = useTheme();
 
       // Get max width based on size
@@ -82,17 +60,12 @@ const Container = React.memo(
       );
 
       return (
-        <View
-          ref={ref}
-          style={[containerStyle, style]}
-          {...rest}
-        >
+        <View ref={ref} style={[containerStyle, style]} {...rest}>
           {children}
         </View>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Container.displayName = 'Container';

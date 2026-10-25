@@ -55,25 +55,6 @@ interface HeadingProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Heading to optimize re-renders
-const areEqual = (prevProps: HeadingProps, nextProps: HeadingProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.size === nextProps.size &&
-    prevProps.weight === nextProps.weight &&
-    prevProps.align === nextProps.align &&
-    prevProps.color === nextProps.color &&
-    prevProps.truncate === nextProps.truncate &&
-    prevProps.numberOfLines === nextProps.numberOfLines &&
-    prevProps.fontFamily === nextProps.fontFamily &&
-    prevProps.opacity === nextProps.opacity
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Heading = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, HeadingProps>(
     (
@@ -140,8 +121,7 @@ const Heading = React.memo(
         </Comp>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Heading.displayName = 'Heading';

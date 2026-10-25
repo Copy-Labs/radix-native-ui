@@ -1,5 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, StyleSheet, type StyleProp, ViewStyle, type TextStyle, type AnimatedSyntheticEvent } from 'react-native';
+import {
+  View,
+  Text,
+  Animated,
+  StyleSheet,
+  type StyleProp,
+  ViewStyle,
+  type TextStyle,
+  type AnimatedSyntheticEvent,
+} from 'react-native';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
 
 interface SkeletonProps {
@@ -92,13 +101,17 @@ const Skeleton = React.forwardRef<any, SkeletonProps>(
       };
     }, [pulseAnim]);
 
-    // Interpolate background color for the pulse effect
+    // Pulse via opacity on a static theme-gray background. Animating the
+    // *color* would force the JS driver (native driver only supports
+    // transform/opacity); pulsing opacity of a fixed gray looks identical
+    // and runs entirely on the UI thread.
     const pulseStyle = {
-      backgroundColor: pulseAnim.interpolate({
+      opacity: pulseAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [grayScale[3], grayScale[5]],
+        outputRange: [0.55, 1],
       }),
     };
+    const skeletonBackground = { backgroundColor: grayScale[3] };
 
     // If NOT loading, render children directly (just like @radix-ui/themes)
     if (!loading) {
@@ -116,11 +129,12 @@ const Skeleton = React.forwardRef<any, SkeletonProps>(
         <Animated.Text
           ref={ref}
           style={[
-            // styles.inlineText,
-            textStyle,
+            styles.inlineText,
+            skeletonBackground,
             pulseStyle,
             width !== undefined ? { width } : undefined,
             height !== undefined ? { height } : undefined,
+            textStyle,
           ]}
           accessibilityLabel={accessibilityLabel}
           accessibilityRole="progressbar"
@@ -137,6 +151,7 @@ const Skeleton = React.forwardRef<any, SkeletonProps>(
         ref={ref}
         style={[
           styles.blockContainer,
+          skeletonBackground,
           pulseStyle,
           width !== undefined ? { width } : undefined,
           height !== undefined ? { height } : undefined,

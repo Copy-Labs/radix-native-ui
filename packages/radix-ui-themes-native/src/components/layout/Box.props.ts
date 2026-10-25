@@ -37,7 +37,13 @@ export interface BoxProps {
   /**
    * Justify content
    */
-  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  justifyContent?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
   /**
    * Align items
    */

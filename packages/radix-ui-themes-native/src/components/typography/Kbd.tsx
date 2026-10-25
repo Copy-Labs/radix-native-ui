@@ -30,20 +30,6 @@ interface KbdProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Kbd to optimize re-renders
-const areEqual = (prevProps: KbdProps, nextProps: KbdProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.color === nextProps.color &&
-    prevProps.backgroundColor === nextProps.backgroundColor &&
-    prevProps.size === nextProps.size
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Kbd = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, KbdProps>(
     ({ children, style = {}, color, backgroundColor, size = 1, ...rest }, ref) => {
@@ -101,8 +87,7 @@ const Kbd = React.memo(
         </View>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Kbd.displayName = 'Kbd';

@@ -1,10 +1,5 @@
 import React, { useMemo } from 'react';
-import {
-  type StyleProp,
-  type ViewStyle,
-  type ViewProps,
-  View as RNView,
-} from 'react-native';
+import { type StyleProp, type ViewStyle, type ViewProps, View as RNView } from 'react-native';
 import { Slot } from '../../components';
 import { View } from '../primitives';
 import { useTheme } from '../../hooks/useTheme';
@@ -75,33 +70,9 @@ const getPaddingStyles = (side: InsetSide, spacing: number): ViewStyle => {
   return paddingMap[side] ?? paddingMap.all;
 };
 
-// Custom areEqual function for Inset to optimize re-renders
-const areEqual = (prevProps: InsetProps, nextProps: InsetProps) => {
-  return (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.side === nextProps.side &&
-    prevProps.p === nextProps.p &&
-    prevProps.clip === nextProps.clip &&
-    prevProps.asChild === nextProps.asChild
-  );
-};
-
 const Inset = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNView>, InsetProps>(
-    (
-      {
-        asChild = false,
-        children,
-        style,
-        side = 'all',
-        p: pProp,
-        trim,
-        clip,
-        ...rest
-      },
-      ref
-    ) => {
+    ({ asChild = false, children, style, side = 'all', p: pProp, trim, clip, ...rest }, ref) => {
       const theme = useTheme();
 
       // Support deprecated trim prop with warning
@@ -132,8 +103,7 @@ const Inset = React.memo(
         </Comp>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Inset.displayName = 'Inset';
