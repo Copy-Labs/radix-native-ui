@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7] - 2026-10-25
+
 ### Fixed
 - `BottomSheet`: drag now works from anywhere on the sheet, not just the handle and inert text areas. Interactive children (`Button`, `BottomSheet.Close`, `TextField`, pressable rows…) claimed the touch on press-down and the sheet never negotiated them off, so gestures starting over controls did nothing. The pan responder now also participates in the capture phase for vertical-dominant moves: a vertical drag steals the gesture from the pressed child (dismissing the press), while a tap without vertical movement still fires `onPress`. Note: avoid embedding a scrollable region directly inside `BottomSheet.Content` — the sheet captures all vertical gestures.
 
