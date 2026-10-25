@@ -74,7 +74,7 @@ const items = ['Apple', 'Banana', 'Orange'];
 By default FancyList virtualizes with `FlatList`. For very large datasets you can plug in any FlatList-compatible list (LegendList, FlashList v2) to get true native-style cell recycling — styling, dividers, and the `renderItem` contract stay identical:
 
 ```tsx
-import { LegendList } from '@legendapp/list';
+import { LegendList } from '@legendapp/list/react-native';
 
 <FancyList
   data={products}
@@ -83,6 +83,8 @@ import { LegendList } from '@legendapp/list';
   renderItem={({ item }) => <Text>{item.name}</Text>}
 />;
 ```
+
+(LegendList v3 is exports-map only — import the `/react-native` subpath, not the bare package name.)
 
 `backendProps` are forwarded to the backend (applied *before* FancyList's own wiring, so `data`/`renderItem`/`keyExtractor` can't be clobbered). Note the `scrollable={false}` branch never mounts a backend — it renders plain views.
 
