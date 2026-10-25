@@ -129,6 +129,9 @@ export default function App() {
               <Link href={'/demo/fancylist'}>
                 <Text size={4}>Fancylist</Text>
               </Link>
+              <Link href={'/demo/fancylist_backend'}>
+                <Text size={4}>Fancylist × LegendList</Text>
+              </Link>
               <Link href={'/demo/segmented_control'}>
                 <Text size={4}>Segmented Control</Text>
               </Link>

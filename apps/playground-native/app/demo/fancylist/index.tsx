@@ -13,7 +13,6 @@ import {
   TextField,
 } from 'radix-native-ui';
 import { ScrollView, View } from 'react-native';
-import { LegendList } from '@legendapp/list/react-native';
 import { Link } from 'expo-router';
 import React, { useState } from 'react';
 import { Colors } from '@/constants/theme';
@@ -409,39 +408,8 @@ const CustomKeyList = () => {
   );
 };
 
-// FancyList with a swappable virtualization backend: LegendList gives
-// true cell recycling for large datasets. The library itself stays
-// dependency-free — the app supplies the backend component.
-function LegendListBackendDemo() {
-  const rows = React.useMemo(
-    () =>
-      Array.from({ length: 100 }, (_, i) => ({
-        id: `row-${i}`,
-        title: `Recycled row ${i + 1}`,
-      })),
-    []
-  );
-
-  return (
-    <FancyList
-      data={rows}
-      ListBackend={LegendList}
-      backendProps={{
-        estimatedItemSize: 56,
-        nestedScrollEnabled: true,
-        style: { height: 240 },
-      }}
-      renderItem={({ item }) => (
-        <Flex direction="row" align="center" justify="space-between">
-          <Text>{item.title}</Text>
-          <Badge color="green" size={1} variant="soft">
-            LegendList
-          </Badge>
-        </Flex>
-      )}
-    />
-  );
-}
+// The LegendList-backed chat demo lives on its own page —
+// components/FancyListWithLegendList.tsx, routed at /demo/fancylist_backend.
 
 export default function Datalists() {
   return (
@@ -515,12 +483,14 @@ export default function Datalists() {
 
                 {/* Custom List Backend */}
                 <Flex gap={12} direction="column">
-                  <Heading>Custom List Backend (LegendList)</Heading>
+                  <Heading>Custom List Backend</Heading>
                   <Text size={2} color="gray">
-                    100 rows virtualized by @legendapp/list via the ListBackend prop — FancyList
-                    styling and renderItem contract unchanged, FlatList swapped for real recycling.
+                    The LegendList-backed demo (an AI-agent chat with thousands of messages and a
+                    live backend toggle) lives on its own page:
                   </Text>
-                  <LegendListBackendDemo />
+                  <Link href={'/demo/fancylist_backend'}>
+                    <Button size={2} variant='soft'>Open FancyList × LegendList chat →</Button>
+                  </Link>
                 </Flex>
               </Flex>
             </View>
