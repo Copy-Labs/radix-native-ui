@@ -19,7 +19,7 @@ import { Card } from 'radix-native-ui';
 import { Card, Text, Heading, Flex } from 'radix-native-ui';
 
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Card Title</Heading>
     <Text>Card content goes here.</Text>
   </Flex>
@@ -99,8 +99,8 @@ import { Card, Text, Heading, Flex } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
-    <Flex direction="row" gap={3} align="center">
+  <Flex direction="column" gap={12}>
+    <Flex direction="row" gap={12} align="center">
       <Avatar
         src="https://i.pravatar.cc/150"
         fallback="JD"
@@ -123,14 +123,14 @@ import { Card, Text, Heading, Flex } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Inset clip="overflow">
       <Image
         source={{ uri: 'https://example.com/product.jpg' }}
         style={{ width: '100%', height: 150 }}
       />
     </Inset>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Flex direction="row" justify="between" align="center">
         <Heading size={3}>Product Name</Heading>
         <Badge color="green">New</Badge>
@@ -149,10 +149,10 @@ import { Card, Text, Heading, Flex } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Text size={2} color="gray">Total Revenue</Text>
     <Heading size={6}>$12,345</Heading>
-    <Flex direction="row" gap={1} align="center">
+    <Flex direction="row" gap={4} align="center">
       <Badge color="green" size={1}>+12%</Badge>
       <Text size={1} color="gray">vs last month</Text>
     </Flex>

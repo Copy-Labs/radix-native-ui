@@ -21,7 +21,7 @@ function LoginForm() {
   };
 
   return (
-    <Flex direction="column" gap={3}>
+    <Flex direction="column" gap={12}>
       <TextField
         placeholder="Email"
         value={email}
@@ -62,7 +62,7 @@ function ValidatedForm() {
   };
 
   return (
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <TextField
         placeholder="Email"
         value={email}
@@ -121,8 +121,8 @@ function SchemaValidatedForm() {
   };
 
   return (
-    <Flex direction="column" gap={3}>
-      <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={12}>
+      <Flex direction="column" gap={4}>
         <TextField
           placeholder="Email"
           value={values.email}
@@ -131,7 +131,7 @@ function SchemaValidatedForm() {
         {errors.email && <Text color="red" size={1}>{errors.email}</Text>}
       </Flex>
 
-      <Flex direction="column" gap={1}>
+      <Flex direction="column" gap={4}>
         <TextField
           placeholder="Password"
           value={values.password}
@@ -203,7 +203,7 @@ function SchemaValidatedForm() {
 
 ```tsx
 <RadioGroup value={value} onValueChange={setValue}>
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Radio value="option1">Option 1</Radio>
     <Radio value="option2">Option 2</Radio>
     <Radio value="option3">Option 3</Radio>
@@ -225,7 +225,7 @@ function SchemaValidatedForm() {
 ### Vertical Layout
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <TextField placeholder="Name" />
   <TextField placeholder="Email" />
   <TextField placeholder="Phone" />
@@ -236,7 +236,7 @@ function SchemaValidatedForm() {
 ### Horizontal Layout
 
 ```tsx
-<Flex direction="row" gap={2}>
+<Flex direction="row" gap={8}>
   <TextField placeholder="First name" style={{ flex: 1 }} />
   <TextField placeholder="Last name" style={{ flex: 1 }} />
 </Flex>
@@ -246,7 +246,7 @@ function SchemaValidatedForm() {
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Personal Information</Heading>
     <TextField placeholder="Full name" />
     <TextField placeholder="Email" />
@@ -255,10 +255,10 @@ function SchemaValidatedForm() {
 </Card>
 
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Address</Heading>
     <TextField placeholder="Street" />
-    <Flex direction="row" gap={2}>
+    <Flex direction="row" gap={8}>
       <TextField placeholder="City" style={{ flex: 1 }} />
       <TextField placeholder="ZIP" style={{ flex: 1 }} />
     </Flex>
@@ -321,7 +321,7 @@ function MyForm() {
   };
 
   return (
-    <Flex direction="column" gap={3}>
+    <Flex direction="column" gap={12}>
       <TextField
         placeholder="Email"
         value={form.values.email}
@@ -348,7 +348,7 @@ function SubmitButton({ loading, disabled, onPress }) {
       disabled={disabled || loading}
     >
       {loading ? (
-        <Flex direction="row" gap={2} align="center">
+        <Flex direction="row" gap={8} align="center">
           <Spinner size={1} />
           <Text>Submitting...</Text>
         </Flex>
@@ -425,7 +425,7 @@ function FormWithFeedback() {
   };
 
   return (
-    <Flex direction="column" gap={3}>
+    <Flex direction="column" gap={12}>
       {/* Form fields */}
 
       <Button onPress={handleSubmit} disabled={status === 'loading'}>

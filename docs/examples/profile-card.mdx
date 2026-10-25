@@ -97,7 +97,7 @@ export function ProfileCard({
               style={{ borderWidth: 4, borderColor: 'white' }}
             />
 
-            <Flex direction="row" gap={2} mt={2}>
+            <Flex direction="row" gap={8} mt={2}>
               {isOwnProfile ? (
                 <Button variant="soft" onPress={onEdit}>
                   Edit Profile
@@ -136,9 +136,9 @@ export function ProfileCard({
           </Flex>
 
           {/* User Info */}
-          <Flex direction="column" gap={2} mt={3}>
+          <Flex direction="column" gap={8} mt={3}>
             {/* Name and Verified */}
-            <Flex direction="row" gap={2} align="center">
+            <Flex direction="row" gap={8} align="center">
               <Heading size={4}>{user.name}</Heading>
               {user.verified && (
                 <Badge color="blue" size={1}>
@@ -154,20 +154,20 @@ export function ProfileCard({
             <Text size={2}>{user.bio}</Text>
 
             {/* Location and Website */}
-            <Flex direction="row" gap={3} wrap="wrap">
+            <Flex direction="row" gap={12} wrap="wrap">
               {user.location && (
-                <Flex direction="row" gap={1} align="center">
+                <Flex direction="row" gap={4} align="center">
                   <Text size={1}>📍</Text>
                   <Text size={1} color="gray">{user.location}</Text>
                 </Flex>
               )}
               {user.website && (
-                <Flex direction="row" gap={1} align="center">
+                <Flex direction="row" gap={4} align="center">
                   <Text size={1}>🔗</Text>
                   <Text size={1} color="blue">{user.website}</Text>
                 </Flex>
               )}
-              <Flex direction="row" gap={1} align="center">
+              <Flex direction="row" gap={4} align="center">
                 <Text size={1}>📅</Text>
                 <Text size={1} color="gray">Joined {user.joinedDate}</Text>
               </Flex>
@@ -175,16 +175,16 @@ export function ProfileCard({
           </Flex>
 
           {/* Stats */}
-          <Flex direction="row" gap={4} mt={3}>
-            <Flex direction="row" gap={1}>
+          <Flex direction="row" gap={16} mt={3}>
+            <Flex direction="row" gap={4}>
               <Text weight="bold">{user.posts}</Text>
               <Text color="gray">Posts</Text>
             </Flex>
-            <Flex direction="row" gap={1}>
+            <Flex direction="row" gap={4}>
               <Text weight="bold">{user.followers.toLocaleString()}</Text>
               <Text color="gray">Followers</Text>
             </Flex>
-            <Flex direction="row" gap={1}>
+            <Flex direction="row" gap={4}>
               <Text weight="bold">{user.following}</Text>
               <Text color="gray">Following</Text>
             </Flex>
@@ -201,13 +201,13 @@ export function ProfileCard({
 ```tsx
 export function ProfileCardExtended({ user }: ProfileCardProps) {
   return (
-    <Flex direction="column" gap={4}>
+    <Flex direction="column" gap={16}>
       {/* Main Profile Card */}
       <ProfileCard user={user} />
 
       {/* Additional Details */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Contact Information</Heading>
 
           <DataList>
@@ -235,24 +235,24 @@ export function ProfileCardExtended({ user }: ProfileCardProps) {
 
       {/* Activity Summary */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Activity</Heading>
 
-          <Flex direction="row" gap={3}>
+          <Flex direction="row" gap={12}>
             <Card variant="soft" style={{ flex: 1 }}>
-              <Flex direction="column" gap={1} align="center">
+              <Flex direction="column" gap={4} align="center">
                 <Heading size={5}>{user.posts}</Heading>
                 <Text size={1} color="gray">Posts</Text>
               </Flex>
             </Card>
             <Card variant="soft" style={{ flex: 1 }}>
-              <Flex direction="column" gap={1} align="center">
+              <Flex direction="column" gap={4} align="center">
                 <Heading size={5}>{user.followers.toLocaleString()}</Heading>
                 <Text size={1} color="gray">Followers</Text>
               </Flex>
             </Card>
             <Card variant="soft" style={{ flex: 1 }}>
-              <Flex direction="column" gap={1} align="center">
+              <Flex direction="column" gap={4} align="center">
                 <Heading size={5}>{user.following}</Heading>
                 <Text size={1} color="gray">Following</Text>
               </Flex>

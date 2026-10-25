@@ -51,7 +51,7 @@ import { Radio } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether this radio is disabled.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the radio.
   </Prop>
   <Prop name="variant" type="'solid' | 'soft' | 'surface' | 'outline'" default="'solid'">
@@ -102,9 +102,9 @@ Radio buttons provide haptic feedback by default when selected. You can disable 
 ### Sizes
 
 ```tsx
-<Radio value="1" size="1" label="Small" />
-<Radio value="2" size="2" label="Medium" />
-<Radio value="3" size="3" label="Large" />
+<Radio value="1" size={1} label="Small" />
+<Radio value="2" size={2} label="Medium" />
+<Radio value="3" size={3} label="Large" />
 ```
 
 ### With Color

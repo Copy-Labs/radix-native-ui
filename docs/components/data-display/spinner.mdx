@@ -46,7 +46,7 @@ import { Spinner } from 'radix-native-ui';
 ### Sizes
 
 ```tsx
-<Flex direction="row" gap={3} align="center">
+<Flex direction="row" gap={12} align="center">
   <Spinner size={1} />
   <Spinner size={2} />
   <Spinner size={3} />
@@ -56,7 +56,7 @@ import { Spinner } from 'radix-native-ui';
 ### Colors
 
 ```tsx
-<Flex direction="row" gap={3} align="center">
+<Flex direction="row" gap={12} align="center">
   <Spinner color="blue" />
   <Spinner color="green" />
   <Spinner color="red" />
@@ -68,7 +68,7 @@ import { Spinner } from 'radix-native-ui';
 ### With Loading Text
 
 ```tsx
-<Flex direction="row" gap={2} align="center">
+<Flex direction="row" gap={8} align="center">
   <Spinner size={1} />
   <Text>Loading...</Text>
 </Flex>
@@ -90,7 +90,7 @@ import { Spinner } from 'radix-native-ui';
 
 ```tsx
 <Button disabled>
-  <Flex direction="row" gap={2} align="center">
+  <Flex direction="row" gap={8} align="center">
     <Spinner size={1} />
     <Text>Saving...</Text>
   </Flex>
@@ -128,7 +128,7 @@ function DataLoader() {
 ```tsx
 <Card>
   {loading ? (
-    <Flex direction="column" gap={3} align="center" py={4}>
+    <Flex direction="column" gap={12} align="center" py={4}>
       <Spinner size={2} />
       <Text size={2} color="gray">Loading content...</Text>
     </Flex>

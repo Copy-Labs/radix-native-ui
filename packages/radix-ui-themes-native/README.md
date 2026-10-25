@@ -313,7 +313,7 @@ If you're familiar with Radix Themes for web, here are the key differences for R
 |------------------|-------------------------------|
 | `css={{ p: '$4' }}` | `padding={4}` |
 | `variant="solid"` | `variant="solid"` (same) |
-| `size="2"` | `size={2}` (number, not string) |
+| `size="2"` | `size={2}` (number is canonical; strings also accepted) |
 | `onClick` | `onPress` |
 | `color="red"` | `color="red"` (same) |
 

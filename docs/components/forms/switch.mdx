@@ -39,7 +39,7 @@ import { Switch } from 'radix-native-ui';
   <Prop name="disabled" type="boolean" default="false">
     Whether the switch is disabled.
   </Prop>
-  <Prop name="size" type="'1' | '2' | '3'" default="'2'">
+  <Prop name="size" type="SizeInput<1 | 2 | 3>" default="2">
     Size of the switch.
   </Prop>
   <Prop name="variant" type="'solid' | 'soft' | 'surface'" default="'solid'">
@@ -109,18 +109,18 @@ Switches provide haptic feedback by default when toggled. You can disable this w
 ### Sizes
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <Flex direction="row" justify="between" align="center">
     <Text>Small</Text>
-    <Switch size="1" />
+    <Switch size={1} />
   </Flex>
   <Flex direction="row" justify="between" align="center">
     <Text>Medium</Text>
-    <Switch size="2" />
+    <Switch size={2} />
   </Flex>
   <Flex direction="row" justify="between" align="center">
     <Text>Large</Text>
-    <Switch size="3" />
+    <Switch size={3} />
   </Flex>
 </Flex>
 ```
@@ -128,7 +128,7 @@ Switches provide haptic feedback by default when toggled. You can disable this w
 ### Variants
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <Switch variant="solid" defaultChecked />
   <Switch variant="soft" defaultChecked />
   <Switch variant="surface" defaultChecked />
@@ -138,7 +138,7 @@ Switches provide haptic feedback by default when toggled. You can disable this w
 ### With Label
 
 ```tsx
-<Switch size="2" label="Enable notifications" defaultChecked />
+<Switch size={2} label="Enable notifications" defaultChecked />
 ```
 
 ### With Color
@@ -161,7 +161,7 @@ Switches provide haptic feedback by default when toggled. You can disable this w
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Settings</Heading>
     <Flex direction="row" justify="between" align="center">
       <Text>Push notifications</Text>

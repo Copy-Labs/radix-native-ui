@@ -98,7 +98,7 @@ import { Progress } from 'radix-native-ui';
 ### With Label
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <Flex direction="row" justify="between">
     <Text>Uploading...</Text>
     <Text>60%</Text>
@@ -110,20 +110,20 @@ import { Progress } from 'radix-native-ui';
 ### Multiple Progress Bars
 
 ```tsx
-<Flex direction="column" gap={3}>
-  <Flex direction="column" gap={1}>
+<Flex direction="column" gap={12}>
+  <Flex direction="column" gap={4}>
     <Text size={2}>Storage Used</Text>
     <Progress value={75} color="blue" />
     <Text size={1} color="gray">7.5 GB of 10 GB</Text>
   </Flex>
 
-  <Flex direction="column" gap={1}>
+  <Flex direction="column" gap={4}>
     <Text size={2}>Bandwidth</Text>
     <Progress value={45} color="green" />
     <Text size={1} color="gray">4.5 GB of 10 GB</Text>
   </Flex>
 
-  <Flex direction="column" gap={1}>
+  <Flex direction="column" gap={4}>
     <Text size={2}>API Calls</Text>
     <Progress value={90} color="red" />
     <Text size={1} color="gray">9,000 of 10,000</Text>
@@ -158,7 +158,7 @@ function UploadProgress() {
   }, []);
 
   return (
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text>Uploading: {progress}%</Text>
       <Progress value={progress} color={progress === 100 ? 'green' : 'blue'} />
     </Flex>

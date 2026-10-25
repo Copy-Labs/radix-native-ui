@@ -188,7 +188,7 @@ function ControlledSegmentedControl() {
   const [view, setView] = useState('list');
 
   return (
-    <Flex direction="column" gap={3}>
+    <Flex direction="column" gap={12}>
       <SegmentedControl.Root value={view} onValueChange={setView}>
         <SegmentedControl.Item value="list">List</SegmentedControl.Item>
         <SegmentedControl.Item value="grid">Grid</SegmentedControl.Item>
@@ -272,7 +272,7 @@ import { List, Grid, Table } from 'lucide-react-native';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Analytics</Heading>
     <SegmentedControl.Root defaultValue="7d">
       <SegmentedControl.Item value="24h">24h</SegmentedControl.Item>

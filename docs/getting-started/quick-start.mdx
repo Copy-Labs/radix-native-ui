@@ -42,7 +42,7 @@ import {
 function Example() {
   return (
     <Card>
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={12}>
         <Heading size={4}>Welcome</Heading>
         <Text>Build beautiful mobile apps with Radix Themes Native.</Text>
         <TextField placeholder="Enter your name" />
@@ -103,8 +103,8 @@ function ProfileCard() {
 
   return (
     <Card>
-      <Flex direction="column" gap={3}>
-        <Flex direction="row" align="center" gap={3}>
+      <Flex direction="column" gap={12}>
+        <Flex direction="row" align="center" gap={12}>
           <Avatar
             src="https://i.pravatar.cc/150"
             alt="User avatar"
@@ -128,7 +128,7 @@ function ProfileCard() {
           />
         </Flex>
 
-        <Flex direction="row" gap={2}>
+        <Flex direction="row" gap={8}>
           <Badge color="green">Active</Badge>
           <Badge color="blue" variant="soft">Pro</Badge>
         </Flex>
@@ -145,7 +145,7 @@ function LoginForm() {
 
   return (
     <Card>
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={12}>
         <Heading size={4}>Sign In</Heading>
 
         <TextField
@@ -177,7 +177,7 @@ export default function App() {
   return (
     <ThemeProvider accentColor="indigo">
       <ScrollView style={{ flex: 1, padding: 16 }}>
-        <Flex direction="column" gap={4}>
+        <Flex direction="column" gap={16}>
           <ProfileCard />
           <LoginForm />
         </Flex>

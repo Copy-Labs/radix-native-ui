@@ -156,7 +156,7 @@ function AccessibleButton({ color }) {
 Associate labels with form controls:
 
 ```tsx
-<Flex direction="column" gap={1}>
+<Flex direction="column" gap={4}>
   <Text as="label" htmlFor="email">Email</Text>
   <TextField id="email" placeholder="Enter your email" />
 </Flex>
@@ -169,7 +169,7 @@ Provide clear error messages:
 ```tsx
 function FormField({ label, error, ...props }) {
   return (
-    <Flex direction="column" gap={1}>
+    <Flex direction="column" gap={4}>
       <Text as="label">{label}</Text>
       <TextField
         {...props}
@@ -195,7 +195,7 @@ function FormField({ label, error, ...props }) {
 Mark required fields clearly:
 
 ```tsx
-<Flex direction="row" gap={1}>
+<Flex direction="row" gap={4}>
   <Text as="label">Email</Text>
   <Text color="red" aria-hidden>*</Text>
   <VisuallyHidden>(required)</VisuallyHidden>

@@ -165,7 +165,7 @@ function App() {
       appearance={appearance}
       accentColor={accentColor}
     >
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={12}>
         <SegmentedControl.Root
           value={appearance}
           onValueChange={setAppearance}
@@ -191,7 +191,7 @@ function App() {
 
 ```tsx
 <ThemeProvider accentColor="blue">
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Text>Blue theme</Text>
 
     <ThemeProvider accentColor="green">

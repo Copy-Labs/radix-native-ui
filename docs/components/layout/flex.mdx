@@ -18,7 +18,7 @@ import { Flex } from 'radix-native-ui';
 ```tsx
 import { Flex, Text, Box } from 'radix-native-ui';
 
-<Flex direction="row" gap={3}>
+<Flex direction="row" gap={12}>
   <Text>Left</Text>
   <Text>Right</Text>
 </Flex>
@@ -184,7 +184,7 @@ import { Flex, Text, Box } from 'radix-native-ui';
 ### Horizontal Layout
 
 ```tsx
-<Flex direction="row" gap={3}>
+<Flex direction="row" gap={12}>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -194,7 +194,7 @@ import { Flex, Text, Box } from 'radix-native-ui';
 ### Vertical Layout
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -222,13 +222,13 @@ import { Flex, Text, Box } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Flex direction="row" justify="space-between" align="center">
       <Heading size={3}>Card Title</Heading>
       <Badge>New</Badge>
     </Flex>
     <Text>Card description goes here.</Text>
-    <Flex direction="row" gap={2}>
+    <Flex direction="row" gap={8}>
       <Button variant="soft">Cancel</Button>
       <Button>Confirm</Button>
     </Flex>
@@ -239,18 +239,18 @@ import { Flex, Text, Box } from 'radix-native-ui';
 ### Form Layout
 
 ```tsx
-<Flex direction="column" gap={4}>
-  <Flex direction="column" gap={2}>
+<Flex direction="column" gap={16}>
+  <Flex direction="column" gap={8}>
     <Text weight="medium">Email</Text>
     <TextField placeholder="Enter email" />
   </Flex>
 
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Text weight="medium">Password</Text>
     <TextField placeholder="Enter password" secureTextEntry />
   </Flex>
 
-  <Flex direction="row" justify="flex-end" gap={2}>
+  <Flex direction="row" justify="flex-end" gap={8}>
     <Button variant="outline">Cancel</Button>
     <Button>Sign In</Button>
   </Flex>
@@ -260,7 +260,7 @@ import { Flex, Text, Box } from 'radix-native-ui';
 ### Wrapping Items
 
 ```tsx
-<Flex direction="row" wrap="wrap" gap={2}>
+<Flex direction="row" wrap="wrap" gap={8}>
   <Badge>Tag 1</Badge>
   <Badge>Tag 2</Badge>
   <Badge>Tag 3</Badge>
@@ -272,7 +272,7 @@ import { Flex, Text, Box } from 'radix-native-ui';
 ### Flex Grow
 
 ```tsx
-<Flex direction="row" gap={3}>
+<Flex direction="row" gap={12}>
   <Box flex={1}>
     <Text>Flexible</Text>
   </Box>

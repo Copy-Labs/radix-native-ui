@@ -18,7 +18,7 @@ import { Grid } from 'radix-native-ui';
 ```tsx
 import { Grid, Box, Text } from 'radix-native-ui';
 
-<Grid columns={3} gap={4}>
+<Grid columns={3} gap={16}>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
   <Box>Item 3</Box>
@@ -62,7 +62,7 @@ import { Grid, Box, Text } from 'radix-native-ui';
 ### Basic Grid
 
 ```tsx
-<Grid columns={3} gap={3}>
+<Grid columns={3} gap={12}>
   <Card>1</Card>
   <Card>2</Card>
   <Card>3</Card>
@@ -86,7 +86,7 @@ import { Grid, Box, Text } from 'radix-native-ui';
 ### Centered Grid
 
 ```tsx
-<Grid columns={2} gap={3} align="center" justify="center">
+<Grid columns={2} gap={12} align="center" justify="center">
   <Box>Centered 1</Box>
   <Box>Centered 2</Box>
 </Grid>
@@ -95,7 +95,7 @@ import { Grid, Box, Text } from 'radix-native-ui';
 ### Image Gallery
 
 ```tsx
-<Grid columns={3} gap={2}>
+<Grid columns={3} gap={8}>
   {images.map((image, index) => (
     <AspectRatio key={index} ratio={1}>
       <Image source={{ uri: image.uri }} />
@@ -107,27 +107,27 @@ import { Grid, Box, Text } from 'radix-native-ui';
 ### Dashboard Cards
 
 ```tsx
-<Grid columns={2} gap={4}>
+<Grid columns={2} gap={16}>
   <Card>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text size={2} color="gray">Total Users</Text>
       <Heading size={5}>1,234</Heading>
     </Flex>
   </Card>
   <Card>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text size={2} color="gray">Revenue</Text>
       <Heading size={5}>$12,345</Heading>
     </Flex>
   </Card>
   <Card>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text size={2} color="gray">Orders</Text>
       <Heading size={5}>567</Heading>
     </Flex>
   </Card>
   <Card>
-    <Flex direction="column" gap={2}>
+    <Flex direction="column" gap={8}>
       <Text size={2} color="gray">Growth</Text>
       <Heading size={5}>+23%</Heading>
     </Flex>

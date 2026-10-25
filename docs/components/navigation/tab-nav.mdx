@@ -126,19 +126,19 @@ function Navigation({ currentPath }) {
 ```tsx
 <TabNav.Root>
   <TabNav.Link href="/inbox" active>
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Icon name="inbox" />
       <Text>Inbox</Text>
     </Flex>
   </TabNav.Link>
   <TabNav.Link href="/sent">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Icon name="send" />
       <Text>Sent</Text>
     </Flex>
   </TabNav.Link>
   <TabNav.Link href="/drafts">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Icon name="file" />
       <Text>Drafts</Text>
     </Flex>
@@ -151,13 +151,13 @@ function Navigation({ currentPath }) {
 ```tsx
 <TabNav.Root>
   <TabNav.Link href="/notifications" active>
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Text>Notifications</Text>
       <Badge color="red" size={1}>5</Badge>
     </Flex>
   </TabNav.Link>
   <TabNav.Link href="/messages">
-    <Flex direction="row" gap={2} align="center">
+    <Flex direction="row" gap={8} align="center">
       <Text>Messages</Text>
       <Badge color="blue" size={1}>12</Badge>
     </Flex>

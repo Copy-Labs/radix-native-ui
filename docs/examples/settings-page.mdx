@@ -71,17 +71,17 @@ export function SettingsPage() {
   };
 
   return (
-    <Flex direction="column" gap={4} p={4}>
+    <Flex direction="column" gap={16} p={4}>
       {/* Header */}
       <Heading size={5}>Settings</Heading>
 
       {/* Appearance Section */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Appearance</Heading>
 
           {/* Theme */}
-          <Flex direction="column" gap={2}>
+          <Flex direction="column" gap={8}>
             <Text size={2} weight="medium">Theme</Text>
             <SegmentedControl.Root
               value={settings.appearance}
@@ -96,7 +96,7 @@ export function SettingsPage() {
           </Flex>
 
           {/* Accent Color */}
-          <Flex direction="column" gap={2}>
+          <Flex direction="column" gap={8}>
             <Text size={2} weight="medium">Accent Color</Text>
             <Select
               value={settings.accentColor}
@@ -121,12 +121,12 @@ export function SettingsPage() {
 
       {/* Notifications Section */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Notifications</Heading>
 
           {/* Push Notifications */}
           <Flex direction="row" justify="between" align="center">
-            <Flex direction="column" gap={1}>
+            <Flex direction="column" gap={4}>
               <Text size={2} weight="medium">Push Notifications</Text>
               <Text size={1} color="gray">Receive push notifications on your device</Text>
             </Flex>
@@ -142,7 +142,7 @@ export function SettingsPage() {
 
           {/* Email Notifications */}
           <Flex direction="row" justify="between" align="center">
-            <Flex direction="column" gap={1}>
+            <Flex direction="column" gap={4}>
               <Text size={2} weight="medium">Email Notifications</Text>
               <Text size={1} color="gray">Receive notifications via email</Text>
             </Flex>
@@ -158,7 +158,7 @@ export function SettingsPage() {
 
           {/* Marketing */}
           <Flex direction="row" justify="between" align="center">
-            <Flex direction="column" gap={1}>
+            <Flex direction="column" gap={4}>
               <Text size={2} weight="medium">Marketing Emails</Text>
               <Text size={1} color="gray">Receive updates about new features</Text>
             </Flex>
@@ -174,11 +174,11 @@ export function SettingsPage() {
 
       {/* Privacy Section */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Privacy</Heading>
 
           {/* Profile Visibility */}
-          <Flex direction="column" gap={2}>
+          <Flex direction="column" gap={8}>
             <Text size={2} weight="medium">Profile Visibility</Text>
             <Select
               value={settings.privacy.profileVisibility}
@@ -201,7 +201,7 @@ export function SettingsPage() {
 
           {/* Show Activity */}
           <Flex direction="row" justify="between" align="center">
-            <Flex direction="column" gap={1}>
+            <Flex direction="column" gap={4}>
               <Text size={2} weight="medium">Show Activity Status</Text>
               <Text size={1} color="gray">Let others see when you're active</Text>
             </Flex>
@@ -217,7 +217,7 @@ export function SettingsPage() {
 
       {/* Account Section */}
       <Card>
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={12}>
           <Heading size={3}>Account</Heading>
 
           {/* Change Password */}
@@ -245,7 +245,7 @@ export function SettingsPage() {
                 This action cannot be undone.
               </AlertDialog.Description>
 
-              <Flex gap={3} mt={4} justify="end">
+              <Flex gap={12} mt={4} justify="end">
                 <AlertDialog.Cancel>
                   <Button variant="soft" color="gray">Cancel</Button>
                 </AlertDialog.Cancel>
@@ -259,7 +259,7 @@ export function SettingsPage() {
       </Card>
 
       {/* App Info */}
-      <Flex direction="column" gap={1} align="center">
+      <Flex direction="column" gap={4} align="center">
         <Text size={1} color="gray">Version 1.0.0</Text>
         <Text size={1} color="gray">© 2024 Your Company</Text>
       </Flex>

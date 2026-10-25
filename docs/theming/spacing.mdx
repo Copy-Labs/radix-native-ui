@@ -36,15 +36,15 @@ Most layout components accept spacing props:
 import { Box, Flex, Card } from 'radix-native-ui';
 
 // Padding
-<Box padding={4}>Content with 16px padding</Box>
-<Box p={4}>Shorthand for padding</Box>
+<Box padding={16}>Content with 16px padding</Box>
+<Box p={16}>Shorthand for padding</Box>
 
 // Margin
-<Box margin={4}>Content with 16px margin</Box>
-<Box m={4}>Shorthand for margin</Box>
+<Box margin={16}>Content with 16px margin</Box>
+<Box m={16}>Shorthand for margin</Box>
 
 // Gap (for Flex and Grid)
-<Flex gap={3}>
+<Flex gap={12}>
   <Box>Item 1</Box>
   <Box>Item 2</Box>
 </Flex>
@@ -106,7 +106,7 @@ function CustomComponent() {
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={4}>Card Title</Heading>
     <Text>Card content goes here.</Text>
     <Button>Action</Button>
@@ -117,13 +117,13 @@ function CustomComponent() {
 ### Form Layout
 
 ```tsx
-<Flex direction="column" gap={4}>
-  <Flex direction="column" gap={2}>
+<Flex direction="column" gap={16}>
+  <Flex direction="column" gap={8}>
     <Text weight="medium">Email</Text>
     <TextField placeholder="Enter email" />
   </Flex>
 
-  <Flex direction="column" gap={2}>
+  <Flex direction="column" gap={8}>
     <Text weight="medium">Password</Text>
     <TextField placeholder="Enter password" secureTextEntry />
   </Flex>
@@ -135,7 +135,7 @@ function CustomComponent() {
 ### List Items
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   {items.map(item => (
     <Flex
       key={item.id}

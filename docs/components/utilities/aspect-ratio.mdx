@@ -45,7 +45,7 @@ import { AspectRatio, Image } from 'radix-native-ui';
 ### Common Aspect Ratios
 
 ```tsx
-<Flex direction="column" gap={3}>
+<Flex direction="column" gap={12}>
   {/* 16:9 - Video */}
   <AspectRatio ratio={16 / 9}>
     <Image source={{ uri: 'https://example.com/video-thumb.jpg' }} />
@@ -100,7 +100,7 @@ import { AspectRatio, Image } from 'radix-native-ui';
 ### Image Gallery
 
 ```tsx
-<Flex direction="row" gap={2}>
+<Flex direction="row" gap={8}>
   <AspectRatio ratio={1} flex={1}>
     <Image source={{ uri: 'https://example.com/img1.jpg' }} />
   </AspectRatio>
@@ -123,7 +123,7 @@ import { AspectRatio, Image } from 'radix-native-ui';
       style={{ width: '100%', height: '100%' }}
     />
   </AspectRatio>
-  <Flex direction="column" gap={2} padding={3}>
+  <Flex direction="column" gap={8} padding={12}>
     <Text weight="medium">Product Name</Text>
     <Text color="gray" size={2}>Product description</Text>
     <Text weight="bold">$29.99</Text>
@@ -142,7 +142,7 @@ import { AspectRatio, Image } from 'radix-native-ui';
       height="100%"
     />
   </AspectRatio>
-  <Flex padding={3}>
+  <Flex padding={12}>
     <Avatar
       src="https://i.pravatar.cc/150"
       fallback="JD"
@@ -156,7 +156,7 @@ import { AspectRatio, Image } from 'radix-native-ui';
 ### Responsive Grid
 
 ```tsx
-<Grid columns={2} gap={2}>
+<Grid columns={2} gap={8}>
   <AspectRatio ratio={1} flex={1} minWidth="45%">
     <Card>
       <Flex justify="center" align="center" height="100%">

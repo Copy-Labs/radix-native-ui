@@ -35,7 +35,7 @@ import { Blockquote } from 'radix-native-ui';
   <Prop name="textStyle" type="TextStyle">
     Custom text styles.
   </Prop>
-  <Prop name="color" type="string">
+  <Prop name="color" type="ColorValue">
     Text color.
   </Prop>
   <Prop name="borderColor" type="string">
@@ -59,7 +59,7 @@ import { Blockquote } from 'radix-native-ui';
 ### With Attribution
 
 ```tsx
-<Flex direction="column" gap={2}>
+<Flex direction="column" gap={8}>
   <Blockquote>
     The only way to do great work is to love what you do.
   </Blockquote>
@@ -79,7 +79,7 @@ import { Blockquote } from 'radix-native-ui';
 
 ```tsx
 <Card>
-  <Flex direction="column" gap={3}>
+  <Flex direction="column" gap={12}>
     <Heading size={3}>Quote of the Day</Heading>
     <Blockquote>
       Stay hungry, stay foolish.

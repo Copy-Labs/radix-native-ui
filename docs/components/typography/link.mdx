@@ -38,7 +38,7 @@ import { Link } from 'radix-native-ui';
   <Prop name="onPress" type="(event: GestureResponderEvent) => void">
     Press handler (alternative to href).
   </Prop>
-  <Prop name="color" type="string" default="accent color">
+  <Prop name="color" type="ColorValue" default="accent color">
     Link color.
   </Prop>
   <Prop name="disabled" type="boolean" default="false">
@@ -106,7 +106,7 @@ import { Link } from 'radix-native-ui';
 ### With Icon
 
 ```tsx
-<Flex align="center" gap={1}>
+<Flex align="center" gap={4}>
   <Link href="https://example.com">Open Link</Link>
   <Icon name="external-link" size={14} />
 </Flex>
