@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `FancyList`: new `ListBackend` prop — a swappable virtualization engine (any FlatList-compatible component such as LegendList or FlashList v2) plus `backendProps` for backend-specific options like `estimatedItemSize`. Defaults to `FlatList`, so the library keeps its zero-dependency positioning while apps with very large lists opt into true cell recycling without losing FancyList's styling, dividers, or the `renderItem` contract.
+
 ### Fixed
 - `Skeleton` pulse no longer interpolates background *colors* (which silently forced JS-thread animation and, with the native driver flag set, risked runtime warnings). It now pulses `opacity` over a static theme-gray fill — visually equivalent, fully native-driver, and it follows `grayColor`/dark mode like before.
 

@@ -60,6 +60,22 @@ interface FancyListProps<T = any> {
    * Footer component
    */
   ListFooterComponent?: any;
+  /**
+   * Virtualized list implementation used as the backend.
+   * Defaults to React Native's FlatList. Any FlatList-compatible
+   * component (e.g. LegendList, FlashList v2) can be supplied to
+   * gain true cell recycling at scale — the styling, dividers, and
+   * renderItem contract stay identical. Ignored when `scrollable`
+   * is false (that branch renders no virtualization layer).
+   */
+  ListBackend?: React.ComponentType<any>;
+  /**
+   * Extra props forwarded to the list backend (e.g. `estimatedItemSize`
+   * for LegendList/FlashList). Applied before FancyList's own wiring,
+   * so `data`, `renderItem`, `keyExtractor`, and separators cannot be
+   * clobbered by mistake.
+   */
+  backendProps?: Record<string, unknown>;
 }
 
 const FancyList = <T extends unknown>({
@@ -73,6 +89,8 @@ const FancyList = <T extends unknown>({
   ListEmptyComponent,
   ListHeaderComponent,
   ListFooterComponent,
+  ListBackend: Backend = FlatList,
+  backendProps,
 }: FancyListProps<T>) => {
   const theme = useTheme();
   const mode = useThemeMode();
@@ -127,7 +145,8 @@ const FancyList = <T extends unknown>({
 
   return (
     <View style={[styles.container, style]}>
-      <FlatList
+      <Backend
+        {...backendProps}
         data={data as any}
         renderItem={renderListItem as any}
         keyExtractor={defaultKeyExtractor as any}

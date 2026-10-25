@@ -467,6 +467,25 @@ const messages: Message[] = [
 
 ---
 
+## Custom List Backend
+
+For very large datasets, swap the virtualization engine without losing FancyList's styling/dividers. The library stays dependency-free — your app installs the backend:
+
+```tsx
+import { LegendList } from '@legendapp/list';
+
+<FancyList
+  data={products}
+  ListBackend={LegendList}
+  backendProps={{ estimatedItemSize: 80 }}
+  renderItem={({ item }) => <ProductRow item={item} />}
+/>
+```
+
+The `renderItem` info contract (`item`, `index`, `key`) and `keyExtractor` are unchanged. FlashList v2 works the same way (`ListBackend={FlashList}`), noting it brings a `react-native-worklets`/Reanimated dependency into your app.
+
+---
+
 ## Props Reference
 
 | Prop | Type                                  | Default | Description |
@@ -481,6 +500,8 @@ const messages: Message[] = [
 | `ListEmptyComponent` | `ReactNode`                           | - | Component when list is empty |
 | `ListHeaderComponent` | `ReactNode`                           | - | Header component |
 | `ListFooterComponent` | `ReactNode`                           | - | Footer component |
+| `ListBackend` | `React.ComponentType<any>`             | `FlatList` | Swappable virtualized list backend (LegendList, FlashList v2, …) |
+| `backendProps` | `Record<string, unknown>`             | - | Extra props forwarded to the backend (e.g. `estimatedItemSize`) |
 
 ---
 
