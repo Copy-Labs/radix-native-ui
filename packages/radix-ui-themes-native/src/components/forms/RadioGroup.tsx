@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { createContext, useContext, useCallback, useState, type ReactNode } from 'react';
 import { StyleSheet, type ViewStyle, View as RNView } from 'react-native';
 import { View } from '../primitives';
@@ -12,7 +13,7 @@ interface RadioGroupContextValue {
   value: string;
   onValueChange: (value: string) => void;
   disabled: boolean;
-  size: '1' | '2' | '3';
+  size: SizeInput<1 | 2 | 3>;
   color?: Color;
   variant: 'solid' | 'soft' | 'surface' | 'outline';
   highContrast: boolean;
@@ -54,7 +55,7 @@ interface RadioGroupRootProps {
    * Size variant for radios
    * @default '2'
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Custom color for selected state
    */

@@ -12,6 +12,7 @@ import {
   TouchableOpacity as RNTouchableOpacity,
   Vibration,
 } from 'react-native';
+import type { SizeInput } from '../../utils/size';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import {
@@ -29,7 +30,7 @@ interface RadioCardsContextValue {
   value: string;
   onValueChange: (value: string) => void;
   variant: 'solid' | 'soft' | 'surface' | 'outline';
-  size: '1' | '2' | '3';
+  size: SizeInput<1 | 2 | 3>;
   color?: Color;
   highContrast: boolean;
   radius: RadiusSize;
@@ -70,7 +71,7 @@ interface RadioCardsRootProps {
    * Size variant
    * @default '2'
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Custom color
    */
@@ -259,22 +260,22 @@ const RadioCardsItem = React.forwardRef<
 
     // Get size values
     const getSizeValues = () => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             padding: theme.space[3],
             indicatorSize: 18,
             innerIndicatorSize: 8,
             borderWidth: 1,
           };
-        case '3':
+        case 3:
           return {
             padding: theme.space[5],
             indicatorSize: 26,
             innerIndicatorSize: 12,
             borderWidth: 1.5,
           };
-        case '2':
+        case 2:
         default:
           return {
             padding: theme.space[4],

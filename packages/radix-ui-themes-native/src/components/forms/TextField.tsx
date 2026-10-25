@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { Children, isValidElement, useMemo } from 'react';
 import {
   StyleSheet,
@@ -67,7 +68,7 @@ interface TextFieldProps extends TextInputProps {
    * Size variant
    * @default 2
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Whether this is a multiline input
    */
@@ -240,8 +241,8 @@ const TextFieldRoot = React.forwardRef<
 
   // Get size values
   const getSizeValues = () => {
-    switch (size) {
-      case '1':
+    switch (Number(size)) {
+      case 1:
         return {
           fontSize: theme.typography.fontSizes[4].fontSize,
           paddingVertical: theme.space[2],
@@ -250,7 +251,7 @@ const TextFieldRoot = React.forwardRef<
           height: multiline ? undefined : 36,
           slotPadding: theme.space[1],
         };
-      case '3':
+      case 3:
         return {
           fontSize: theme.typography.fontSizes[6].fontSize,
           paddingVertical: theme.space[4],
@@ -259,7 +260,7 @@ const TextFieldRoot = React.forwardRef<
           height: multiline ? undefined : 56,
           slotPadding: theme.space[3],
         };
-      case '2':
+      case 2:
       default:
         return {
           fontSize: theme.typography.fontSizes[5].fontSize,

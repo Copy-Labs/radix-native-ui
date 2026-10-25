@@ -15,6 +15,7 @@ import {
   View as RNView,
   LayoutChangeEvent,
 } from 'react-native';
+import type { SizeInput } from '../../utils/size';
 import { View } from '../primitives';
 import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { Text } from '../../components';
@@ -78,7 +79,7 @@ interface SliderProps {
    * Size variant
    * @default '2'
    */
-  size?: '1' | '2' | '3' | '4';
+  size?: SizeInput<1 | 2 | 3 | 4>;
   /**
    * Visual style variant
    * @default 'surface'
@@ -257,26 +258,26 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
     // Get size values based on size prop
     const sizeValues = useMemo(() => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             trackHeight: 4,
             thumbSize: 16,
             fontSize: theme.typography.fontSizes[1].fontSize,
           };
-        case '3':
+        case 3:
           return {
             trackHeight: 8,
             thumbSize: 28,
             fontSize: theme.typography.fontSizes[3].fontSize,
           };
-        case '4':
+        case 4:
           return {
             trackHeight: 10,
             thumbSize: 34,
             fontSize: theme.typography.fontSizes[4].fontSize,
           };
-        case '2':
+        case 2:
         default:
           return {
             trackHeight: 6,
