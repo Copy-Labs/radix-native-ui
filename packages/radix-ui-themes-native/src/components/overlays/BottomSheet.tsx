@@ -24,6 +24,7 @@ import {
   type GestureResponderHandlers,
   TouchableOpacity,
   Vibration,
+  type ScrollViewProps,
 } from 'react-native';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
@@ -64,6 +65,9 @@ interface BottomSheetContextValue {
   screenHeight: number;
   panHandlers: GestureResponderHandlers;
   requestClose: () => void;
+  /** Called by BottomSheet.Scrollable wrappers at touch-start so the sheet's
+   * gesture steal stands down and the child can scroll freely. */
+  onScrollTouchStart: () => void;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
@@ -181,6 +185,14 @@ export const BottomSheetRoot = ({
   // Swipe state refs
   const isSwiping = useRef(false);
 
+  // Gesture-origin flag: reset at every touch start inside the sheet, set by
+  // BottomSheet.Scrollable wrappers. While true, the sheet does not steal the
+  // vertical gesture — nested ScrollView content keeps scrolling.
+  const inScrollZoneRef = useRef(false);
+  const markScrollTouch = useCallback(() => {
+    inScrollZoneRef.current = true;
+  }, []);
+
   const handleOpenChange = useCallback(
     (newOpen: boolean) => {
       if (controlledOpen === undefined) {
@@ -259,12 +271,25 @@ export const BottomSheetRoot = ({
   // nearest snap), drag up promotes to a higher snap when snapPoints has
   // more than one entry.
   const panResponder = useMemo(() => {
-    const isVerticalDrag = (_: any, gestureState: any) =>
-      Math.abs(gestureState.dy) > 10 &&
-      Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+    const isVerticalDrag = (_: any, gestureState: any) => {
+      // Touches that began inside a BottomSheet.Scrollable zone belong to the
+      // scroll view, never to the sheet drag.
+      if (inScrollZoneRef.current) return false;
+      return (
+        Math.abs(gestureState.dy) > 10 &&
+        Math.abs(gestureState.dy) > Math.abs(gestureState.dx)
+      );
+    };
 
     return PanResponder.create({
       onStartShouldSetPanResponder: () => false,
+      // Queried (top-down) at the start of every touch inside the sheet, even
+      // though it returns false — the perfect per-gesture reset point for the
+      // scroll-zone flag before deeper wrappers get to set it.
+      onStartShouldSetPanResponderCapture: () => {
+        inScrollZoneRef.current = false;
+        return false;
+      },
       onMoveShouldSetPanResponder: isVerticalDrag,
       // Steal the gesture from interactive children (Button, TextField, …)
       // that claimed the touch on press-down, so dragging works anywhere on
@@ -362,6 +387,7 @@ export const BottomSheetRoot = ({
         screenHeight,
         panHandlers: panResponder.panHandlers,
         requestClose: animateClose,
+        onScrollTouchStart: markScrollTouch,
       }}
     >
       {children}
@@ -593,6 +619,45 @@ export const BottomSheetContent = ({
         {children}
       {/*</ScrollView>*/}
     </Animated.View>
+  );
+};
+
+// ============================================================================
+// BottomSheet.Scrollable - Scroll area that the sheet never drags from
+// ============================================================================
+
+interface BottomSheetScrollableProps extends ScrollViewProps {
+  children: ReactNode;
+}
+
+/**
+ * Wrap any scrollable region inside BottomSheet.Content with this: touches
+ * that start within it scroll the content instead of dragging the sheet.
+ * Everything outside stays sheet-drappable (drag-anywhere behavior intact).
+ */
+export const BottomSheetScrollable = ({
+  children,
+  style,
+  contentContainerStyle,
+  ...rest
+}: BottomSheetScrollableProps) => {
+  const { onScrollTouchStart } = useBottomSheet();
+
+  return (
+    <View
+      style={[{ flex: 1 }, style]}
+      onStartShouldSetResponderCapture={() => {
+        onScrollTouchStart();
+        return false;
+      }}
+    >
+      <ScrollView
+        contentContainerStyle={contentContainerStyle}
+        {...rest}
+      >
+        {children}
+      </ScrollView>
+    </View>
   );
 };
 
@@ -882,6 +947,7 @@ export const BottomSheet = {
   Overlay: BottomSheetOverlay,
   Content: BottomSheetContent,
   Handle: BottomSheetHandle,
+  Scrollable: BottomSheetScrollable,
   Title: BottomSheetTitle,
   Description: BottomSheetDescription,
   Footer: BottomSheetFooter,
@@ -896,6 +962,7 @@ export type {
   BottomSheetOverlayProps,
   BottomSheetContentProps,
   BottomSheetHandleProps,
+  BottomSheetScrollableProps,
   BottomSheetTitleProps,
   BottomSheetDescriptionProps,
   BottomSheetFooterProps,

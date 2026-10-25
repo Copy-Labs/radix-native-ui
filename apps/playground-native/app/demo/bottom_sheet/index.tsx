@@ -33,18 +33,18 @@ function MultiSnapSheet() {
             </Badge>
           </Flex>
           <BottomSheet.Description>
-            This sheet rests at 25%, 60% or 90% of the screen. Drag the handle (or the sheet body)
-            up and down — it settles on the nearest snap point. Dragging below the smallest snap or
-            flicking down dismisses it.
+            This sheet rests at 25%, 60% or 90% of the screen. Drag the title, handle or footer to
+            move it — but the list below is a BottomSheet.Scrollable, so drags starting there
+            scroll the rows instead of moving the sheet.
           </BottomSheet.Description>
           <Separator />
-          <Flex direction="column" gap={8} style={{ paddingVertical: 12 }}>
-            {Array.from({ length: 10 }, (_, i) => (
+          <BottomSheet.Scrollable contentContainerStyle={{ paddingVertical: 12, gap: 8 }}>
+            {Array.from({ length: 30 }, (_, i) => (
               <Text key={i} size={3} color="gray">
-                Content row {i + 1} — visible as you snap the sheet taller
+                Content row {i + 1} — scrolls freely, never drags the sheet
               </Text>
             ))}
-          </Flex>
+          </BottomSheet.Scrollable>
           <BottomSheet.Footer>
             <BottomSheet.Close>
               <Button variant="soft" color="gray">
