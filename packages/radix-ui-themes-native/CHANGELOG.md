@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `BottomSheet`: **functional snap points**. `snapPoints` on `BottomSheet.Root` now actually works with multiple entries — the sheet drags up/down between resting heights, settles on the nearest snap on release (velocity-aware), haptic-feedbacks on snap change, and dismisses when dragged below the smallest snap or flicked down. New `onSnapPointChange?: (index: number) => void` fires whenever the sheet settles (including open). `BottomSheet.Content`'s `snapPoints` prop is a deprecated no-op (snap points are owned by `Root`).
+
+### Fixed
+- `BottomSheet`: flicker on re-open after closing via `Overlay` press, `BottomSheet.Close`, or `BottomSheet.Action`. Those paths set `open=false` instantly, leaving `translateY` at the open position, so the Modal's first frame on the next open painted the sheet fully visible before it jumped down and re-animated. Closing is now consistently animated (`requestClose` runs the dismiss spring before unmounting the Modal, matching the swipe path), and `translateY` is reset to the hidden offset whenever the sheet transitions to closed, so even controlled instant-closes re-open cleanly.
+
 ## [0.1.5] - 2026-10-25
 
 ### Fixed
