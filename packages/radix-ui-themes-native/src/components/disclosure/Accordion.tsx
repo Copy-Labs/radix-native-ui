@@ -15,6 +15,7 @@ import {
   Animated,
   type LayoutChangeEvent,
 } from 'react-native';
+import type { SizeInput } from '../../utils/size';
 import { View } from '../primitives';
 import AnimatedPressable from '../primitives/AnimatedPressable';
 import { Text } from '../typography';
@@ -28,7 +29,7 @@ import { triggerHaptic } from '../../utils';
 // ============================================================================
 
 type AccordionType = 'single' | 'multiple';
-type AccordionSize = '1' | '2' | '3';
+type AccordionSize = SizeInput<1 | 2 | 3>;
 type Direction = 'ltr' | 'rtl';
 
 // ============================================================================
@@ -333,8 +334,8 @@ const AccordionTrigger = React.forwardRef<
 
   // Size-based styling
   const getSizeStyles = () => {
-    switch (size) {
-      case '1':
+    switch (Number(size)) {
+      case 1:
         return {
           paddingVertical: theme.space[2],
           paddingHorizontal: theme.space[3],
@@ -342,7 +343,7 @@ const AccordionTrigger = React.forwardRef<
           lineHeight: theme.typography.fontSizes[1].lineHeight,
           iconSize: 14,
         };
-      case '3':
+      case 3:
         return {
           paddingVertical: theme.space[4],
           paddingHorizontal: theme.space[5],
@@ -350,7 +351,7 @@ const AccordionTrigger = React.forwardRef<
           lineHeight: theme.typography.fontSizes[4].lineHeight,
           iconSize: 20,
         };
-      case '2':
+      case 2:
       default:
         return {
           paddingVertical: theme.space[3],
@@ -515,12 +516,12 @@ const AccordionContent = React.forwardRef<
 
   // Size-based padding
   const getContentPadding = () => {
-    switch (size) {
-      case '1':
+    switch (Number(size)) {
+      case 1:
         return theme.space[2];
-      case '3':
+      case 3:
         return theme.space[5];
-      case '2':
+      case 2:
       default:
         return theme.space[4];
     }

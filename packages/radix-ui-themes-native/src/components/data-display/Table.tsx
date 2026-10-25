@@ -4,6 +4,7 @@ import React, {
   type ReactNode,
   type ComponentRef,
 } from 'react';
+import type { SizeInput } from '../../utils/size';
 import { StyleSheet, type StyleProp, ViewStyle, ScrollView, View } from 'react-native';
 import { Text } from '../typography';
 import { useTheme, useThemeMode } from '../../hooks/useTheme';
@@ -13,7 +14,7 @@ import { getGrayAlpha } from '../../theme/color-helpers';
 // Types
 // ============================================================================
 
-type TableSize = '1' | '2' | '3';
+type TableSize = SizeInput<1 | 2 | 3>;
 
 // ============================================================================
 // Table Context
@@ -266,12 +267,12 @@ const TableColumnHeaderCell = React.forwardRef<
 
   // Size-based padding
   const getSizePadding = () => {
-    switch (context.size) {
-      case '1':
+    switch (Number(context.size)) {
+      case 1:
         return { paddingVertical: theme.space[2], paddingHorizontal: theme.space[3] };
-      case '3':
+      case 3:
         return { paddingVertical: theme.space[4], paddingHorizontal: theme.space[5] };
-      case '2':
+      case 2:
       default:
         return { paddingVertical: theme.space[3], paddingHorizontal: theme.space[4] };
     }
@@ -279,12 +280,12 @@ const TableColumnHeaderCell = React.forwardRef<
 
   // Size-based font
   const getSizeFont = () => {
-    switch (context.size) {
-      case '1':
+    switch (Number(context.size)) {
+      case 1:
         return { fontSize: theme.typography.fontSizes[1].fontSize };
-      case '3':
+      case 3:
         return { fontSize: theme.typography.fontSizes[3].fontSize };
-      case '2':
+      case 2:
       default:
         return { fontSize: theme.typography.fontSizes[2].fontSize };
     }
@@ -360,12 +361,12 @@ const TableCell = React.forwardRef<
 
   // Size-based padding
   const getSizePadding = () => {
-    switch (context.size) {
-      case '1':
+    switch (Number(context.size)) {
+      case 1:
         return { paddingVertical: theme.space[2], paddingHorizontal: theme.space[3] };
-      case '3':
+      case 3:
         return { paddingVertical: theme.space[4], paddingHorizontal: theme.space[5] };
-      case '2':
+      case 2:
       default:
         return { paddingVertical: theme.space[3], paddingHorizontal: theme.space[4] };
     }
@@ -373,12 +374,12 @@ const TableCell = React.forwardRef<
 
   // Size-based font
   const getSizeFont = () => {
-    switch (context.size) {
-      case '1':
+    switch (Number(context.size)) {
+      case 1:
         return { fontSize: theme.typography.fontSizes[1].fontSize };
-      case '3':
+      case 3:
         return { fontSize: theme.typography.fontSizes[3].fontSize };
-      case '2':
+      case 2:
       default:
         return { fontSize: theme.typography.fontSizes[2].fontSize };
     }

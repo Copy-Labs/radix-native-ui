@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, type ViewStyle, Animated, Easing, Vibration } from 'react-native';
 import { View } from '../primitives';
@@ -40,7 +41,7 @@ interface SwitchProps {
    * Size variant
    * @default '2'
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Badge variant
    * @default 'solid'
@@ -142,8 +143,8 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
     }, [isChecked]);
 
     const getSizeValues = () => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             trackWidth: 32,
             trackHeight: 20,
@@ -151,7 +152,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
             gap: theme.space[1],
             fontSize: theme.typography.fontSizes[1].fontSize,
           };
-        case '3':
+        case 3:
           return {
             trackWidth: 58,
             trackHeight: 32,
@@ -159,7 +160,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
             gap: theme.space[3],
             fontSize: theme.typography.fontSizes[3].fontSize,
           };
-        case '2':
+        case 2:
         default:
           return {
             trackWidth: 44,

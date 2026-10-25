@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { type ReactNode } from 'react';
 import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
 import { View } from '../primitives';
@@ -36,7 +37,7 @@ interface RadioProps {
    * Size variant
    * @default 2
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Custom color for selected state
    */
@@ -113,8 +114,8 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
 
     // Get size values
     const getSizeValues = () => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             boxSize: 18,
             innerSize: 6,
@@ -122,7 +123,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
             fontSize: theme.typography.fontSizes[1].fontSize,
             gap: theme.space[1],
           };
-        case '3':
+        case 3:
           return {
             boxSize: 28,
             innerSize: 12,
@@ -130,7 +131,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
             fontSize: theme.typography.fontSizes[3].fontSize,
             gap: theme.space[3],
           };
-        case '2':
+        case 2:
         default:
           return {
             boxSize: 22,

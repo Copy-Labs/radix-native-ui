@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { useState, Children, isValidElement, useMemo } from 'react';
 import {
   StyleSheet,
@@ -61,7 +62,7 @@ interface TextAreaProps extends Omit<RNTextInputProps, 'multiline'> {
   /**
    * Size variant
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Number of rows
    */
@@ -256,20 +257,20 @@ const TextAreaRoot = React.forwardRef<
 
   // Size values (fixed height for textarea)
   const getSizeValues = () => {
-    switch (size) {
-      case '1':
+    switch (Number(size)) {
+      case 1:
         return {
           fontSize: theme.typography.fontSizes[4].fontSize,
           padding: theme.space[2],
           height: 100,
         };
-      case '3':
+      case 3:
         return {
           fontSize: theme.typography.fontSizes[6].fontSize,
           padding: theme.space[4],
           height: 140,
         };
-      case '2':
+      case 2:
       default:
         return {
           fontSize: theme.typography.fontSizes[5].fontSize,

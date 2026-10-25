@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React, { useState } from 'react';
 import { StyleSheet, type ViewStyle, Vibration } from 'react-native';
 import { View } from '../primitives';
@@ -34,7 +35,7 @@ interface CheckboxProps {
    * Size variant
    * @default 2
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Badge variant
    * @default 'soft'
@@ -115,8 +116,8 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
 
     // Get size values
     const getSizeValues = () => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             boxSize: 20,
             iconSize: 11,
@@ -125,7 +126,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
             borderWidth: 1,
             height: 2.5,
           };
-        case '3':
+        case 3:
           return {
             boxSize: 28,
             iconSize: 16,
@@ -134,7 +135,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
             borderWidth: 1,
             height: 3,
           };
-        case '2':
+        case 2:
         default:
           return {
             boxSize: 24,

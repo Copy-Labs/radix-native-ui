@@ -1,3 +1,4 @@
+import type { SizeInput } from '../../utils/size';
 import React from 'react';
 import { StyleSheet, type ViewStyle } from 'react-native';
 import { View } from '../primitives';
@@ -44,7 +45,7 @@ interface CheckboxGroupProps {
    * Size variant for checkboxes
    * @default 2
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Custom style
    */

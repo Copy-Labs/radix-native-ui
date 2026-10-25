@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **`size` prop unified around numeric canonical.** `TextField`, `TextArea`, `Checkbox`, `CheckboxGroup`, `CheckboxCards`, `Radio`, `RadioGroup`, `RadioCards`, `Switch`, `Slider`, `Accordion`, and `Table` previously accepted *only* string sizes (`size="2"`) while the rest of the library used numbers (`size={2}`). They now accept both (`SizeInput<1 | 2 | 3>`); numeric is the documented canonical form everywhere, and string support will be deprecated in a future release.
+
 ### Fixed
 - `Skeleton` pulse colors were hardcoded hex values (`#E5E7EB`/`#D1D5DB`) that ignored the theme: it now interpolates between steps 3 and 5 of the active gray ramp, so it follows `grayColor` selection and dark mode like every other component.
 

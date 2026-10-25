@@ -12,6 +12,7 @@ import {
   TouchableOpacity as RNTouchableOpacity,
   Vibration,
 } from 'react-native';
+import type { SizeInput } from '../../utils/size';
 import { TouchableOpacity, View } from '../primitives';
 import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import {
@@ -30,7 +31,7 @@ interface CheckboxCardsContextValue {
   value: string[];
   onValueChange: (value: string[]) => void;
   variant: 'solid' | 'soft' | 'surface' | 'outline';
-  size: '1' | '2' | '3';
+  size: SizeInput<1 | 2 | 3>;
   color?: Color;
   highContrast: boolean;
   radius: RadiusSize;
@@ -71,7 +72,7 @@ interface CheckboxCardsRootProps {
    * Size variant
    * @default '2'
    */
-  size?: '1' | '2' | '3';
+  size?: SizeInput<1 | 2 | 3>;
   /**
    * Custom color
    */
@@ -260,8 +261,8 @@ const CheckboxCardsItem = React.forwardRef<
 
     // Get size values
     const getSizeValues = () => {
-      switch (size) {
-        case '1':
+      switch (Number(size)) {
+        case 1:
           return {
             padding: theme.space[3],
             indicatorSize: 18,
@@ -269,7 +270,7 @@ const CheckboxCardsItem = React.forwardRef<
             borderWidth: 1,
             checkHeight: 2.2,
           };
-        case '3':
+        case 3:
           return {
             padding: theme.space[5],
             indicatorSize: 26,
@@ -277,7 +278,7 @@ const CheckboxCardsItem = React.forwardRef<
             borderWidth: 1.5,
             checkHeight: 2.8,
           };
-        case '2':
+        case 2:
         default:
           return {
             padding: theme.space[4],
