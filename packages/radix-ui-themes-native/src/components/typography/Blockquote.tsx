@@ -34,21 +34,6 @@ interface BlockquoteProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Blockquote to optimize re-renders
-const areEqual = (prevProps: BlockquoteProps, nextProps: BlockquoteProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.textStyle === nextProps.textStyle &&
-    prevProps.color === nextProps.color &&
-    prevProps.borderColor === nextProps.borderColor &&
-    prevProps.quoteColor === nextProps.quoteColor
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Blockquote = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, BlockquoteProps>(
     ({ children, style, textStyle = {}, color, borderColor, quoteColor, ...rest }, ref) => {
@@ -92,8 +77,7 @@ const Blockquote = React.memo(
         </View>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Blockquote.displayName = 'Blockquote';

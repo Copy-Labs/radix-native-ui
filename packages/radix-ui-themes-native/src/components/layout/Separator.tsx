@@ -115,13 +115,17 @@ const Separator = React.memo<SeparatorProps>(
 
       // Use color scale if available, otherwise use gray
       const colorValue = colorScale
-        ? (mode === 'dark' && 'dark' in colorScale ? colorScale.dark[6] : colorScale[6])
+        ? mode === 'dark' && 'dark' in colorScale
+          ? colorScale.dark[6]
+          : colorScale[6]
         : grayScale[6];
 
       // Get margin values from theme.space
       const marginValue = margin !== undefined ? theme.space[margin] : undefined;
-      const marginVerticalValue = marginVertical !== undefined ? theme.space[marginVertical] : marginValue;
-      const marginHorizontalValue = marginHorizontal !== undefined ? theme.space[marginHorizontal] : marginValue;
+      const marginVerticalValue =
+        marginVertical !== undefined ? theme.space[marginVertical] : marginValue;
+      const marginHorizontalValue =
+        marginHorizontal !== undefined ? theme.space[marginHorizontal] : marginValue;
 
       const baseStyle: ViewStyle = {
         backgroundColor: colorValue,

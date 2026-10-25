@@ -22,18 +22,6 @@ interface StrongProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Strong to optimize re-renders
-const areEqual = (prevProps: StrongProps, nextProps: StrongProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.color === nextProps.color
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Strong = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, StrongProps>(
     ({ children, style = {}, color, ...rest }, ref) => {
@@ -59,8 +47,7 @@ const Strong = React.memo(
         </Text>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Strong.displayName = 'Strong';

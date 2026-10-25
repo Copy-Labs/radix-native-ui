@@ -30,20 +30,6 @@ interface CodeProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Code to optimize re-renders
-const areEqual = (prevProps: CodeProps, nextProps: CodeProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.size === nextProps.size &&
-    prevProps.color === nextProps.color &&
-    prevProps.backgroundColor === nextProps.backgroundColor
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Code = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, CodeProps>(
     ({ children, style = {}, size = 2, color, backgroundColor, ...rest }, ref) => {
@@ -74,8 +60,7 @@ const Code = React.memo(
         </Text>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Code.displayName = 'Code';

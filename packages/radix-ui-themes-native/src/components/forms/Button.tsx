@@ -172,29 +172,7 @@ const getIconSize = (size: 1 | 2 | 3 | 4): number => {
 };
 
 // ============================================================================
-// Custom areEqual function for Button to optimize re-renders
 // ============================================================================
-
-const areEqual = (prevProps: ButtonProps, nextProps: ButtonProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.variant === nextProps.variant &&
-    prevProps.color === nextProps.color &&
-    prevProps.radius === nextProps.radius &&
-    prevProps.size === nextProps.size &&
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.loading === nextProps.loading &&
-    prevProps.onPress === nextProps.onPress &&
-    prevProps.onLongPress === nextProps.onLongPress &&
-    prevProps.delayLongPress === nextProps.delayLongPress &&
-    prevProps.width === nextProps.width &&
-    prevProps.highContrast === nextProps.highContrast
-  ) {
-    return true;
-  }
-  return false;
-};
 
 // ============================================================================
 // Button Component
@@ -238,7 +216,10 @@ const Button = React.memo(
       const radii = theme.radii[radius || theme.radius] ?? theme.radii.medium;
       const selectedRadius = radius || theme.radius;
 
-      const variantColors = useMemo(() => getVariantColors(theme, activeColor, mode, variant, highContrast), [getVariantColors, color, variant, highContrast, isDark, theme]);
+      const variantColors = useMemo(
+        () => getVariantColors(theme, activeColor, mode, variant, highContrast),
+        [getVariantColors, color, variant, highContrast, isDark, theme]
+      );
 
       // Get size values
       const getSizeValues = useCallback(() => {
@@ -285,7 +266,7 @@ const Button = React.memo(
         let textContent: string | null = null;
         let foundLabel = false;
 
-        Children.forEach(children, (child) => {
+        Children.forEach(children, child => {
           if (!isValidElement(child)) {
             // Handle string/number children as text content
             if (typeof child === 'string' || typeof child === 'number') {
@@ -328,9 +309,7 @@ const Button = React.memo(
 
       const buttonStyle: ViewStyle = useMemo(
         () => ({
-          backgroundColor: disabled
-            ? grayAlpha['3']
-            : variantColors.backgroundColor,
+          backgroundColor: disabled ? grayAlpha['3'] : variantColors.backgroundColor,
           borderColor: variantColors.borderColor,
           borderWidth: variant === 'outline' || 'surface' ? 1 : 0,
           borderRadius: sizeValues.borderRadius,
@@ -449,8 +428,7 @@ const Button = React.memo(
         </AnimatedPressable>
       );
     }
-  ),
-  areEqual
+  )
 ) as ButtonCompoundComponent;
 
 Button.displayName = 'Button';

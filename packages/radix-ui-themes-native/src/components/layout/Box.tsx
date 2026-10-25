@@ -6,24 +6,6 @@ import { useTheme } from '../../hooks/useTheme';
 import type { BoxProps } from './Box.props';
 import type { RadiusSize } from '../../theme/types';
 
-// Custom areEqual function for Box to optimize re-renders
-const areEqual = (prevProps: BoxProps, nextProps: BoxProps) => {
-  // Compare simple props that change frequently
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.backgroundColor === nextProps.backgroundColor &&
-    prevProps.display === nextProps.display &&
-    prevProps.flexDirection === nextProps.flexDirection &&
-    prevProps.flex === nextProps.flex &&
-    prevProps.opacity === nextProps.opacity &&
-    prevProps.radius === nextProps.radius
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const Box = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNView>, BoxProps>(
     (
@@ -215,8 +197,7 @@ const Box = React.memo(
         </Comp>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Box.displayName = 'Box';

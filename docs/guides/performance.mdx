@@ -312,15 +312,17 @@ function SearchInput() {
 
 ## Bundle Size
 
-### Tree Shaking
+### What the library costs
 
-Import only what you need:
+radix-native-ui has **zero runtime dependencies** — everything it pulls into your bundle is its own code (~500 KB unminified, both formats aside). One honest caveat: Metro's tree-shaking is still best-effort, so `import { Button } from 'radix-native-ui'` typically evaluates the library's module graph even if you use a handful of components. The package declares `"sideEffects": false`, which lets web/bundler toolchains (Expo web, webpack, Rollup, esbuild) drop unused components properly.
+
+In practice this is a raw-code-size cost, not a startup cost: module initialization is just `StyleSheet.create` calls and constant tables — measured in single-digit milliseconds.
 
 ```tsx
-// Good - Tree-shakeable
+// Fine — tree-shaken correctly on web bundlers, best-effort under Metro
 import { Button } from 'radix-native-ui';
 
-// Avoid - Imports everything
+// Avoid
 import * as Radix from 'radix-native-ui';
 ```
 
@@ -341,6 +343,17 @@ function App() {
   );
 }
 ```
+
+## This Library's Rendering Cost Model
+
+Every component in radix-native-ui is wrapped in `React.memo` with the **default shallow comparison** — an earlier hand-written comparator per component was removed because enumerated prop lists silently go stale when new props ship.
+
+What that means for your app:
+
+- **Stable props keep the guarantee.** `memo` compares by identity: an inline `style={{...}}` or `onPress={() => ...}` creates a new reference every parent render and re-renders the subtree regardless. Hoist styles (`StyleSheet.create` at module scope) and use `useCallback` in hot paths like list rows.
+- **Compound components do most of this for you.** `Select.Item`, `Accordion.Item`, and friends read state from context and receive only primitive props (`value`, label text), so call sites rarely need memo gymnastics.
+- **Context changes re-render all consumers — deliberately.** A theme flip re-renders every themed component (the whole UI genuinely changed). It is a one-time global cost; keep theme updates rare.
+- **Known scale ceilings.** Dropdown-style components render all items (fine to ~100, heavy beyond); list animations that change height/width (Accordion, Progress, Slider thumb, Switch track) use the JS driver because React Native's native driver only supports `transform` and `opacity`. If a screen demands UI-thread layout animation, reach for `react-native-reanimated` on that screen; the library deliberately stays dependency-free.
 
 ## Profiling
 

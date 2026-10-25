@@ -4,6 +4,7 @@
   "description": "A React Native component library inspired by the Radix Themes design system",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
+  "sideEffects": false,
   "types": "dist/index.d.mts",
   "type": "module",
   "exports": {

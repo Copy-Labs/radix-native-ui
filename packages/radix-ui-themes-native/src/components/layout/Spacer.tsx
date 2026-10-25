@@ -80,55 +80,53 @@ export interface SpacerProps {
  *   <Text>Bottom</Text>
  * </Flex>
  */
-const Spacer = React.memo<SpacerProps>(
-  ({ flex = 1, size, direction = 'both', style }) => {
-    const theme = useTheme();
+const Spacer = React.memo<SpacerProps>(({ flex = 1, size, direction = 'both', style }) => {
+  const theme = useTheme();
 
-    const spacerStyle: ViewStyle = useMemo(() => {
-      const baseStyle: ViewStyle = {};
+  const spacerStyle: ViewStyle = useMemo(() => {
+    const baseStyle: ViewStyle = {};
 
-      // If size is provided, use fixed dimensions from theme.space
-      if (size !== undefined) {
-        const spaceValue = theme.space[size];
+    // If size is provided, use fixed dimensions from theme.space
+    if (size !== undefined) {
+      const spaceValue = theme.space[size];
 
-        switch (direction) {
-          case 'horizontal':
-            baseStyle.width = spaceValue;
-            break;
-          case 'vertical':
-            baseStyle.height = spaceValue;
-            break;
-          case 'both':
-          default:
-            baseStyle.width = spaceValue;
-            baseStyle.height = spaceValue;
-            break;
-        }
-      } else {
-        // If no size, use flex for flexible spacing
-        baseStyle.flex = flex;
-
-        // Set dimensions based on direction for flexible spacer
-        switch (direction) {
-          case 'horizontal':
-            baseStyle.height = 'auto';
-            break;
-          case 'vertical':
-            baseStyle.width = 'auto';
-            break;
-          case 'both':
-          default:
-            // For 'both', we just use flex without dimension constraints
-            break;
-        }
+      switch (direction) {
+        case 'horizontal':
+          baseStyle.width = spaceValue;
+          break;
+        case 'vertical':
+          baseStyle.height = spaceValue;
+          break;
+        case 'both':
+        default:
+          baseStyle.width = spaceValue;
+          baseStyle.height = spaceValue;
+          break;
       }
+    } else {
+      // If no size, use flex for flexible spacing
+      baseStyle.flex = flex;
 
-      return baseStyle;
-    }, [flex, size, direction, theme.space]);
+      // Set dimensions based on direction for flexible spacer
+      switch (direction) {
+        case 'horizontal':
+          baseStyle.height = 'auto';
+          break;
+        case 'vertical':
+          baseStyle.width = 'auto';
+          break;
+        case 'both':
+        default:
+          // For 'both', we just use flex without dimension constraints
+          break;
+      }
+    }
 
-    return <View style={[spacerStyle, style]} />;
-  }
-);
+    return baseStyle;
+  }, [flex, size, direction, theme.space]);
+
+  return <View style={[spacerStyle, style]} />;
+});
 
 Spacer.displayName = 'Spacer';
 

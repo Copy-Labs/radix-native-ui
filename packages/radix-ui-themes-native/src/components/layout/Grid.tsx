@@ -39,30 +39,18 @@ interface GridProps {
    * Justify content on main axis
    * @default 'flex-start'
    */
-  justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  justify?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
   /**
    * Width of each column (percentage or fixed)
    */
   columnWidth?: string | number;
 }
-
-// Custom areEqual function for Grid to optimize re-renders
-const areEqual = (prevProps: GridProps, nextProps: GridProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.columns === nextProps.columns &&
-    prevProps.gap === nextProps.gap &&
-    prevProps.rowGap === nextProps.rowGap &&
-    prevProps.columnGap === nextProps.columnGap &&
-    prevProps.align === nextProps.align &&
-    prevProps.justify === nextProps.justify &&
-    prevProps.columnWidth === nextProps.columnWidth
-  ) {
-    return true;
-  }
-  return false;
-};
 
 const Grid = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNView>, GridProps>(
@@ -128,8 +116,7 @@ const Grid = React.memo(
         </Flex>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 Grid.displayName = 'Grid';

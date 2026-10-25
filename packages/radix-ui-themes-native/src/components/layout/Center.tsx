@@ -100,16 +100,7 @@ export interface AbsoluteCenterProps extends Omit<CenterProps, 'axis'> {}
  * </Center>
  */
 const Center = React.memo<CenterProps>(
-  ({
-    children,
-    axis = 'both',
-    asChild = false,
-    style,
-    width,
-    height,
-    backgroundColor,
-    radius,
-  }) => {
+  ({ children, axis = 'both', asChild = false, style, width, height, backgroundColor, radius }) => {
     const theme = useTheme();
 
     const centerStyle: ViewStyle = useMemo(() => {
@@ -156,11 +147,7 @@ const Center = React.memo<CenterProps>(
 
     const Comp = asChild ? Slot : View;
 
-    return (
-      <Comp style={[centerStyle, style]}>
-        {children}
-      </Comp>
-    );
+    return <Comp style={[centerStyle, style]}>{children}</Comp>;
   }
 );
 
@@ -178,7 +165,7 @@ Center.displayName = 'Center';
  *   <Text>Horizontally centered</Text>
  * </HCenter>
  */
-const HCenter = React.memo<HCenterProps>((props) => {
+const HCenter = React.memo<HCenterProps>(props => {
   return <Center axis="horizontal" {...props} />;
 });
 
@@ -196,7 +183,7 @@ HCenter.displayName = 'HCenter';
  *   <Text>Vertically centered</Text>
  * </VCenter>
  */
-const VCenter = React.memo<VCenterProps>((props) => {
+const VCenter = React.memo<VCenterProps>(props => {
   return <Center axis="vertical" {...props} />;
 });
 
@@ -226,15 +213,7 @@ VCenter.displayName = 'VCenter';
  * </Box>
  */
 const AbsoluteCenter = React.memo<AbsoluteCenterProps>(
-  ({
-    children,
-    asChild = false,
-    style,
-    width,
-    height,
-    backgroundColor,
-    radius,
-  }) => {
+  ({ children, asChild = false, style, width, height, backgroundColor, radius }) => {
     const theme = useTheme();
 
     const absoluteCenterStyle: ViewStyle = useMemo(() => {
@@ -269,11 +248,7 @@ const AbsoluteCenter = React.memo<AbsoluteCenterProps>(
 
     const Comp = asChild ? Slot : View;
 
-    return (
-      <Comp style={[absoluteCenterStyle, style]}>
-        {children}
-      </Comp>
-    );
+    return <Comp style={[absoluteCenterStyle, style]}>{children}</Comp>;
   }
 );
 

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `Skeleton` pulse no longer interpolates background *colors* (which silently forced JS-thread animation and, with the native driver flag set, risked runtime warnings). It now pulses `opacity` over a static theme-gray fill — visually equivalent, fully native-driver, and it follows `grayColor`/dark mode like before.
+
+### Internal
+- Removed the 13 hand-written `React.memo` comparators (Button, Box, Flex, Grid, Inset, Container, and the typography family) in favor of the default shallow prop comparison. Enumerated comparators go stale whenever a prop is added (silent skipped re-renders); the default is equally fast and always correct.
+- Package now declares `"sideEffects": false` so web bundlers can tree-shake unused components.
+- Performance guide: honest bundle-size section and a new "Rendering Cost Model" section (memo/stability guidance, context semantics, known scale ceilings).
+
 ## [0.1.3] - 2026-10-25
 
 ### Changed

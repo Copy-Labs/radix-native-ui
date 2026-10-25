@@ -72,29 +72,6 @@ interface TextProps {
 
 type StyleProp<T> = T | T[];
 
-// Custom areEqual function for Text to optimize re-renders
-const areEqual = (prevProps: TextProps, nextProps: TextProps) => {
-  if (
-    prevProps.children === nextProps.children &&
-    prevProps.style === nextProps.style &&
-    prevProps.size === nextProps.size &&
-    prevProps.weight === nextProps.weight &&
-    prevProps.align === nextProps.align &&
-    prevProps.color === nextProps.color &&
-    prevProps.truncate === nextProps.truncate &&
-    prevProps.numberOfLines === nextProps.numberOfLines &&
-    prevProps.fontFamily === nextProps.fontFamily &&
-    prevProps.fontStyle === nextProps.fontStyle &&
-    prevProps.lineHeight === nextProps.lineHeight &&
-    prevProps.letterSpacing === nextProps.letterSpacing &&
-    prevProps.textDecorationLine === nextProps.textDecorationLine &&
-    prevProps.opacity === nextProps.opacity
-  ) {
-    return true;
-  }
-  return false;
-};
-
 const TextComponent = React.memo(
   React.forwardRef<React.ComponentRef<typeof RNText>, TextProps>(
     (
@@ -179,8 +156,7 @@ const TextComponent = React.memo(
         </Comp>
       );
     }
-  ),
-  areEqual
+  )
 );
 
 TextComponent.displayName = 'Text';
