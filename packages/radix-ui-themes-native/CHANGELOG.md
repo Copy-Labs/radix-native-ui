@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `BottomSheet.Scrollable` nested-scroll coordination (iOS sheet model): inside a scroll zone, a **downward** pull while the content is already at the top now hands the gesture over to the sheet mid-gesture — so drag-to-dismiss and lower-snap dragging work directly from a list, while all other in-zone drags keep scrolling normally. The handover is jump-free (the sheet treats the cumulative drag distance at takeover as its origin, not zero), and the at-top check uses instantaneous velocity plus a bounce tolerance, so mixed scroll-then-pull gestures and iOS rubber-band do the right thing.
+
 ## [0.1.8] - 2026-10-25
 
 ### Added

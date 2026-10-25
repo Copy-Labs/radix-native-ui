@@ -34,14 +34,14 @@ function MultiSnapSheet() {
           </Flex>
           <BottomSheet.Description>
             This sheet rests at 25%, 60% or 90% of the screen. Drag the title, handle or footer to
-            move it — but the list below is a BottomSheet.Scrollable, so drags starting there
-            scroll the rows instead of moving the sheet.
+            move it. The list is a BottomSheet.Scrollable — it scrolls freely, and pulling down
+            once it's back at the top hands over to the sheet so you can dismiss from the list.
           </BottomSheet.Description>
           <Separator />
           <BottomSheet.Scrollable contentContainerStyle={{ paddingVertical: 12, gap: 8 }}>
             {Array.from({ length: 30 }, (_, i) => (
               <Text key={i} size={3} color="gray">
-                Content row {i + 1} — scrolls freely, never drags the sheet
+                Content row {i + 1} — scrolls; pull down at the top to move the sheet
               </Text>
             ))}
           </BottomSheet.Scrollable>

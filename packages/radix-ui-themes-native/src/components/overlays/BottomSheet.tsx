@@ -65,9 +65,10 @@ interface BottomSheetContextValue {
   screenHeight: number;
   panHandlers: GestureResponderHandlers;
   requestClose: () => void;
-  /** Called by BottomSheet.Scrollable wrappers at touch-start so the sheet's
-   * gesture steal stands down and the child can scroll freely. */
-  onScrollTouchStart: () => void;
+  /** Called by BottomSheet.Scrollable wrappers at touch-start with an atTop
+   * getter: the sheet's gesture steal stands down inside the zone, except for
+   * downward drags once the content is already at the top. */
+  onScrollTouchStart: (atTop: () => boolean) => void;
 }
 
 const BottomSheetContext = createContext<BottomSheetContextValue | null>(null);
@@ -180,17 +181,20 @@ export const BottomSheetRoot = ({
   // to JS, so gesture math tracks the authoritative offset ourselves.
   const offsetRef = useRef(maxSnapHeight);
   const baseOffsetRef = useRef(maxSnapHeight);
+  const dyOriginRef = useRef(0);
   const grantIndexRef = useRef(defaultSnapPoint);
 
   // Swipe state refs
   const isSwiping = useRef(false);
 
-  // Gesture-origin flag: reset at every touch start inside the sheet, set by
-  // BottomSheet.Scrollable wrappers. While true, the sheet does not steal the
-  // vertical gesture — nested ScrollView content keeps scrolling.
-  const inScrollZoneRef = useRef(false);
-  const markScrollTouch = useCallback(() => {
-    inScrollZoneRef.current = true;
+  // Gesture-origin state: reset at every touch start inside the sheet; a
+  // BottomSheet.Scrollable wrapper registers an atTop getter for its zone.
+  // Inside a zone the sheet only claims the gesture for downward drags while
+  // the content sits at the top (iOS-style dismiss continuity) — everything
+  // else belongs to the nested ScrollView.
+  const activeScrollZoneRef = useRef<null | (() => boolean)>(null);
+  const markScrollTouch = useCallback((atTop: () => boolean) => {
+    activeScrollZoneRef.current = atTop;
   }, []);
 
   const handleOpenChange = useCallback(
@@ -272,9 +276,15 @@ export const BottomSheetRoot = ({
   // more than one entry.
   const panResponder = useMemo(() => {
     const isVerticalDrag = (_: any, gestureState: any) => {
-      // Touches that began inside a BottomSheet.Scrollable zone belong to the
-      // scroll view, never to the sheet drag.
-      if (inScrollZoneRef.current) return false;
+      const atTop = activeScrollZoneRef.current;
+      if (atTop) {
+        // Inside a scroll zone use instantaneous velocity, not cumulative dy:
+        // a mixed gesture (scrolled up, then pulled back down past the top)
+        // has a stale cumulative dy, but vy says which way the finger moves
+        // right now. Handover only on a downward-dominant pull at the very
+        // top — horizontal flings (vy noise) never steal the sheet.
+        return gestureState.vy > 0.05 && gestureState.vy > Math.abs(gestureState.vx) && atTop();
+      }
       return (
         Math.abs(gestureState.dy) > 10 &&
         Math.abs(gestureState.dy) > Math.abs(gestureState.dx)
@@ -285,9 +295,9 @@ export const BottomSheetRoot = ({
       onStartShouldSetPanResponder: () => false,
       // Queried (top-down) at the start of every touch inside the sheet, even
       // though it returns false — the perfect per-gesture reset point for the
-      // scroll-zone flag before deeper wrappers get to set it.
+      // scroll-zone state before deeper wrappers get to set it.
       onStartShouldSetPanResponderCapture: () => {
-        inScrollZoneRef.current = false;
+        activeScrollZoneRef.current = null;
         return false;
       },
       onMoveShouldSetPanResponder: isVerticalDrag,
@@ -296,14 +306,18 @@ export const BottomSheetRoot = ({
       // the sheet — including over controls. A tap without vertical movement
       // never trips this, so buttons keep firing onPress.
       onMoveShouldSetPanResponderCapture: isVerticalDrag,
-      onPanResponderGrant: () => {
+      onPanResponderGrant: (_, gestureState) => {
         isSwiping.current = true;
+        // The sheet may take over mid-touch (scroll crossed the top), so the
+        // cumulative dy at grant is not zero — record it as the origin or the
+        // sheet would jump by the whole gesture distance on handover.
+        dyOriginRef.current = gestureState.dy;
         baseOffsetRef.current = offsetRef.current;
         grantIndexRef.current = currentSnapIndex;
       },
       onPanResponderMove: (_, gestureState) => {
         const next = Math.min(
-          Math.max(baseOffsetRef.current + gestureState.dy, 0),
+          Math.max(baseOffsetRef.current + (gestureState.dy - dyOriginRef.current), 0),
           maxSnapHeight
         );
         isSwiping.current = true;
@@ -631,28 +645,40 @@ interface BottomSheetScrollableProps extends ScrollViewProps {
 }
 
 /**
- * Wrap any scrollable region inside BottomSheet.Content with this: touches
- * that start within it scroll the content instead of dragging the sheet.
- * Everything outside stays sheet-drappable (drag-anywhere behavior intact).
+ * Wrap any scrollable region inside BottomSheet.Content with this. Touches
+ * that start within it scroll the content — with one iOS-style exception:
+ * pulling down while the content is already at the top hands the gesture
+ * back to the sheet, so drag-to-dismiss works straight from the list.
+ * Everything outside the zone keeps sheet-wide dragging.
  */
 export const BottomSheetScrollable = ({
   children,
   style,
   contentContainerStyle,
+  onScroll,
   ...rest
 }: BottomSheetScrollableProps) => {
   const { onScrollTouchStart } = useBottomSheet();
+  const offsetRef = useRef(0);
+  // Small tolerance keeps iOS rubber-band bounce (slightly negative offset)
+  // counting as "at top".
+  const atTop = useCallback(() => offsetRef.current <= 1, []);
 
   return (
     <View
       style={[{ flex: 1 }, style]}
       onStartShouldSetResponderCapture={() => {
-        onScrollTouchStart();
+        onScrollTouchStart(atTop);
         return false;
       }}
     >
       <ScrollView
+        scrollEventThrottle={16}
         contentContainerStyle={contentContainerStyle}
+        onScroll={(e) => {
+          offsetRef.current = e.nativeEvent.contentOffset.y;
+          onScroll?.(e);
+        }}
         {...rest}
       >
         {children}
