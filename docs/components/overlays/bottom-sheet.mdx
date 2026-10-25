@@ -43,6 +43,7 @@ The BottomSheet follows the Radix compound component pattern:
 - **Overlay**: The backdrop that dims the background
 - **Content**: The main sheet container
 - **Handle**: Visual drag handle at the top (optional)
+- **Scrollable**: Scroll region inside the content that the sheet drag stands down for
 - **Title**: Accessible title for the sheet
 - **Description**: Accessible description for the sheet
 - **Footer**: Sticky footer for action buttons
@@ -99,6 +100,17 @@ The BottomSheet follows the Radix compound component pattern:
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+
+### BottomSheet.Scrollable
+
+A scroll region inside the sheet that the drag gesture stands down for. Extends all `ScrollView` props.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Scrollable content |
+| `style` | `StyleProp<ViewStyle>` | - | Wrapper style (defaults to `flex: 1`) |
+| `contentContainerStyle` | `StyleProp<ViewStyle>` | - | `ScrollView` content container style |
+| …`ScrollView` props | | | `onScroll`, `showsVerticalScrollIndicator`, etc. pass through |
 
 ### BottomSheet.Title
 
@@ -206,11 +218,27 @@ The sheet drags between resting heights. Drag the handle (or the sheet body) up 
 </BottomSheet.Root>
 ```
 
-At a lower snap the sheet is clipped — its content is laid out at the tallest snap height and slides behind the screen edge, so put anything critical (buttons, footers) near the top of the content.
+At a lower snap the sheet is clipped — its content is laid out at the tallest snap height and slides behind the screen edge. Wrap long content in `BottomSheet.Scrollable` (below) so it stays reachable, or keep critical controls near the top of the content.
 
 ### Drag Behavior
 
-The sheet is draggable from **anywhere on its surface**, not just the handle — including over buttons and other controls: a vertical drag steals the gesture from the pressed child, while a tap without vertical movement still fires the control's `onPress`. Because the sheet captures all vertical gestures, avoid putting a scrollable region (e.g. `ScrollView`/list) directly inside `BottomSheet.Content` — scrolling and sheet-dragging will fight for the same gesture.
+The sheet is draggable from **anywhere on its surface**, not just the handle — including over buttons and other controls: a vertical drag steals the gesture from the pressed child, while a tap without vertical movement still fires the control's `onPress`.
+
+Because the sheet captures vertical gestures, a plain `ScrollView` placed inside `BottomSheet.Content` would never scroll — the sheet would eat every drag. Use **`BottomSheet.Scrollable`** for scroll regions instead: touches starting inside it are exempt from the gesture steal and scroll the content normally.
+
+```tsx
+<BottomSheet.Content>
+  <BottomSheet.Title>Terms of Service</BottomSheet.Title>
+  <BottomSheet.Scrollable>
+    <Text>{longLegalText}</Text>
+  </BottomSheet.Scrollable>
+  <BottomSheet.Footer>
+    <BottomSheet.Action>Accept</BottomSheet.Action>
+  </BottomSheet.Footer>
+</BottomSheet.Content>
+```
+
+Rule of thumb: drag the sheet from its chrome (handle, titles, footer), scroll inside `BottomSheet.Scrollable`.
 
 ### Controlled State
 

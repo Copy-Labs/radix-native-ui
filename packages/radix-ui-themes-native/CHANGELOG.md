@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `BottomSheet.Scrollable`: a scroll region for use inside `BottomSheet.Content`. The 0.1.7 drag-anywhere steal captured every vertical gesture on the sheet, which would have made a plain `ScrollView` in the content unscrollable — touches starting inside `Scrollable` are now exempt from the gesture steal (they scroll the content), while everything outside the zone keeps sheet-wide dragging. Extends all `ScrollView` props.
+
 ## [0.1.7] - 2026-10-25
 
 ### Fixed
