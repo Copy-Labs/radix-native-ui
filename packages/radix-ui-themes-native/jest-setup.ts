@@ -1,8 +1,6 @@
 // Jest setup file for radix-native-ui
 // @ts-nocheck
 
-import '@testing-library/jest-native/extend-expect';
-
 // Extend Jest with custom matchers
 declare global {
   namespace jest {
