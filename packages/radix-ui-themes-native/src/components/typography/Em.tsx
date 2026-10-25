@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React, { useMemo } from 'react';
 import { type TextStyle, Text as RNText } from 'react-native';
 import { Text } from '../../components';
@@ -15,7 +16,7 @@ interface EmProps {
   /**
    * Text color
    */
-  color?: string;
+  color?: ColorValue;
 }
 
 type StyleProp<T> = T | T[];

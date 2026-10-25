@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React from 'react';
 import { View, StyleSheet, type ViewStyle, type StyleProp } from 'react-native';
 
@@ -5,7 +6,7 @@ interface IconProps {
   width?: number;
   height?: number;
   style?: StyleProp<ViewStyle>;
-  color?: string;
+  color?: ColorValue;
 }
 
 /**

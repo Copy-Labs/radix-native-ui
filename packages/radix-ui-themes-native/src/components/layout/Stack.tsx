@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { DimensionValue, type StyleProp, type ViewStyle, View as RNView } from 'react-native';
 import { Slot } from '../utilities/Slot';
 import { View } from '../primitives';
-import { useTheme } from '../../hooks/useTheme';
 
 // ============================================================================
 // Types
@@ -16,9 +15,9 @@ import { useTheme } from '../../hooks/useTheme';
 export type StackDirection = 'horizontal' | 'vertical';
 
 /**
- * Gap size using theme.space values
+ * Gap between children in pixels (same semantics as Flex and Grid).
  */
-export type StackGap = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type StackGap = number;
 
 /**
  * Align items on cross axis
@@ -28,7 +27,13 @@ export type StackAlign = 'flex-start' | 'center' | 'flex-end' | 'stretch' | 'bas
 /**
  * Justify content on main axis
  */
-export type StackJustify = 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+export type StackJustify =
+  | 'flex-start'
+  | 'center'
+  | 'flex-end'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly';
 
 /**
  * Wrap behavior
@@ -50,7 +55,7 @@ export interface StackProps {
   direction?: StackDirection;
 
   /**
-   * Gap between items using theme.space scale (1-9)
+   * Gap between items in pixels
    */
   gap?: StackGap;
 
@@ -101,7 +106,7 @@ export interface StackProps {
   flexShrink?: number;
 
   /**
-   * Padding using theme.space scale
+   * Padding in pixels
    */
   padding?: StackGap;
 
@@ -162,8 +167,6 @@ const Stack = React.memo<StackProps>(
     padding,
     backgroundColor,
   }) => {
-    const theme = useTheme();
-
     const stackStyle: ViewStyle = useMemo(() => {
       const baseStyle: ViewStyle = {
         display: 'flex',
@@ -171,9 +174,9 @@ const Stack = React.memo<StackProps>(
         flexWrap: wrap,
       };
 
-      // Add gap using theme.space
+      // Add gap in pixels
       if (gap !== undefined) {
-        baseStyle.gap = theme.space[gap];
+        baseStyle.gap = gap;
       }
 
       // Add alignment props
@@ -203,9 +206,9 @@ const Stack = React.memo<StackProps>(
         baseStyle.flexShrink = flexShrink;
       }
 
-      // Add padding using theme.space
+      // Add padding in pixels
       if (padding !== undefined) {
-        baseStyle.padding = theme.space[padding];
+        baseStyle.padding = padding;
       }
 
       // Add background color
@@ -214,15 +217,23 @@ const Stack = React.memo<StackProps>(
       }
 
       return baseStyle;
-    }, [direction, gap, align, justify, wrap, width, height, flexGrow, flexShrink, padding, backgroundColor, theme.space]);
+    }, [
+      direction,
+      gap,
+      align,
+      justify,
+      wrap,
+      width,
+      height,
+      flexGrow,
+      flexShrink,
+      padding,
+      backgroundColor,
+    ]);
 
     const Comp = asChild ? Slot : View;
 
-    return (
-      <Comp style={[stackStyle, style]}>
-        {children}
-      </Comp>
-    );
+    return <Comp style={[stackStyle, style]}>{children}</Comp>;
   }
 );
 
@@ -241,7 +252,7 @@ Stack.displayName = 'Stack';
  *   <Text>Vertical item 2</Text>
  * </VStack>
  */
-const VStack = React.memo<VStackProps>((props) => {
+const VStack = React.memo<VStackProps>(props => {
   return <Stack direction="vertical" {...props} />;
 });
 
@@ -260,7 +271,7 @@ VStack.displayName = 'VStack';
  *   <Text>Horizontal item 2</Text>
  * </HStack>
  */
-const HStack = React.memo<HStackProps>((props) => {
+const HStack = React.memo<HStackProps>(props => {
   return <Stack direction="horizontal" {...props} />;
 });
 

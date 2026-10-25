@@ -224,10 +224,26 @@ Some web features don't have equivalents in React Native:
 4. **Test incrementally** - Migrate one component at a time
 5. **Use TypeScript** - Type errors will help identify API differences
 
+## Prop & Event Naming
+
+Prop conventions that differ from web Radix Themes (and from each other) — worth knowing when porting code:
+
+| Concept | Web Radix Themes | radix-native-ui |
+| --- | --- | --- |
+| `size` | string tokens (`size="3"`) | Numeric scale indices — `size={3}`; string literals (`size="3"`) are also accepted for convenience |
+| `gap` / `padding` on layout primitives | space-scale tokens (`gap="2"`) | **Pixels** on `Stack`, `Flex`, `Grid`, `Box` (RN convention) |
+| `margin` on `Separator`, `Spacer` size, `Inset` `paddingSize` | space-scale tokens | Unchanged: **space-scale indices** (`1`–`9` mapping to `theme.space`) |
+| `color` on typography | color tokens | `ColorValue`: either a theme token (`'tomato'`, `'gray'`…) **or** any CSS color string (`'#ff8800'`) |
+| Radius | `radius="medium"` | Same tokens, shared `RadiusSize` type: `none`, `small`, `medium`, `large`, `full` |
+| Slider commit event | `onValueCommit` | `onValueChangeEnd` |
+| Segmented/select active event | `onValueChange` (varies) | `onActiveChange` for active-item tracking; `onValueChange` for value updates |
+| Click events | `onClick` | `onPress` |
+| Truncation | CSS `text-overflow` | `truncate` / `lines` props on `Text` |
+
 ## Getting Help
 
 If you encounter issues during migration:
 
 - Check the [API Reference](/api-reference/theme-provider) for component props
 - Browse the [Examples](/examples/login-form) for patterns
-- Open an issue on [GitHub](https://github.com/Copy-Labs/radix-ui-native-kilo)
+- Open an issue on [GitHub](https://github.com/Copy-Labs/radix-native-ui)

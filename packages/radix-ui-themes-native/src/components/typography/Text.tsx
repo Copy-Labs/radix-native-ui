@@ -1,3 +1,4 @@
+import type { ColorValue } from '../../theme/types';
 import React, { useMemo } from 'react';
 import { type TextStyle, Text as RNText } from 'react-native';
 import { Slot } from '../../components';
@@ -34,7 +35,7 @@ interface TextProps {
   /**
    * Text color
    */
-  color?: Color;
+  color?: ColorValue;
   /**
    * Whether to truncate text
    */
@@ -128,7 +129,12 @@ const TextComponent = React.memo(
       const fontWeight = weight ? fontWeights[weight] : undefined;
 
       // Determine text color
-      const textColor = theme.colors[color!]?.['11'] || color || colors[12];
+      const textColor =
+        (theme.colors as Record<string, Record<string, string> | string | undefined>)[color!]?.[
+          '11'
+        ] ||
+        color ||
+        colors[12];
 
       // Determine truncation
       const truncateLines = truncate

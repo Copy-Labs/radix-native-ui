@@ -38,9 +38,9 @@ export default function CenterDemo() {
         <PageBody>
           <ScrollView>
             <View style={{ flex: 1 }}>
-              <VStack gap={2} padding={2}>
+              <VStack gap={8} padding={8}>
                 {/* Basic Center */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Center (both axes)</Heading>
                   <Text color="gray" size={2}>
                     Default axis="both" centers horizontally and vertically
@@ -55,7 +55,7 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* Axis Prop */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Axis Prop</Heading>
                   <Text color="gray" size={2}>
                     Control which axis to center on
@@ -99,7 +99,7 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* HCenter */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>HCenter</Heading>
                   <Text color="gray" size={2}>
                     HCenter is a convenience wrapper with axis="horizontal"
@@ -114,7 +114,7 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* VCenter */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>VCenter</Heading>
                   <Text color="gray" size={2}>
                     VCenter is a convenience wrapper with axis="vertical"
@@ -131,7 +131,7 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* AbsoluteCenter */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>AbsoluteCenter</Heading>
                   <Text color="gray" size={2}>
                     Uses absolute positioning for centering
@@ -153,7 +153,7 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* Width and Height */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Width and Height</Heading>
                   <Text color="gray" size={2}>
                     Center can have explicit dimensions
@@ -164,12 +164,12 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* Background and Radius */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Background and Radius</Heading>
                   <Text color="gray" size={2}>
                     Center supports backgroundColor and radius props
                   </Text>
-                  <HStack gap={3}>
+                  <HStack gap={12}>
                     <Center width={60} height={60} backgroundColor="#3b82f6" radius="medium">
                       <Text style={{ color: 'white' }}>1</Text>
                     </Center>
@@ -183,13 +183,13 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* Practical Examples */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Practical Examples</Heading>
 
                   {/* Loading state */}
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, height: 120 }}>
                     <Center style={{ height: '100%' }}>
-                      <VStack align="center" gap={2}>
+                      <VStack align="center" gap={8}>
                         <Spinner size={'large'} />
                         <Text color="gray">Loading...</Text>
                       </VStack>
@@ -199,7 +199,7 @@ export default function CenterDemo() {
                   {/* Empty state */}
                   <Box style={{ backgroundColor: bgGray, borderRadius: 8, height: 150 }}>
                     <Center style={{ height: '100%' }}>
-                      <VStack align="center" gap={2}>
+                      <VStack align="center" gap={8}>
                         <Text size={6}>📭</Text>
                         <Text weight="bold">No items found</Text>
                         <Text color="gray" size={2}>
@@ -210,7 +210,7 @@ export default function CenterDemo() {
                   </Box>
 
                   {/* Icon button */}
-                  <HStack gap={2}>
+                  <HStack gap={8}>
                     {['🏠', '🔍', '❤️', '👤'].map((icon, i) => (
                       <Center
                         key={i}
@@ -237,7 +237,7 @@ export default function CenterDemo() {
                     }}
                   >
                     <Center width="100%" height="100%">
-                      <VStack align="center" gap={2}>
+                      <VStack align="center" gap={8}>
                         <Text size={8}>🎯</Text>
                         <Text style={{ color: 'white' }} weight="bold">
                           Welcome
@@ -259,7 +259,7 @@ export default function CenterDemo() {
                       position: 'relative',
                     }}
                   >
-                    <VStack padding={3}>
+                    <VStack padding={12}>
                       <Text>Background content</Text>
                       <Text color="gray" size={2}>
                         This is behind the overlay
@@ -288,13 +288,13 @@ export default function CenterDemo() {
                 </VStack>
 
                 {/* Comparison */}
-                <VStack gap={1}>
+                <VStack gap={4}>
                   <Heading size={4}>Comparison</Heading>
                   <Text color="gray" size={2}>
                     Different centering approaches side by side
                   </Text>
-                  <HStack gap={2}>
-                    <VStack gap={1} style={{ flex: 1 }}>
+                  <HStack gap={8}>
+                    <VStack gap={4} style={{ flex: 1 }}>
                       <Text size={1} color="gray">
                         Center
                       </Text>
@@ -304,7 +304,7 @@ export default function CenterDemo() {
                         </Center>
                       </Box>
                     </VStack>
-                    <VStack gap={1} style={{ flex: 1 }}>
+                    <VStack gap={4} style={{ flex: 1 }}>
                       <Text size={1} color="gray">
                         HCenter
                       </Text>
@@ -314,7 +314,7 @@ export default function CenterDemo() {
                         </HCenter>
                       </Box>
                     </VStack>
-                    <VStack gap={1} style={{ flex: 1 }}>
+                    <VStack gap={4} style={{ flex: 1 }}>
                       <Text size={1} color="gray">
                         VCenter
                       </Text>

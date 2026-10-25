@@ -1,3 +1,4 @@
+import type { Color } from '../../theme/types';
 import type { SizeInput } from '../../utils/size';
 import React from 'react';
 import { StyleSheet, type ViewStyle } from 'react-native';
@@ -21,7 +22,7 @@ interface CheckboxItem {
   /**
    * Custom color for this item's checkbox
    */
-  color?: string;
+  color?: Color;
 }
 
 interface CheckboxGroupProps {
@@ -62,7 +63,7 @@ interface CheckboxGroupProps {
   /**
    * Custom color for all checkboxes
    */
-  color?: string;
+  color?: Color;
 }
 
 type StyleProp<T> = T | T[];
