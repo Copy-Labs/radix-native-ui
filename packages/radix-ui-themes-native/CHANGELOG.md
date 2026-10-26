@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.10] - 2026-10-25
+
+### Added
+- `Sidebar`: a **unified three-variant model** via `variant?: 'overlay' | 'push' | 'under'` (default `overlay`).
+  - `overlay`: the drawer slides in **on top** of a still page through a `Modal` behind a fading dim.
+  - `push`: the page slides aside while the drawer rides **on top** of it, with a fading `Sidebar.Backdrop` over the shifted page (Android DrawerLayout style).
+  - `under` (new): the drawer is statically anchored beneath the page while the page — rendered on top — slides aside to unmask it, so it genuinely emerges from underneath. No scrim.
+  - A fourth variant, `reveal` (Material-style page scale-down), is deferred behind a `TODO(next)` until these three are device-verified.
+- `Sidebar`: single-source-of-truth animation (`slide`) with every other channel — page shift and all dims — derived through `Animated.interpolate`, so drags, timings and springs move the whole composition in lockstep on the native driver. Shared momentum-swipe responder (`createSidebarResponderHandlers`) gives all variants drag-to-open/close with velocity projection, and horizontal-dominant capture so swiping across a scrollable page drives the drawer instead of fighting it.
+- `Sidebar`: exported pure geometry helpers (`sidebarSlideRange`, `slideProgress`, `progressInterpolation`, `mainShiftFor`, `sidebarBaseLeft`, `projectSwipeSettle`) with a unit test suite.
+
+### Fixed
+- `Sidebar`: **runtime crash** (`ReferenceError: Cannot access 'globalHaptics' before initialization`) — a `useMemo` dependency array referenced `globalHaptics` several lines above its `const` declaration, a temporal-dead-zone hit on every render. The hooks are now hoisted above all memo/effect closures that use them.
+- `Sidebar`: `push` variant no longer shoves the page off-screen or freezes it — the three previously-competing state machines (a Root swipe-close that never committed state, a `skipAnimationRef` that was never cleared, and two overlapping `PanResponder`s) are collapsed into the one model above, and the page now shifts by exactly the drawer width.
+- `Sidebar`: right-anchored drawers no longer animate backwards — the `slide`→progress interpolation now keeps an ascending `inputRange` on both sides so the page shift and dim track the drawer correctly.
+- `Sidebar`: the open drawer now rests flush with the screen edge (a stray 40px "peek" offset was clipping the overlay drawer and leaving a gap beside the page).
+- `Sidebar`: the `under` drawer is actually visible — the page now slides aside to reveal it instead of staying put and hiding it underneath.
+- `Sidebar`: overlay Modal no longer collapses on iOS — `Sidebar.Overlay` is in-flow (`flex: 1`) again instead of absolutely positioned, so the transparent Modal gets a full-screen content area and the dim/drawer anchor correctly (same pattern as `BottomSheet.Overlay`).
+- `Sidebar`: overlay swipe-to-open works — while closed the Modal (and with it the only responder) was unmounted, so a page swipe had nowhere to land. `Sidebar.Root` now wraps the page in an invisible gesture layer for the overlay variant, and granting a swipe mounts the Modal mid-drag so the drawer follows the finger.
+- `Sidebar`: trigger open → close → re-open no longer dead-ends — native-driver animations never write back to the JS `Animated.Value`, so the second cycle animated from a stale value (zero-length close pop, re-open stuck off-screen). Every button-driven transition now re-anchors the value to its visual start position first and the overlay open waits for the Modal's native tree to mount (the `BottomSheet` 50 ms pattern). A drag that settles back to the same state no longer strands the in-flight flag that makes the next toggle skip its animation.
+- `Sidebar`: `Sidebar.Backdrop` disables pointer events while closed, so an invisible full-screen dim can no longer intercept taps meant for the page.
+- `Sidebar`: moved the conditional hook out of `Sidebar.Container` (its `PanResponder` was created after an early return for the overlay variant), and dropped two dead required context fields (`slideClosed`/`slideOpen`) that were never provided.
+- Demo pages: the sidebar variant demos' header no longer renders the title on top of the back arrow (a nested `row-reverse` + `space-between` row inside `PageHeader` misanchored the title).
+
+### Docs
+- Added `docs/components/overlays/sidebar.mdx` (variants, anatomy, API reference, gestures, controlled state) and registered it in the Overlays navigation.
+
 ## [0.1.9] - 2026-10-25
 
 ### Changed

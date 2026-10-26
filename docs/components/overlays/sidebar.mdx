@@ -1,0 +1,307 @@
+# Sidebar
+
+A navigation drawer that slides in from either edge of the screen. Choose how it relates to the page with three animation variants: overlaying it, pushing it aside, or emerging from underneath.
+
+## Import
+
+```tsx
+import { Sidebar } from 'radix-native-ui';
+```
+
+## Basic Usage
+
+The default `overlay` variant renders the sidebar through a `Modal`, on top of the page behind a fading dim:
+
+```tsx
+<Sidebar.Root side="left" variant="overlay">
+  <Sidebar.Trigger>
+    <Button>Open Sidebar</Button>
+  </Sidebar.Trigger>
+  <Sidebar.Portal>
+    <Sidebar.Overlay />
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Menu</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Home</Text>
+      </Sidebar.Item>
+      <Sidebar.Item>
+        <Text>Profile</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+  </Sidebar.Portal>
+</Sidebar.Root>
+```
+
+The inline variants (`push` and `under`) live inside the page layout instead of a Modal. Wrap the drawer and the page in `Sidebar.Container`, with `Sidebar.Main` marking the page region:
+
+```tsx
+<Sidebar.Root side="left" variant="push" width={280}>
+  <Sidebar.Trigger>
+    <IconButton icon={<Menu />} />
+  </Sidebar.Trigger>
+  <Sidebar.Container>
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Menu</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Home</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+    <Sidebar.Main>
+      {/* The page content — slides aside when the drawer opens */}
+      <ScrollView>{...}</ScrollView>
+    </Sidebar.Main>
+    <Sidebar.Backdrop />
+  </Sidebar.Container>
+</Sidebar.Root>
+```
+
+## Anatomy
+
+The Sidebar follows the Radix compound component pattern:
+
+- **Root**: Wraps all components and manages the open state, side, variant and animation
+- **Trigger**: The element that opens the sidebar
+- **Portal**: Renders the drawer through a Modal (overlay variant only)
+- **Overlay**: The dim behind the drawer (overlay variant only)
+- **Container**: Layout wrapper that layers the drawer and the page (push/under variants)
+- **Content**: The sidebar drawer itself
+- **Header**: A header section inside the drawer
+- **Item**: A menu item (closes the sidebar when pressed)
+- **Separator**: A divider between item groups
+- **Main**: The page content region (push/under variants)
+- **Backdrop**: The fading dim for the push variant (tap to close)
+
+## Variants
+
+The `variant` prop changes how the drawer and the page move together. All three support drag-to-open / drag-to-close with momentum, and rest flush with the screen edge when open.
+
+| Variant | Behavior |
+|---------|----------|
+| `overlay` | The drawer slides in **on top** of a still page, through a `Modal`, behind a fading dim. The classic Material "modal drawer". |
+| `push` | The page **slides aside** while the drawer rides **on top** of it, with a fading backdrop over the shifted page. The Android DrawerLayout "push" style. |
+| `under` | The drawer sits **statically anchored** at the edge underneath the page while the page — rendered on top — slides aside to unmask it, so it appears to emerge from beneath the page. No scrim; the page remains fully visible. |
+
+### Overlay
+
+```tsx
+<Sidebar.Root side="right" variant="overlay">
+  <Sidebar.Trigger>
+    <Button>Open Settings</Button>
+  </Sidebar.Trigger>
+  <Sidebar.Portal>
+    <Sidebar.Overlay />
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Settings</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Account</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+  </Sidebar.Portal>
+</Sidebar.Root>
+```
+
+### Push
+
+```tsx
+<Sidebar.Root side="left" variant="push" width={280}>
+  <Sidebar.Trigger>
+    <Button>Open (Push)</Button>
+  </Sidebar.Trigger>
+  <Sidebar.Container>
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Menu</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Home</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+    <Sidebar.Main>
+      <YourPageContent />
+    </Sidebar.Main>
+    <Sidebar.Backdrop />
+  </Sidebar.Container>
+</Sidebar.Root>
+```
+
+### Under
+
+```tsx
+<Sidebar.Root side="left" variant="under" width={280}>
+  <Sidebar.Trigger>
+    <Button>Open (Under)</Button>
+  </Sidebar.Trigger>
+  <Sidebar.Container>
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Menu</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Home</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+    <Sidebar.Main>
+      <YourPageContent />
+    </Sidebar.Main>
+  </Sidebar.Container>
+</Sidebar.Root>
+```
+
+## API Reference
+
+### Sidebar.Root
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Sidebar structure (Trigger, Portal/Container, Content, Main...) |
+| `open` | `boolean` | - | Controlled open state. Omit to let the sidebar manage it internally |
+| `onOpenChange` | `(open: boolean) => void` | - | Callback when the open state changes |
+| `side` | `'left' \| 'right'` | `'left'` | Which edge the drawer anchors to |
+| `variant` | `'overlay' \| 'push' \| 'under'` | `'overlay'` | How the drawer relates to the page (see [Variants](#variants)) |
+| `width` | `number` | `280` | Drawer width in points |
+| `animationDuration` | `number` | `300` | Open/close timing in ms (drag releases use a spring) |
+
+### Sidebar.Trigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Trigger element |
+| `asChild` | `boolean` | `true` | Merge props onto the child element |
+| `hapticFeedback` | `boolean` | `false` | Enable haptic feedback on press |
+
+### Sidebar.Portal
+
+Renders the drawer through a `Modal`. Overlay variant only — `push`/`under` render inside `Sidebar.Container` instead.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Portal content (Overlay + Content) |
+
+### Sidebar.Overlay
+
+The dim behind the drawer inside the Modal. Overlay variant only; fades in and out in lockstep with the drawer.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when closing via the overlay |
+
+### Sidebar.Container
+
+Layout wrapper for the inline `push` and `under` variants. It sequences the drawer, page and backdrop so the layering is correct on both iOS and Android, and owns the swipe gesture for opening and closing. For the overlay variant it renders its children unchanged.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | `Sidebar.Content`, `Sidebar.Main`, and (for push) `Sidebar.Backdrop` |
+
+### Sidebar.Content
+
+The drawer itself. Anchored flush with the configured edge and driven entirely by the shared animation channel, so it moves in lockstep with the page and dim.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Drawer content (Header, Item, Separator...) |
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+
+### Sidebar.Header
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Header content |
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+
+### Sidebar.Item
+
+Closes the sidebar when pressed (so it doubles as a navigation link row).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Item content |
+| `onPress` | `() => void` | - | Callback run before closing |
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when pressed |
+
+### Sidebar.Separator
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+
+### Sidebar.Main
+
+The page region for the inline variants. It stays still for `overlay`, and slides aside by the drawer width for `push` and `under`.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | - | Page content |
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+
+### Sidebar.Backdrop
+
+The fading dim for the `push` variant (tap to close). Renders nothing for `overlay` (which uses `Sidebar.Overlay`) and for `under` (whose page stays fully visible). When closed it disables pointer events so it never intercepts taps meant for the page.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles |
+| `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when closing via the backdrop |
+
+## Gestures
+
+All variants support horizontal swipe with the same gesture model:
+
+- **Drag** anywhere on the drawer (or the container for `push`/`under`) tracks your finger — the page shift and every dim follow in lockstep.
+- **Release** projects your momentum to decide whether the drawer settles open or closed, so a short flick completes the gesture. A horizontal drag that dominates the vertical axis wins over nested vertical `ScrollView`s, so swiping across a scrollable page opens the drawer instead of fighting it.
+- Tapping the dim (`Sidebar.Overlay` / `Sidebar.Backdrop`) closes the drawer. For `under`, close by swiping the drawer back or pressing a `Sidebar.Item`.
+
+## Controlled State
+
+```tsx
+const [open, setOpen] = React.useState(false);
+
+<Flex gap={12}>
+  <Button onPress={() => setOpen(true)}>Open</Button>
+  <Button onPress={() => setOpen(false)}>Close</Button>
+</Flex>
+
+<Sidebar.Root side="left" variant="overlay" open={open} onOpenChange={setOpen}>
+  <Sidebar.Portal>
+    <Sidebar.Overlay />
+    <Sidebar.Content>
+      <Sidebar.Header>
+        <Heading size={4}>Controlled</Heading>
+      </Sidebar.Header>
+      <Sidebar.Item>
+        <Text>Managed externally.</Text>
+      </Sidebar.Item>
+    </Sidebar.Content>
+  </Sidebar.Portal>
+</Sidebar.Root>
+```
+
+## Haptic Feedback
+
+Haptics fire during interactions (gated by the theme's `haptics` setting):
+
+- **Swipe**: haptic when a drag settles open or closed
+- **Overlay / Backdrop**: haptic when closing via the dim
+- **Item**: haptic when a menu item is pressed
+
+Disable per component with `hapticFeedback={false}`.
+
+## Accessibility
+
+- `Sidebar.Item` renders as a `Pressable`, so each entry is focusable and announces as a button.
+- Closing on backdrop tap and on `Escape`/Android back is handled by the underlying `Modal`.
+- Give icon-only triggers an `accessibilityLabel` (e.g. "Open menu").
+
+## Notes
+
+- The `overlay` variant renders through a `Modal`, which unmounts only after the closing animation finishes — so the exit slides out rather than popping.
+- The inline variants (`push`, `under`) clip to the `Sidebar.Container`, which must fill the region you want the drawer to slide within (typically the screen, `flex: 1`).
+- A fourth variant, `reveal` (page translates over a static sidebar while scaling down and dimming, Material style), is planned once these three are device-verified.

@@ -139,7 +139,8 @@
               "components/overlays/dropdown-menu",
               "components/overlays/context-menu",
               "components/overlays/toast",
-              "components/overlays/portal"
+              "components/overlays/portal",
+              "components/overlays/sidebar"
             ]
           },
           {
