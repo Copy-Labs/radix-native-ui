@@ -52,8 +52,8 @@ export default function ExamplesIndex() {
                 AI Agent Chat Example
               </Text>
               <Text color={'gray'}>
-                A complete agent app demo: thinking state, tool-call steps, and streamed answers on a mock
-                agent loop - swap in a real API and the UI works unchanged.
+                A full agent app shell built on Sidebar: drawer with history and navigation, nested
+                Chats / Agents / Settings pages, live variant switching, and a mocked streaming agent loop.
               </Text>
               <Link asChild href={'/examples/ai_agent'}>
                 <Button variant={'ghost'}>
