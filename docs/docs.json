@@ -125,7 +125,8 @@
             "group": "Navigation",
             "pages": [
               "components/navigation/tabs",
-              "components/navigation/segmented-control"
+              "components/navigation/segmented-control",
+              "components/navigation/floating-tab-bar"
             ]
           },
           {

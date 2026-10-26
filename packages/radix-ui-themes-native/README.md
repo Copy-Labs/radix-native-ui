@@ -130,6 +130,7 @@ function MyComponent() {
 - **Tabs** - Tab navigation component
 - **TabNav** - Tab navigation with router support
 - **SegmentedControl** - iOS-style segmented control
+- **FloatingTabBar** - Floating, elevated bottom tab bar with animated active pill
 
 ### Overlay Components
 
