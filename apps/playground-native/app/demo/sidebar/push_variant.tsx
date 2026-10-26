@@ -9,18 +9,18 @@ export default function SidebarPushVariant() {
     <PageContainer>
       <Sidebar.Root animationDuration={150} side="left" variant="push" width={280}>
         <PageHeader showBackButton>
-          <Flex direction={'row-reverse'} align={'center'} flex={1} gap={8} justify={'space-between'} paddingRight={12}>
-            <Sidebar.Trigger>
-              <IconButton accessibilityLabel={'menu-icon'} size={1} variant={'soft'}>
-                <Ionicons name={'menu'} />
-              </IconButton>
-            </Sidebar.Trigger>
+          <Flex direction={'row'} align={'center'} flex={1} gap={8} justify={'space-between'} paddingRight={12}>
             <Box>
               <Heading size={6}>Sidebar (Push Variant)</Heading>
               <Text color="gray" size={3}>
                 Navigation drawer / Hamburger menu
               </Text>
             </Box>
+            <Sidebar.Trigger>
+              <IconButton accessibilityLabel={'menu-icon'} size={1} variant={'soft'}>
+                <Ionicons name={'menu'} />
+              </IconButton>
+            </Sidebar.Trigger>
           </Flex>
         </PageHeader>
         <Sidebar.Container>
@@ -52,6 +52,8 @@ export default function SidebarPushVariant() {
               </ScrollView>
             </PageBody>
           </Sidebar.Main>
+          {/* Fading dim over the shifted page; tap to close */}
+          <Sidebar.Backdrop />
         </Sidebar.Container>
       </Sidebar.Root>
     </PageContainer>

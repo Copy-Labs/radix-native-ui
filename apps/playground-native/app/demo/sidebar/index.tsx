@@ -57,7 +57,8 @@ export default function SidebarDemo() {
                 Left Sidebar (Push)
               </Heading>
               <Text size={2} color="gray" style={{ marginBottom: 16 }}>
-                The main content slides with the sidebar (revealing from behind).
+                The page slides aside while the sidebar rides on top of it,
+                with a fading backdrop. Tap the backdrop or swipe to close.
               </Text>
 
               <PushLeftSidebarDemo />
@@ -73,6 +74,20 @@ export default function SidebarDemo() {
               </Text>
 
               <BasicPushRightSidebar />
+            </Card>
+
+            {/* Under Sidebar */}
+            <Card>
+              <Heading size={4} style={{ marginBottom: 12 }}>
+                Left Sidebar (Under)
+              </Heading>
+              <Text size={2} color="gray" style={{ marginBottom: 16 }}>
+                The sidebar emerges from underneath the page — the page slides
+                aside to reveal it and stays on top. Swipe horizontally to
+                open and close.
+              </Text>
+
+              <UnderLeftSidebarDemo />
             </Card>
 
             {/* Custom Width */}
@@ -210,6 +225,40 @@ function PushLeftSidebarDemo() {
             <Text size={2} color="gray">This content slides when sidebar opens</Text>
           </View>
         </Sidebar.Main>
+        <Sidebar.Backdrop />
+      </Sidebar.Container>
+    </Sidebar.Root>
+  );
+}
+
+// Under Left Sidebar Demo - drawer emerges from beneath the sliding page
+function UnderLeftSidebarDemo() {
+  return (
+    <Sidebar.Root side="left" variant="under" width={280}>
+      <Sidebar.Trigger>
+        <Button>Open (Under)</Button>
+      </Sidebar.Trigger>
+      <Sidebar.Container>
+        <Sidebar.Content>
+          <Sidebar.Header>
+            <Heading size={4}>Menu</Heading>
+          </Sidebar.Header>
+          <Sidebar.Item>
+            <Text>Home</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Search</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Profile</Text>
+          </Sidebar.Item>
+        </Sidebar.Content>
+        <Sidebar.Main>
+          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
+            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content Area</Text>
+            <Text size={2} color="gray">The sidebar slides in from underneath</Text>
+          </View>
+        </Sidebar.Main>
       </Sidebar.Container>
     </Sidebar.Root>
   );
@@ -244,6 +293,7 @@ function BasicPushRightSidebar() {
             <Text size={2} color="gray">Content slides left</Text>
           </View>
         </Sidebar.Main>
+        <Sidebar.Backdrop />
       </Sidebar.Container>
     </Sidebar.Root>
   );
