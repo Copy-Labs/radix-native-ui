@@ -3,6 +3,7 @@ import {
   slideProgress,
   progressInterpolation,
   mainShiftFor,
+  pageScaleFor,
   projectSwipeSettle,
 } from '../Sidebar';
 
@@ -69,12 +70,23 @@ describe('mainShiftFor', () => {
     expect(mainShiftFor('overlay', 'right', 280)).toBe(0);
   });
 
-  it('push and under both slide the page aside by the full drawer width', () => {
+  it('push, under and reveal all slide the page aside by the full drawer width', () => {
     // Left drawer pushes the page right (+); a right drawer pulls it left (−).
     expect(mainShiftFor('push', 'left', 280)).toBe(280);
     expect(mainShiftFor('push', 'right', 280)).toBe(-280);
     expect(mainShiftFor('under', 'left', 280)).toBe(280);
     expect(mainShiftFor('under', 'right', 280)).toBe(-280);
+    expect(mainShiftFor('reveal', 'left', 280)).toBe(280);
+    expect(mainShiftFor('reveal', 'right', 280)).toBe(-280);
+  });
+});
+
+describe('pageScaleFor', () => {
+  it('only the reveal variant recedes (scales down) its page', () => {
+    expect(pageScaleFor('reveal')).toBeCloseTo(0.92);
+    expect(pageScaleFor('overlay')).toBe(1);
+    expect(pageScaleFor('push')).toBe(1);
+    expect(pageScaleFor('under')).toBe(1);
   });
 });
 

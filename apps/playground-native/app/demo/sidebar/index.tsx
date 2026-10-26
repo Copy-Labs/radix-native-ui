@@ -90,6 +90,20 @@ export default function SidebarDemo() {
               <UnderLeftSidebarDemo />
             </Card>
 
+            {/* Reveal Sidebar */}
+            <Card>
+              <Heading size={4} style={{ marginBottom: 12 }}>
+                Left Sidebar (Reveal)
+              </Heading>
+              <Text size={2} color="gray" style={{ marginBottom: 16 }}>
+                The page recedes — sliding aside while scaling down and
+                dimming — to expose the drawer anchored underneath it (Material
+                style).
+              </Text>
+
+              <RevealLeftSidebarDemo />
+            </Card>
+
             {/* Custom Width */}
             <Card>
               <Heading size={4} style={{ marginBottom: 12 }}>
@@ -226,6 +240,40 @@ function PushLeftSidebarDemo() {
           </View>
         </Sidebar.Main>
         <Sidebar.Backdrop />
+      </Sidebar.Container>
+    </Sidebar.Root>
+  );
+}
+
+// Reveal Left Sidebar Demo - page recedes (slides + scales + dims) over the
+// statically anchored drawer
+function RevealLeftSidebarDemo() {
+  return (
+    <Sidebar.Root side="left" variant="reveal" width={280}>
+      <Sidebar.Trigger>
+        <Button>Open (Reveal)</Button>
+      </Sidebar.Trigger>
+      <Sidebar.Container>
+        <Sidebar.Content>
+          <Sidebar.Header>
+            <Heading size={4}>Menu</Heading>
+          </Sidebar.Header>
+          <Sidebar.Item>
+            <Text>Home</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Search</Text>
+          </Sidebar.Item>
+          <Sidebar.Item>
+            <Text>Profile</Text>
+          </Sidebar.Item>
+        </Sidebar.Content>
+        <Sidebar.Main>
+          <View style={{ padding: 20, alignItems: 'center', justifyContent: 'center', height: 120, backgroundColor: '#f5f5f5', borderRadius: 8 }}>
+            <Text weight="bold" style={{ marginBottom: 8 }}>Main Content Area</Text>
+            <Text size={2} color="gray">This page shrinks away to reveal the drawer</Text>
+          </View>
+        </Sidebar.Main>
       </Sidebar.Container>
     </Sidebar.Root>
   );

@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `Sidebar`: fourth variant, `reveal` (Material style) — the drawer stays statically anchored beneath the page while the page slides aside **and recedes**: scaling down to 0.92 under a 32%-opacity scrim, all scrubbed by the same gesture progress as the drawer (transforms only, native driver intact). The scrim is a child of `Sidebar.Main`, so it never covers the exposed drawer and taps on it close the sidebar. Full-page and inline demos, docs, and `pageScaleFor` geometry tests included.
+
 ## [0.1.10] - 2026-10-25
 
 ### Added
