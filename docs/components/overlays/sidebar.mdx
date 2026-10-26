@@ -83,7 +83,7 @@ The `variant` prop changes how the drawer and the page move together. All four s
 |---------|----------|
 | `overlay` | The drawer slides in **on top** of a still page, through a `Modal`, behind a fading dim. The classic Material "modal drawer". |
 | `push` | The page **slides aside** while the drawer rides **on top** of it, with a fading backdrop over the shifted page. The Android DrawerLayout "push" style. |
-| `under` | The drawer sits **statically anchored** at the edge underneath the page while the page — rendered on top — slides aside to unmask it, so it appears to emerge from beneath the page. No scrim; the page remains fully visible. |
+| `under` | The drawer sits **statically anchored** at the edge underneath the page while the page — rendered on top — slides aside to unmask it, so it appears to emerge from beneath the page. As it is uncovered, the drawer **scales up** (0.9 → 1), giving it its own rise-toward-you motion. No scrim; the page remains fully visible. |
 | `reveal` | `under` plus depth: the drawer stays statically anchored while the page slides aside **and scales down and dims**, receding to expose the drawer underneath it (Material "reveal" style). Tapping the dimmed page closes the drawer. |
 
 ### Overlay
@@ -329,3 +329,4 @@ Disable per component with `hapticFeedback={false}`.
 - The `overlay` variant renders through a `Modal`, which unmounts only after the closing animation finishes — so the exit slides out rather than popping.
 - The inline variants (`push`, `under`, `reveal`) clip to the `Sidebar.Container`, which must fill the region you want the drawer to slide within (typically the screen, `flex: 1`).
 - `reveal` recedes the page to 0.92 of its size under a 32%-opacity scrim, both scrubbed by the same gesture progress as the drawer — drags move the recession and the shift together.
+- The `under` drawer scales up from 0.9 to 1 as the page unmasks it — the only variant whose drawer has its own animation besides the slide.

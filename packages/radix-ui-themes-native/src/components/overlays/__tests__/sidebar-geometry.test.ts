@@ -4,6 +4,7 @@ import {
   progressInterpolation,
   mainShiftFor,
   pageScaleFor,
+  contentScaleFor,
   projectSwipeSettle,
 } from '../Sidebar';
 
@@ -87,6 +88,15 @@ describe('pageScaleFor', () => {
     expect(pageScaleFor('overlay')).toBe(1);
     expect(pageScaleFor('push')).toBe(1);
     expect(pageScaleFor('under')).toBe(1);
+  });
+});
+
+describe('contentScaleFor', () => {
+  it('only the under variant gives its drawer a scale-up entrance', () => {
+    expect(contentScaleFor('under')).toBeCloseTo(0.9);
+    expect(contentScaleFor('overlay')).toBe(1);
+    expect(contentScaleFor('push')).toBe(1);
+    expect(contentScaleFor('reveal')).toBe(1);
   });
 });
 

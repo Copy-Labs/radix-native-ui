@@ -39,7 +39,8 @@ export type SidePosition = 'left' | 'right';
  * - 'push': the sidebar is revealed at the edge while the page translates
  *   with it (Android DrawerLayout style), with a fading backdrop.
  * - 'under': the sidebar emerges from UNDERNEATH the page — the drawer sits
- *   statically at the edge while the page (on top) slides aside to reveal it.
+ *   statically at the edge while the page (on top) slides aside to reveal it,
+ *   and the drawer scales up as it is unmasked (its own rise-toward-you motion).
  * - 'reveal': 'under' plus depth (Material style) — the drawer is statically
  *   anchored beneath the page while the page slides aside AND scales down and
  *   dims, receding to expose the drawer underneath it.
@@ -71,6 +72,7 @@ interface SidebarContextValue {
   opacity: Animated.Value;
   mainScale: Animated.Value;
   revealDimOpacity: Animated.Value;
+  contentScale: Animated.Value;
   // Authoritative JS-side positions — native-driver animations do not write
   // values back to JS, so gestures must never read slide.__getValue().
   slideRef: { current: number };
@@ -106,6 +108,8 @@ const SWIPE_OPEN_FRACTION = 0.25;
 // Restrained Material numbers for the reveal variant's page recession.
 const REVEAL_PAGE_SCALE = 0.92;
 const REVEAL_DIM_OPACITY = 0.32;
+// The under variant's drawer rises toward the viewer as the page unmasks it.
+const UNDER_DRAWER_SCALE = 0.9;
 
 // ---------------------------------------------------------------------------
 // Pure geometry helpers (extracted so they are unit-testable without React).
@@ -118,7 +122,7 @@ const REVEAL_DIM_OPACITY = 0.32;
 // - push:    the page translates away with the drawer, drawer on top
 //            (DrawerLayout style).
 // - under:   the page stays ON TOP and slides aside, revealing the drawer
-//            anchored statically beneath it.
+//            anchored statically beneath it, which scales up as it's unmasked.
 // - reveal:  like under, but the receding page also scales down and dims.
 // - overlay: Modal; the page stays still under a fading dim.
 // ---------------------------------------------------------------------------
@@ -175,6 +179,16 @@ export function mainShiftFor(variant: SidebarVariant, side: SidePosition, width:
  */
 export function pageScaleFor(variant: SidebarVariant): number {
   return variant === 'reveal' ? REVEAL_PAGE_SCALE : 1;
+}
+
+/**
+ * Closed-state scale of the drawer itself. Only `under` gives its statically
+ * anchored drawer its own animation — rising from UNDER_DRAWER_SCALE to 1 as
+ * the page unmasks it; every other variant sits at 1 (their motion is the
+ * slide transform or the Modal layer).
+ */
+export function contentScaleFor(variant: SidebarVariant): number {
+  return variant === 'under' ? UNDER_DRAWER_SCALE : 1;
 }
 
 /**
@@ -338,6 +352,16 @@ export const SidebarRoot = ({
       progress.interpolate({
         inputRange: [0, 1],
         outputRange: [0, variant === 'reveal' ? REVEAL_DIM_OPACITY : 0],
+      }),
+    [progress, variant]
+  );
+  // The under drawer's own rise: 0.9 → 1 with the unmasking, so it feels like
+  // it comes toward the viewer from beneath the page. A no-op 1 → 1 elsewhere.
+  const contentScale = useMemo(
+    () =>
+      progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [contentScaleFor(variant), 1],
       }),
     [progress, variant]
   );
@@ -536,6 +560,7 @@ export const SidebarRoot = ({
         opacity,
         mainScale,
         revealDimOpacity,
+        contentScale,
         slideRef,
         updateDragPosition,
         animateToState,
@@ -685,7 +710,7 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ children, style }: SidebarContentProps) => {
-  const { side, variant, width, slide, panHandlers, radii } = useSidebar();
+  const { side, variant, width, slide, contentScale, panHandlers, radii } = useSidebar();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -722,8 +747,12 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
           ...borderRadius,
           // `under`/`reveal` anchor the drawer statically at its edge — the
           // page slides aside over it, so the drawer appears to emerge from
-          // underneath the page rather than off the screen edge.
-          transform: [{ translateX: variant === 'under' || variant === 'reveal' ? 0 : slide }],
+          // underneath the page rather than off the screen edge. `under`
+          // adds its own scale-up (0.9 → 1) as it is unmasked.
+          transform: [
+            { translateX: variant === 'under' || variant === 'reveal' ? 0 : slide },
+            { scale: contentScale },
+          ],
           ...(shadow || {}),
         },
         style,
