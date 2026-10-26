@@ -40,11 +40,11 @@ export type SidePosition = 'left' | 'right';
  *   with it (Android DrawerLayout style), with a fading backdrop.
  * - 'under': the sidebar emerges from UNDERNEATH the page — the drawer sits
  *   statically at the edge while the page (on top) slides aside to reveal it.
- * TODO(next): 'reveal' — page translates over a static sidebar while
- * scaling down and dimming (Material style). Deferred until the shipped
- * three are device-verified.
+ * - 'reveal': 'under' plus depth (Material style) — the drawer is statically
+ *   anchored beneath the page while the page slides aside AND scales down and
+ *   dims, receding to expose the drawer underneath it.
  */
-export type SidebarVariant = 'overlay' | 'push' | 'under';
+export type SidebarVariant = 'overlay' | 'push' | 'under' | 'reveal';
 
 // ============================================================================
 // Sidebar Context
@@ -62,11 +62,15 @@ interface SidebarContextValue {
   radii: RadiusScale;
   globalHaptics: boolean;
   // Animation state. `slide` is the sidebar's own translateX (closed = ∓width,
-  // open = 0); `mainTranslateX` shifts the page for the push variant; `opacity`
-  // drives every dim/backdrop so all fades follow the finger and the spring.
+  // open = 0); `mainTranslateX` shifts the page for the shifting variants;
+  // `opacity` drives every dim/backdrop so all fades follow the finger and
+  // the spring. `mainScale`/`revealDimOpacity` are the reveal variant's page
+  // recession (scale down + in-page scrim), also progress-derived.
   slide: Animated.Value;
   mainTranslateX: Animated.Value;
   opacity: Animated.Value;
+  mainScale: Animated.Value;
+  revealDimOpacity: Animated.Value;
   // Authoritative JS-side positions — native-driver animations do not write
   // values back to JS, so gestures must never read slide.__getValue().
   slideRef: { current: number };
@@ -99,6 +103,9 @@ const DEFAULT_ANIMATION_DURATION = 300;
 const SPRING_TENSION = 65;
 const SPRING_FRICTION = 11;
 const SWIPE_OPEN_FRACTION = 0.25;
+// Restrained Material numbers for the reveal variant's page recession.
+const REVEAL_PAGE_SCALE = 0.92;
+const REVEAL_DIM_OPACITY = 0.32;
 
 // ---------------------------------------------------------------------------
 // Pure geometry helpers (extracted so they are unit-testable without React).
@@ -107,10 +114,12 @@ const SWIPE_OPEN_FRACTION = 0.25;
 // (0→1) derives from it; the page shift and every dim derive from progress,
 // so all channels move in lockstep during drags, timings and springs alike —
 // transforms only, so the native driver stays on.
-// Variants differ in exactly two things:
-// - push:   the page translates away with the drawer (DrawerLayout style).
-// - under:  the page stays ON TOP and slides aside, revealing the drawer
-//           anchored statically beneath it.
+// Variants differ only in:
+// - push:    the page translates away with the drawer, drawer on top
+//            (DrawerLayout style).
+// - under:   the page stays ON TOP and slides aside, revealing the drawer
+//            anchored statically beneath it.
+// - reveal:  like under, but the receding page also scales down and dims.
 // - overlay: Modal; the page stays still under a fading dim.
 // ---------------------------------------------------------------------------
 
@@ -149,14 +158,23 @@ export function progressInterpolation(
 }
 
 /**
- * translateX the page reaches when fully open (Sidebar.Main). Both push and
- * under slide the page aside by the full drawer width to make room for the
- * drawer — push rides it on top, under reveals it from beneath. Overlay dims a
- * static page. A left drawer pushes the page right (+); a right drawer left (−).
+ * translateX the page reaches when fully open (Sidebar.Main). push, under and
+ * reveal all slide the page aside by the full drawer width to make room for
+ * the drawer — push rides it on top, under/reveal reveal it from beneath.
+ * Overlay dims a static page. A left drawer pushes the page right (+); a
+ * right drawer left (−).
  */
 export function mainShiftFor(variant: SidebarVariant, side: SidePosition, width: number): number {
   if (variant === 'overlay') return 0;
   return side === 'left' ? width : -width;
+}
+
+/**
+ * Scale the page shrinks to when fully open. Only the reveal variant recedes
+ * its page; every other variant (and the closed state) stays at 1.
+ */
+export function pageScaleFor(variant: SidebarVariant): number {
+  return variant === 'reveal' ? REVEAL_PAGE_SCALE : 1;
 }
 
 /**
@@ -304,6 +322,24 @@ export const SidebarRoot = ({
   const backdropOpacity = useMemo(
     () => progress.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }),
     [progress]
+  );
+  // Reveal's page recession: shrink toward pageScaleFor and fade an in-page
+  // scrim — both chained off progress, so drags scrub them with the shift.
+  const mainScale = useMemo(
+    () =>
+      progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, pageScaleFor(variant)],
+      }),
+    [progress, variant]
+  );
+  const revealDimOpacity = useMemo(
+    () =>
+      progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, variant === 'reveal' ? REVEAL_DIM_OPACITY : 0],
+      }),
+    [progress, variant]
   );
   // Backward-compatible aliases used by the animated style props.
   const mainTranslateX = mainShift;
@@ -498,6 +534,8 @@ export const SidebarRoot = ({
         slide,
         mainTranslateX,
         opacity,
+        mainScale,
+        revealDimOpacity,
         slideRef,
         updateDragPosition,
         animateToState,
@@ -676,16 +714,16 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
           backgroundColor,
           width,
           left: sidebarBaseLeft(variant, side, width),
-          // Inline push rides above the shifting page; under renders below it
-          // so the drawer emerges from beneath (iOS paints in DOM order —
-          // Container sequences that; Android mirrors via elevation).
-          zIndex: variant === 'under' ? 1 : 3,
-          elevation: variant === 'under' ? 1 : 3,
+          // Inline push rides above the shifting page; under/reveal render
+          // below it so the drawer emerges from beneath (iOS paints in DOM
+          // order — Container sequences that; Android mirrors via elevation).
+          zIndex: variant === 'under' || variant === 'reveal' ? 1 : 3,
+          elevation: variant === 'under' || variant === 'reveal' ? 1 : 3,
           ...borderRadius,
-          // `under` anchors the drawer statically at its edge — the page
-          // slides aside over it, so the drawer appears to emerge from
+          // `under`/`reveal` anchor the drawer statically at its edge — the
+          // page slides aside over it, so the drawer appears to emerge from
           // underneath the page rather than off the screen edge.
-          transform: [{ translateX: variant === 'under' ? 0 : slide }],
+          transform: [{ translateX: variant === 'under' || variant === 'reveal' ? 0 : slide }],
           ...(shadow || {}),
         },
         style,
@@ -905,7 +943,7 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
   }
 
   // iOS paints siblings in DOM order (zIndex is ignored there), so the
-  // drawer renders BEFORE Main for `under` (it emerges from beneath the
+  // drawer renders BEFORE Main for under/reveal (it emerges from beneath the
   // page) and AFTER Main for `push` (it rides on top of the shifting page).
   // The backdrop always sits directly below the drawer: over the page/dim
   // stack, never blocking the drawer's own taps.
@@ -927,13 +965,15 @@ export const SidebarContainer = ({ children }: SidebarContainerProps) => {
     }
   });
 
+  const drawerBeneath = variant === 'under' || variant === 'reveal';
+
   return (
     <View style={styles.container} {...containerResponder.panHandlers}>
       {others}
-      {variant === 'under' && contentChild}
+      {drawerBeneath && contentChild}
       {mainChild}
       {backdropChild}
-      {variant === 'push' && contentChild}
+      {!drawerBeneath && contentChild}
     </View>
   );
 };
@@ -944,7 +984,15 @@ interface SidebarMainProps {
 }
 
 export const SidebarMain = ({ children, style }: SidebarMainProps) => {
-  const { variant, mainTranslateX } = useSidebar();
+  const {
+    variant,
+    open,
+    onOpenChange,
+    mainTranslateX,
+    mainScale,
+    revealDimOpacity,
+    globalHaptics,
+  } = useSidebar();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -954,11 +1002,18 @@ export const SidebarMain = ({ children, style }: SidebarMainProps) => {
     return <>{children}</>;
   }
 
-  // The page must be opaque for both inline variants: `under` hides the
-  // closed drawer beneath it, and the dim backdrop fades over it. Both
-  // inline variants translate it — via the progress-derived channel, in
-  // lockstep with the drawer, transforms only, native driver intact.
+  // The page must be opaque for all inline variants: under/reveal hide the
+  // closed drawer beneath it, and the dim backdrop fades over it. All three
+  // translate it — via the progress-derived channel, in lockstep with the
+  // drawer, transforms only, native driver intact.
   const backgroundColor = isDark ? theme.colors.gray.dark[1] : theme.colors.gray[1];
+
+  const handleDimPress = () => {
+    onOpenChange(false);
+    if (globalHaptics) {
+      triggerHaptic('press');
+    }
+  };
 
   return (
     <Animated.View
@@ -966,16 +1021,33 @@ export const SidebarMain = ({ children, style }: SidebarMainProps) => {
         styles.mainInline,
         {
           backgroundColor,
-          // Above the `under` drawer (which hides beneath it until the page
-          // slides aside); the backdrop and push drawer paint over it.
-          zIndex: variant === 'under' ? 2 : 0,
-          elevation: variant === 'under' ? 2 : 0,
-          transform: [{ translateX: mainTranslateX }],
+          // Above the under/reveal drawer (which hides beneath it until the
+          // page slides aside); the backdrop and push drawer paint over it.
+          zIndex: variant === 'under' || variant === 'reveal' ? 2 : 0,
+          elevation: variant === 'under' || variant === 'reveal' ? 2 : 0,
+          // Reveal adds the recession scale on top of the shift (scale in
+          // place, then translate — the composed matrix applies them right
+          // to left).
+          transform: [{ translateX: mainTranslateX }, { scale: mainScale }],
         },
         style,
       ]}
     >
       {children}
+      {/* Reveal's scrim is a CHILD of the page, not a sibling layer: it then
+          covers exactly the page's bounds (never the exposed drawer), scales
+          with the recession for a physical read, and taps on it close. */}
+      {variant === 'reveal' && (
+        <TouchableWithoutFeedback onPress={handleDimPress}>
+          <Animated.View
+            pointerEvents={open ? 'auto' : 'none'}
+            style={[
+              StyleSheet.absoluteFillObject as ViewStyle,
+              { backgroundColor: '#000000', opacity: revealDimOpacity },
+            ]}
+          />
+        </TouchableWithoutFeedback>
+      )}
     </Animated.View>
   );
 };
