@@ -190,6 +190,7 @@ The `variant` prop changes how the drawer and the page move together. All four s
 | `variant` | `'overlay' \| 'push' \| 'under' \| 'reveal'` | `'overlay'` | How the drawer relates to the page (see [Variants](#variants)) |
 | `width` | `number` | `280` | Drawer width in points |
 | `animationDuration` | `number` | `300` | Open/close timing in ms (drag releases use a spring) |
+| `safeAreaInsets` | `{ top?: number; bottom?: number }` | - | Edge insets for the overlay drawer (see [Safe Area](#safe-area)) |
 
 ### Sidebar.Trigger
 
@@ -318,6 +319,24 @@ Haptics fire during interactions (gated by the theme's `haptics` setting):
 
 Disable per component with `hapticFeedback={false}`.
 
+## Safe Area
+
+The `overlay` variant renders through a `Modal` with `statusBarTranslucent`, which spans the **full screen** — including the status bar and home indicator — and escapes whatever safe-area layout wraps the rest of your app. The drawer therefore pads itself with `safeAreaInsets` while its background still bleeds edge-to-edge:
+
+```tsx
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const insets = useSafeAreaInsets();
+
+<Sidebar.Root variant="overlay" safeAreaInsets={{ top: insets.top, bottom: insets.bottom }}>
+  {/* ... */}
+</Sidebar.Root>
+```
+
+Without the prop, a zero-dependency default kicks in: `StatusBar.currentHeight` on Android (where Expo's edge-to-edge mode puts content under the status bar) and `0` on iOS. For accurate iPhone notch/Dynamic Island insets, pass `useSafeAreaInsets()` as above — the library stays dependency-free and lets your app provide the numbers.
+
+The inline variants (`push`, `under`, `reveal`) live inside your normal view hierarchy, so your app's existing safe-area handling (a root `SafeAreaView`, for instance) already applies to them.
+
 ## Accessibility
 
 - `Sidebar.Item` renders as a `Pressable`, so each entry is focusable and announces as a button.
@@ -330,3 +349,4 @@ Disable per component with `hapticFeedback={false}`.
 - The inline variants (`push`, `under`, `reveal`) clip to the `Sidebar.Container`, which must fill the region you want the drawer to slide within (typically the screen, `flex: 1`).
 - `reveal` recedes the page to 0.92 of its size under a 32%-opacity scrim, both scrubbed by the same gesture progress as the drawer — drags move the recession and the shift together.
 - The `under` drawer scales up from 0.9 to 1 as the page unmasks it — the only variant whose drawer has its own animation besides the slide.
+- The overlay `Modal` is `statusBarTranslucent`; without it iOS animates the status bar region when the Modal appears, which reads as a flicker on every open.

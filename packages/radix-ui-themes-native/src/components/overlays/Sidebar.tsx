@@ -16,6 +16,8 @@ import {
   Animated,
   Dimensions,
   PanResponder,
+  Platform,
+  StatusBar,
   type StyleProp,
   ViewStyle,
   Pressable,
@@ -77,6 +79,7 @@ interface SidebarContextValue {
   // values back to JS, so gestures must never read slide.__getValue().
   slideRef: { current: number };
   modalVisible?: boolean;
+  safeAreaInsets?: SidebarSafeAreaInsets;
   updateDragPosition: (slideValue: number) => void;
   animateToState: (targetOpen: boolean) => void;
   settleFromDrag: (projectedSlide: number, vx: number) => void;
@@ -287,6 +290,21 @@ interface SidebarRootProps {
   variant?: SidebarVariant;
   width?: number;
   animationDuration?: number;
+  /**
+   * Edge insets for the overlay drawer. The overlay lives in a Modal, which
+   * spans the full screen (statusBarTranslucent) and escapes the app's own
+   * safe-area layout, so the drawer must carry its own top/bottom padding.
+   * Pass insets from react-native-safe-area-context (`useSafeAreaInsets()`);
+   * without them a sensible default is used (StatusBar.currentHeight on
+   * Android, 0 on iOS). Ignored by the inline variants, which sit inside the
+   * app's layout.
+   */
+  safeAreaInsets?: SidebarSafeAreaInsets;
+}
+
+interface SidebarSafeAreaInsets {
+  top?: number;
+  bottom?: number;
 }
 
 export const SidebarRoot = ({
@@ -297,6 +315,7 @@ export const SidebarRoot = ({
   variant = 'overlay',
   width = 280,
   animationDuration = 300,
+  safeAreaInsets,
 }: SidebarRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const open = controlledOpen !== undefined ? controlledOpen : internalOpen;
@@ -562,6 +581,7 @@ export const SidebarRoot = ({
         revealDimOpacity,
         contentScale,
         slideRef,
+        safeAreaInsets,
         updateDragPosition,
         animateToState,
         settleFromDrag,
@@ -646,6 +666,7 @@ export const SidebarPortal = ({ children }: SidebarPortalProps) => {
       transparent
       visible={modalVisible ?? open}
       animationType="none"
+      statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
       onRequestClose={() => {}}
     >
@@ -710,10 +731,24 @@ interface SidebarContentProps {
 }
 
 export const SidebarContent = ({ children, style }: SidebarContentProps) => {
-  const { side, variant, width, slide, contentScale, panHandlers, radii } = useSidebar();
+  const { side, variant, width, slide, contentScale, panHandlers, radii, safeAreaInsets } =
+    useSidebar();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
+
+  // The overlay Modal spans the full screen (statusBarTranslucent), so the
+  // drawer must pad itself away from the status bar / home indicator; its
+  // background still bleeds edge-to-edge. Inline variants sit inside the
+  // app's own layout, which already handles safe areas.
+  const overlayInsets =
+    variant === 'overlay'
+      ? {
+          paddingTop:
+            safeAreaInsets?.top ?? (Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) : 0),
+          paddingBottom: safeAreaInsets?.bottom ?? 0,
+        }
+      : undefined;
 
   // Background color
   const backgroundColor = isDark ? theme.colors.gray.dark[2] : '#ffffff';
@@ -745,6 +780,7 @@ export const SidebarContent = ({ children, style }: SidebarContentProps) => {
           zIndex: variant === 'under' || variant === 'reveal' ? 1 : 3,
           elevation: variant === 'under' || variant === 'reveal' ? 1 : 3,
           ...borderRadius,
+          ...(overlayInsets || {}),
           // `under`/`reveal` anchor the drawer statically at its edge — the
           // page slides aside over it, so the drawer appears to emerge from
           // underneath the page rather than off the screen edge. `under`
@@ -1164,6 +1200,7 @@ export const Sidebar = {
 
 export type {
   SidebarRootProps,
+  SidebarSafeAreaInsets,
   SidebarTriggerProps,
   SidebarPortalProps,
   SidebarOverlayProps,

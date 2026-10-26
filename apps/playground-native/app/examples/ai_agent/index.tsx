@@ -1,6 +1,7 @@
 import { Box, Flex, Sidebar, ThemeProvider } from 'radix-native-ui';
 import type { SidebarVariant } from 'radix-native-ui';
 import React, { useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PageContainer } from '@/components/PageSection';
 import { AppDrawer } from '@/components/examples/ai-agent/AppDrawer';
 import { AgentsPage, type AgentInfo } from '@/components/examples/ai-agent/AgentsPage';
@@ -62,6 +63,9 @@ function AgentApp() {
   const [agents, setAgents] = useState<AgentInfo[]>(DEFAULT_AGENTS);
   const [activeAgentId, setActiveAgentId] = useState('atlas');
   const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  // The overlay drawer lives in a Modal (a full-screen native surface that
+  // escapes the app's SafeAreaView), so hand it the real edge insets.
+  const insets = useSafeAreaInsets();
 
   const pageNode =
     page === 'chats' ? (
@@ -97,7 +101,15 @@ function AgentApp() {
   const drawer = <AppDrawer runtime={runtime} page={page} setPage={setPage} />;
 
   return (
-    <Sidebar.Root animationDuration={200} side="left" variant={variant} width={300} open={open} onOpenChange={setOpen}>
+    <Sidebar.Root
+      animationDuration={200}
+      side="left"
+      variant={variant}
+      width={300}
+      open={open}
+      onOpenChange={setOpen}
+      safeAreaInsets={{ top: insets.top, bottom: insets.bottom }}
+    >
       {variant === 'overlay' ? (
         <>
           {/* Overlay keeps the page in flow; the drawer rides on top in a Modal. */}
