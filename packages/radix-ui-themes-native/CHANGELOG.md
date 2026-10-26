@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Sidebar`: the `under` variant's drawer now has its own animation — it **scales up** (0.9 → 1) as the page slides aside to unmask it, so it reads as rising toward the viewer from beneath the page instead of being a passive background. Progress-derived like every other channel, so drags scrub it and the native driver stays on. New `contentScaleFor` geometry helper with tests.
 - `Sidebar`: fourth variant, `reveal` (Material style) — the drawer stays statically anchored beneath the page while the page slides aside **and recedes**: scaling down to 0.92 under a 32%-opacity scrim, all scrubbed by the same gesture progress as the drawer (transforms only, native driver intact). The scrim is a child of `Sidebar.Main`, so it never covers the exposed drawer and taps on it close the sidebar. Full-page and inline demos, docs, and `pageScaleFor` geometry tests included.
 
+### Fixed
+- `Sidebar`: the `overlay` drawer now respects the safe area and no longer flickers when opened — the Modal is `statusBarTranslucent` (previously iOS animated the status-bar region when the Modal appeared, which read as a flicker on every trigger), and a new `safeAreaInsets` prop on `Sidebar.Root` pads the overlay drawer away from the status bar / home indicator while its background still bleeds edge-to-edge. Without the prop the default is `StatusBar.currentHeight` on Android (Expo edge-to-edge) and 0 on iOS, keeping the library dependency-free; apps pass `useSafeAreaInsets()` for exact notch/Dynamic Island insets. Docs Safe Area section and the AI Agent example wiring included.
+
 ## [0.1.10] - 2026-10-25
 
 ### Added

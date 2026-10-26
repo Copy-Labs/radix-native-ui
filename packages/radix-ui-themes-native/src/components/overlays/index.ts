@@ -156,6 +156,7 @@ export type {
   SidePosition,
   SidebarVariant,
   SidebarRootProps,
+  SidebarSafeAreaInsets,
   SidebarTriggerProps,
   SidebarPortalProps,
   SidebarOverlayProps,
