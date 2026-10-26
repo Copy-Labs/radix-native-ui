@@ -1,0 +1,73 @@
+---
+title: FloatingTabBar
+description: Floating, elevated bottom tab bar with an animated active pill — iOS "floater" / Material 3 style.
+---
+
+# FloatingTabBar
+
+`FloatingTabBar` is a floating bottom navigation bar: a rounded, shadowed surface hovering above the page, with icon + label items. The active item gets a soft-accent pill that fades and scales in behind its icon, and the icon itself gently scales up — all driven by opacity and transforms, so every animation runs on the native driver.
+
+## Usage
+
+```tsx
+import { FloatingTabBar } from 'radix-native-ui';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+
+function Screen() {
+  const [tab, setTab] = useState('home');
+
+  return (
+    <>
+      {/* your page content */}
+      <FloatingTabBar.Root value={tab} onValueChange={setTab}>
+        <FloatingTabBar.Item value="home" label="Home" icon={<Ionicons name="home" />} />
+        <FloatingTabBar.Item value="search" label="Search" icon={<Ionicons name="search" />} />
+        <FloatingTabBar.Item value="inbox" label="Inbox" icon={<Ionicons name="mail" />} badge={3} />
+        <FloatingTabBar.Item value="settings" label="Settings" icon={<Ionicons name="settings" />} />
+      </FloatingTabBar.Root>
+    </>
+  );
+}
+```
+
+## Root props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Active item value (controlled). Omit with `onValueChange` for an uncontrolled bar. |
+| `onValueChange` | `(value: string) => void` | — | Called when an item is selected. |
+| `defaultValue` | `string` | — | Initial value for an uncontrolled bar. |
+| `color` | `Color` | theme accent | Accent used by the active pill, tint and badge. |
+| `size` | `1 \| 2 \| 3 \| 4` | `3` | Icon, label and pill dimensions. |
+| `radius` | `RadiusSize` | `'full'` | Corner rounding of the floating surface. |
+| `elevation` | `0 \| 1 \| 2 \| 3` | `2` | Shadow strength; `0` disables the shadow. |
+| `inset` | `number` | `16` | Horizontal margin on each side of the bar. `0` for edge-to-edge. |
+| `disabled` | `boolean` | `false` | Disables all items. |
+| `hapticFeedback` | `boolean` | `true` | Light haptic on selection. |
+| `style` | `StyleProp<ViewStyle>` | — | Merged into the floating surface. |
+
+## Item props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | required | Unique value for this item. |
+| `label` | `ReactNode` | required | Label under the icon; also used as the accessibility label when it is a string. |
+| `icon` | `ReactElement` | required | Icon element — cloned with themed `size` and state-aware `color` (explicit props on the icon win). |
+| `badge` | `number \| ReactNode` | — | Count bubble on the icon's top-right. Numbers render a themed bubble (`99+` past 99); any element renders as-is (e.g. a plain dot). |
+| `disabled` | `boolean` | `false` | Disables this item. |
+| `style` | `StyleProp<ViewStyle>` | — | Merged into the item container. |
+
+## How it behaves
+
+- **Active pill** — a soft-accent circle behind the icon, animated with a per-item `Animated.Value` (opacity `0 → 1`, scale `0.7 → 1`, 180 ms). The icon scales `1 → 1.08` in sync. Native driver only: nothing animates layout properties.
+- **Theming** — pill and tints come from `getVariantColors` `soft`/`solid` of the selected `color`, so light/dark mode and every accent scale automatically. The badge uses the solid accent; gray bars get a dark neutral bubble.
+- **Icons** — pass any icon element (`Ionicons`, `Lucide…`); the bar clones it with the right size and color unless you set those props yourself.
+- **Accessibility** — items expose `accessibilityRole="tab"` with `selected`/`disabled` state.
+- **Safe areas** — the bar has no built-in insets. Place it above the home indicator with a margin (e.g. `style={{ marginBottom: 24 }}`) or inside your layout's safe-area wrapper.
+
+## Notes
+
+- Items share the bar's width equally (`flex: 1`); four to five items is the sweet spot.
+- Pair with expo-router: keep `value` in sync with the active tab segment and drive navigation from `onValueChange` — use it inside a `(tabs)` layout with `headerShown: false` in place of the native tab bar.
+- The floating surface casts a shadow; on Android the shadow is approximated with `elevation`.

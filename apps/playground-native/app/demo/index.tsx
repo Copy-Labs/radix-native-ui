@@ -135,6 +135,9 @@ export default function App() {
               <Link href={'/demo/segmented_control'}>
                 <Text size={4}>Segmented Control</Text>
               </Link>
+              <Link href={'/demo/floating_tab_bar'}>
+                <Text size={4}>Floating Tab Bar</Text>
+              </Link>
               <Link href={'/demo/popover'}>
                 <Flex align={'center'} gap={8}>
                   <Text size={4}>Popover</Text>
