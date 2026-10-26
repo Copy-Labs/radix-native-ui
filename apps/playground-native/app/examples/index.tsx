@@ -45,6 +45,26 @@ export default function ExamplesIndex() {
               </Link>
             </Flex>
           </Card>
+
+          <Card radius={'large'} size={3}>
+            <Flex direction={'column'} gap={16}>
+              <Text color={'gray'} size={5} weight={'regular'}>
+                AI Agent Chat Example
+              </Text>
+              <Text color={'gray'}>
+                A complete agent app demo: thinking state, tool-call steps, and streamed answers on a mock
+                agent loop - swap in a real API and the UI works unchanged.
+              </Text>
+              <Link asChild href={'/examples/ai_agent'}>
+                <Button variant={'ghost'}>
+                  AI Agent Example
+                  <Button.Icon>
+                    <Ionicons name={'arrow-forward'} />
+                  </Button.Icon>
+                </Button>
+              </Link>
+            </Flex>
+          </Card>
         </Flex>
       </PageBody>
     </PageContainer>
