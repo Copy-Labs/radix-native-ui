@@ -252,8 +252,10 @@ function AgentScreen() {
                 <Flex direction="column" gap={8} style={{ width: '100%' }}>
                   {SUGGESTIONS.map((s) => (
                     <Button key={s} size={2} variant="outline" color="gray" onPress={() => send(s)}>
-                      <Ionicons name="arrow-forward-circle-outline" />
-                      <Text style={{ flex: 1, textAlign: 'left', marginLeft: 8 }}>{s}</Text>
+                      <Button.Icon>
+                        <Ionicons name="arrow-forward-circle-outline" />
+                      </Button.Icon>
+                      <Button.Label style={{ flex: 1, textAlign: 'left' }}>{s}</Button.Label>
                     </Button>
                   ))}
                 </Flex>
