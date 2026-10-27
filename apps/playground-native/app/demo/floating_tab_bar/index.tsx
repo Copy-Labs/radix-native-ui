@@ -37,7 +37,8 @@ export default function FloatingTabBarDemo() {
                   <Heading size={4}>Try it</Heading>
                   <Text color={'gray'} size={3}>
                     The bar below is controlled - the content area reacts to the active tab. Tap Inbox and it
-                    consumes one unread message.
+                    consumes one unread message. Press a tab and drag sideways: the pill follows your finger and
+                    the release commits whatever tab it hovers.
                   </Text>
                   <Box
                     style={{
@@ -69,6 +70,31 @@ export default function FloatingTabBarDemo() {
                         badge={t.value === 'inbox' && inboxCount > 0 ? inboxCount : undefined}
                       />
                     ))}
+                  </FloatingTabBar.Root>
+                </Flex>
+              </Card>
+
+              {/* Drag-to-select */}
+              <Card radius={'large'}>
+                <Flex direction={'column'} gap={16}>
+                  <Heading size={4}>Drag to select</Heading>
+                  <Text color={'gray'} size={2}>
+                    {'dragToSelect (default true)'} - press and slide across the bar; the pill tracks the finger
+                    with a liquid stretch and ticks a haptic per item. Release commits.
+                  </Text>
+                  <FloatingTabBar.Root defaultValue={'home'} color="violet">
+                    <FloatingTabBar.Item value="home" label="Home" icon={<Ionicons name="home" />} />
+                    <FloatingTabBar.Item value="search" label="Search" icon={<Ionicons name="search" />} />
+                    <FloatingTabBar.Item value="inbox" label="Inbox" icon={<Ionicons name="mail" />} />
+                    <FloatingTabBar.Item value="profile" label="Profile" icon={<Ionicons name="person" />} />
+                  </FloatingTabBar.Root>
+                  <Text color={'gray'} size={2}>
+                    {'dragToSelect={false}'} - taps only; horizontal drags pass through to the page.
+                  </Text>
+                  <FloatingTabBar.Root defaultValue={'search'} dragToSelect={false} color="gray">
+                    <FloatingTabBar.Item value="home" label="Home" icon={<Ionicons name="home" />} />
+                    <FloatingTabBar.Item value="search" label="Search" icon={<Ionicons name="search" />} />
+                    <FloatingTabBar.Item value="inbox" label="Inbox" icon={<Ionicons name="mail" />} />
                   </FloatingTabBar.Root>
                 </Flex>
               </Card>

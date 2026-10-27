@@ -5,7 +5,7 @@ description: Floating, elevated bottom tab bar with an animated active pill — 
 
 # FloatingTabBar
 
-`FloatingTabBar` is a floating bottom navigation bar: a rounded, shadowed surface hovering above the page, with icon + label items. The active item gets a soft-accent pill that fades and scales in behind its icon, and the icon itself gently scales up — all driven by opacity and transforms, so every animation runs on the native driver.
+`FloatingTabBar` is a floating bottom navigation bar: a rounded, shadowed surface hovering above the page, with icon + label items. One shared soft-accent pill is owned by the bar and **slides between item centers** — on taps and under the finger. Press a tab and drag sideways: the pill tracks your finger with a subtle liquid stretch, ticking a haptic as it crosses each item, and the release commits the hovered tab (the Apple "linear" tab-bar gesture). Everything is opacity and transform driven, so every animation runs on the native driver — no Reanimated, no new dependencies.
 
 ## Usage
 
@@ -43,6 +43,7 @@ function Screen() {
 | `radius` | `RadiusSize` | `'full'` | Corner rounding of the floating surface. |
 | `elevation` | `0 \| 1 \| 2 \| 3` | `2` | Shadow strength; `0` disables the shadow. |
 | `inset` | `number` | `16` | Horizontal margin on each side of the bar. `0` for edge-to-edge. |
+| `dragToSelect` | `boolean` | `true` | Press-and-drag across the bar slides the pill under the finger; release commits the hovered item. Needs two or more measured items. |
 | `disabled` | `boolean` | `false` | Disables all items. |
 | `hapticFeedback` | `boolean` | `true` | Light haptic on selection. |
 | `style` | `StyleProp<ViewStyle>` | — | Merged into the floating surface. |
@@ -60,14 +61,16 @@ function Screen() {
 
 ## How it behaves
 
-- **Active pill** — a soft-accent circle behind the icon, animated with a per-item `Animated.Value` (opacity `0 → 1`, scale `0.7 → 1`, 180 ms). The icon scales `1 → 1.08` in sync. Native driver only: nothing animates layout properties.
+- **Shared sliding pill** — one accent circle owned by the Root, positioned from the items' measured layouts. It springs between tab centers on selection (220 ms timing / spring settle, transform only) and the icon scales `1 → 1.08` in sync. The pill fades in once the active tab has been measured, so there is no jump before layout.
+- **Drag to select** — horizontal-dominant drags (captured with the same responder model as `Sidebar`, so vertical scrolls and plain taps are untouched) move the pill with the finger, clamped between the first and last centers. Crossing an item fires a selection haptic and previews that item's tint; releasing over an item commits it via `onValueChange`, releasing in a gap (or a controlled parent rejecting the change) springs the pill back. The pill gains a velocity-based stretch along the drag axis that decays on release.
 - **Theming** — pill and tints come from `getVariantColors` `soft`/`solid` of the selected `color`, so light/dark mode and every accent scale automatically. The badge uses the solid accent; gray bars get a dark neutral bubble.
 - **Icons** — pass any icon element (`Ionicons`, `Lucide…`); the bar clones it with the right size and color unless you set those props yourself.
-- **Accessibility** — items expose `accessibilityRole="tab"` with `selected`/`disabled` state.
+- **Accessibility** — items expose `accessibilityRole="tab"` with `selected`/`disabled` state; the drag preview never changes what assistive tech sees until the commit lands.
 - **Safe areas** — the bar has no built-in insets. Place it above the home indicator with a margin (e.g. `style={{ marginBottom: 24 }}`) or inside your layout's safe-area wrapper.
 
 ## Notes
 
 - Items share the bar's width equally (`flex: 1`); four to five items is the sweet spot.
-- Pair with expo-router: keep `value` in sync with the active tab segment and drive navigation from `onValueChange` — use it inside a `(tabs)` layout with `headerShown: false` in place of the native tab bar.
+- With `dragToSelect` on, the bar captures horizontal drags that start anywhere on it. If you host it inside a horizontally scrollable row, disable it so the two gestures do not fight.
+- Pair with expo-router: keep `value` in sync with the active tab segment and drive navigation from `onValueChange` — use it inside a `(tabs)` layout with `headerShown: false` in place of the native tab bar. Drag commits arrive through the same callback.
 - The floating surface casts a shadow; on Android the shadow is approximated with `elevation`.
