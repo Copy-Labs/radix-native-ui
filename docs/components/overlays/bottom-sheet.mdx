@@ -61,6 +61,7 @@ The BottomSheet follows the Radix compound component pattern:
 | `snapPoints` | `(string \| number)[]` | `['50%']` | Resting heights — percentages or pixels, e.g. `['25%', '60%', '90%']`. The sheet can be dragged between them; the tallest entry defines the sheet's laid-out height |
 | `defaultSnapPoint` | `number` | `0` | Index into `snapPoints` the sheet opens at |
 | `onSnapPointChange` | `(index: number) => void` | - | Fires whenever the sheet settles on a snap point (also on open) |
+| `safeAreaInsets` | `{ top?: number; bottom?: number }` | - | Pad the sheet away from the status bar / home indicator. See [Safe Area](#safe-area) |
 
 ### BottomSheet.Trigger
 
@@ -157,6 +158,30 @@ Extends `Button` component props.
 | `children` | `ReactNode` | - | Action button content |
 | `onPress` | `() => void` | - | Callback executed before closing |
 | `hapticFeedback` | `boolean` | `true` | Enable haptic feedback when pressed |
+
+### Safe Area
+
+The sheet renders inside a full-screen `Modal`, which is its own native surface — it sits outside the app's `SafeAreaView` and, on Android under Expo edge-to-edge, extends beneath the status bar and gesture bar. Without handling, footer buttons on a tall sheet hide behind the home indicator, and iOS briefly animates the status-bar region when the sheet appears.
+
+The Modal is `statusBarTranslucent` (killing that appear-flicker), and `BottomSheet.Root` takes a `safeAreaInsets` prop that pads the content: the **bottom** inset always joins the sheet's bottom padding, and the **top** inset is only applied when the sheet is tall enough to reach the status bar / notch (a half-height sheet gets no gap above its handle):
+
+```tsx
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+function MySheet() {
+  const insets = useSafeAreaInsets();
+  return (
+    <BottomSheet.Root
+      snapPoints={['60%', '95%']}
+      safeAreaInsets={{ top: insets.top, bottom: insets.bottom }}
+    >
+      {/* ... */}
+    </BottomSheet.Root>
+  );
+}
+```
+
+To stay dependency-free, omitting the prop falls back to `StatusBar.currentHeight` on Android (top) and `0` elsewhere. Pass `useSafeAreaInsets()` from `react-native-safe-area-context` for exact notch / Dynamic Island / gesture-guide values.
 
 ### Haptic Feedback
 
