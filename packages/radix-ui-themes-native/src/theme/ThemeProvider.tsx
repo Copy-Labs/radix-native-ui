@@ -4,7 +4,7 @@ import { createTheme, defaultTheme } from './index';
 import { useDeviceColorScheme } from '../hooks/useColorScheme';
 import type { ToastConfig, ToastData, ToastOptions } from '../components/overlays/Toast.types';
 import { DEFAULT_TOAST_CONFIG } from '../components/overlays/Toast.types';
-import { ToastViewport } from '../components/overlays/Toast';
+import { ToastViewport, markEvictionOnOverflow } from '../components/overlays/Toast';
 
 // Gray color type based on available options in the theme
 type GrayColor = 'mauve' | 'olive' | 'sage' | 'sand' | 'slate' | 'gray';
@@ -22,6 +22,7 @@ interface ThemeContextValue {
   toasts: ToastData[];
   showToast: (options: ToastOptions) => string;
   hideToast: (id: string) => void;
+  removeToast: (id: string) => void;
   hideAllToasts: () => void;
   updateToast: (id: string, options: Partial<ToastOptions>) => void;
 }
@@ -252,14 +253,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         const samePosition = prev.filter(t => t.position === newToast.position);
         const otherPosition = prev.filter(t => t.position !== newToast.position);
 
-        // Check if we need to remove oldest toast
-        let updatedSamePosition = [...samePosition];
-        if (updatedSamePosition.length >= toastConfig.maxVisible) {
-          // Remove the oldest toast
-          updatedSamePosition = updatedSamePosition.slice(1);
-        }
-
-        return [...otherPosition, ...updatedSamePosition, newToast];
+        // At the limit, the oldest active toast is marked `leaving` and
+        // animates itself out instead of being popped from state.
+        return [
+          ...otherPosition,
+          ...markEvictionOnOverflow(samePosition, toastConfig.maxVisible),
+          newToast,
+        ];
       });
 
       return id;
@@ -267,14 +267,22 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     [toastConfig]
   );
 
-  // Hide toast
+  // Hide toast: request its animated exit. The toast plays its leave
+  // animation and then calls `removeToast` when it's off-screen.
   const hideToast = useCallback((id: string) => {
+    setToasts((prev) =>
+      prev.map((t) => (t.id === id && !t.leaving ? { ...t, leaving: true } : t))
+    );
+  }, []);
+
+  // Remove toast from state immediately (used after the exit animation)
+  const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Hide all toasts
+  // Hide all toasts (each animates out and removes itself)
   const hideAllToasts = useCallback(() => {
-    setToasts([]);
+    setToasts((prev) => prev.map((t) => (t.leaving ? t : { ...t, leaving: true })));
   }, []);
 
   // Update toast
@@ -303,10 +311,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       toasts,
       showToast,
       hideToast,
+      removeToast,
       hideAllToasts,
       updateToast,
     }),
-    [theme, mode, appearance, toggleMode, resolvedHaptics, toastConfig, toasts, showToast, hideToast, hideAllToasts, updateToast]
+    [theme, mode, appearance, toggleMode, resolvedHaptics, toastConfig, toasts, showToast, hideToast, removeToast, hideAllToasts, updateToast]
   );
 
   return (

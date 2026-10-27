@@ -54,10 +54,31 @@ export const useToastContext = (): ToastContextValue => {
     toasts: context.toasts,
     showToast: context.showToast,
     hideToast: context.hideToast,
+    removeToast: context.removeToast,
     hideAllToasts: context.hideAllToasts,
     updateToast: context.updateToast,
   };
 };
+
+// ============================================================================
+// Stack helpers (pure, unit-tested)
+// ============================================================================
+
+/**
+ * When a stack is already at `maxVisible` active toasts, the oldest active
+ * toast is marked `leaving` (and animates out) instead of being popped from
+ * state. Toasts already leaving don't count towards the limit.
+ */
+export function markEvictionOnOverflow<T extends { leaving?: boolean }>(
+  samePosition: T[],
+  maxVisible: number
+): T[] {
+  const active = samePosition.filter((t) => !t.leaving);
+  if (active.length < maxVisible) return samePosition;
+  const oldestIdx = samePosition.findIndex((t) => !t.leaving);
+  if (oldestIdx < 0) return samePosition;
+  return samePosition.map((t, i) => (i === oldestIdx ? { ...t, leaving: true } : t));
+}
 
 // ============================================================================
 // Variant Color Mapping
@@ -132,27 +153,130 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
     const translateY = useRef(new Animated.Value(toast.position === 'top' ? -100 : 100)).current;
     const translateX = useRef(new Animated.Value(0)).current;
 
-    // Swipe state
-    const swipeDistance = useRef(0);
-    const isSwiping = useRef(false);
-
     // Get colors
     const colors = getToastColors(theme, toast.variant, toast.color, isDark);
 
-    // Auto-dismiss timer
+    // Latest props/two closures used by long-lived callbacks (timer, pan
+    // responder) so they never pin a stale render's values.
+    const latest = useRef({ toast, onDismiss });
+    latest.current = { toast, onDismiss };
+    const isDismissing = useRef(false);
+    // Follow-up work queued when a second dismissal races the in-flight exit.
+    const exitQueue = useRef<Array<() => void>>([]);
+    const enterAnim = useRef<Animated.CompositeAnimation | null>(null);
+
+    /** Play the exit animation exactly once, then run every queued `after`. */
+    const playExit = useCallback(
+      (after: () => void) => {
+        if (isDismissing.current) {
+          // Already animating out — chain onto the in-flight exit instead of
+          // double-animating (auto timer vs manual close race).
+          exitQueue.current.push(after);
+          return;
+        }
+        isDismissing.current = true;
+        // A dismissal during the enter spring must not fight it for the
+        // same values.
+        enterAnim.current?.stop();
+        Animated.parallel([
+          Animated.timing(opacity, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: latest.current.toast.position === 'top' ? -100 : 100,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          const queued = exitQueue.current;
+          exitQueue.current = [];
+          after();
+          queued.forEach((fn) => fn());
+        });
+      },
+      [opacity, translateY]
+    );
+
+    // Auto-dismiss timer with pause-on-touch (a held toast never expires).
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const startedAtRef = useRef(0);
+    const remainingRef = useRef(toast.duration);
+
+    const clearTimer = useCallback(() => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }, []);
+
+    const dismiss = useCallback(
+      (manual: boolean) => {
+        playExit(() => {
+          const { toast: t, onDismiss: remove } = latest.current;
+          if (manual) {
+            t.onDismiss?.();
+          } else {
+            t.onAutoClose?.();
+          }
+          remove();
+        });
+      },
+      [playExit]
+    );
+
+    const startTimer = useCallback(
+      (ms: number) => {
+        if (latest.current.toast.duration === Infinity || isDismissing.current) return;
+        clearTimer();
+        startedAtRef.current = Date.now();
+        remainingRef.current = ms;
+        timerRef.current = setTimeout(() => dismiss(false), ms);
+      },
+      [clearTimer, dismiss]
+    );
+
+    const pauseTimer = useCallback(() => {
+      if (!timerRef.current) return;
+      remainingRef.current = Math.max(
+        0,
+        remainingRef.current - (Date.now() - startedAtRef.current)
+      );
+      clearTimer();
+    }, [clearTimer]);
+
+    const resumeTimer = useCallback(() => {
+      if (isDismissing.current || latest.current.toast.leaving) return;
+      if (remainingRef.current <= 0) {
+        // Expired while held — dismiss now.
+        dismiss(false);
+        return;
+      }
+      startTimer(remainingRef.current);
+    }, [dismiss, startTimer]);
+
+    // Arm the auto-dismiss countdown; re-arms when `duration` is updated via
+    // `toast.update()`, and stands down once the toast is leaving.
     useEffect(() => {
-      if (toast.duration === Infinity) return;
+      if (toast.leaving || toast.duration === Infinity) return;
+      remainingRef.current = toast.duration;
+      startTimer(toast.duration);
+      return clearTimer;
+    }, [toast.duration, toast.leaving, startTimer, clearTimer]);
 
-      const timer = setTimeout(() => {
-        handleDismiss(false);
-      }, toast.duration);
-
-      return () => clearTimeout(timer);
-    }, [toast.duration]);
+    // Leave requests (hide/hideAll/max-visible eviction) animate out, then
+    // remove themselves from state.
+    useEffect(() => {
+      if (!toast.leaving) return;
+      clearTimer();
+      playExit(() => {
+        latest.current.toast.onDismiss?.();
+        latest.current.onDismiss();
+      });
+    }, [toast.leaving, clearTimer, playExit]);
 
     // Enter animation
     useEffect(() => {
-      Animated.parallel([
+      const anim = Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
           duration: 300,
@@ -164,46 +288,37 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
           friction: 10,
           useNativeDriver: true,
         }),
-      ]).start();
-    }, []);
+      ]);
+      enterAnim.current = anim;
+      anim.start();
+    }, [opacity, translateY]);
 
-    // Handle dismiss with animation
-    const handleDismiss = useCallback((manual: boolean = true) => {
-      Animated.parallel([
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateY, {
-          toValue: toast.position === 'top' ? -100 : 100,
-          duration: 200,
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        if (manual) {
-          toast.onDismiss?.();
-        } else {
-          toast.onAutoClose?.();
-        }
-        onDismiss();
-      });
-    }, [toast.position, onDismiss]);
-
-    // Pan responder for swipe-to-dismiss
+    // Pan responder for swipe-to-dismiss. Built once per config and reads
+    // through `latest` — recreating it on every render would cancel an
+    // in-flight swipe whenever a sibling toast enters or leaves.
     const panResponder = useMemo(() => {
       if (!config.swipeToDismiss) return undefined;
+
+      const snapBack = () => {
+        Animated.spring(translateX, {
+          toValue: 0,
+          tension: 100,
+          friction: 10,
+          useNativeDriver: true,
+        }).start();
+      };
 
       return PanResponder.create({
         onStartShouldSetPanResponder: () => false,
         onMoveShouldSetPanResponder: (_, gestureState) => {
-          return Math.abs(gestureState.dx) > 10 || Math.abs(gestureState.dy) > 10;
+          // Horizontal-dominant drags only — vertical scrolls must not be
+          // captured (they used to grab the responder and then do nothing).
+          return (
+            Math.abs(gestureState.dx) > 10 && Math.abs(gestureState.dx) > Math.abs(gestureState.dy)
+          );
         },
         onPanResponderMove: (_, gestureState) => {
-          // Only allow horizontal swipe
           if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
-            isSwiping.current = true;
-            swipeDistance.current = gestureState.dx;
             translateX.setValue(gestureState.dx);
           }
         },
@@ -211,30 +326,25 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
           const threshold = 100;
           if (Math.abs(gestureState.dx) > threshold) {
             // Swipe to dismiss
+            isDismissing.current = true;
+            clearTimer();
             Animated.timing(translateX, {
               toValue: gestureState.dx > 0 ? Dimensions.get('window').width : -Dimensions.get('window').width,
               duration: 200,
               useNativeDriver: true,
-            }).start(() => {
-              toast.onDismiss?.();
-              onDismiss();
+            }).start(({ finished }) => {
+              if (!finished) return;
+              const { toast: t, onDismiss: remove } = latest.current;
+              t.onDismiss?.();
+              remove();
             });
           } else {
-            // Snap back
-            Animated.spring(translateX, {
-              toValue: 0,
-              tension: 100,
-              friction: 10,
-              useNativeDriver: true,
-            }).start();
+            snapBack();
           }
-          isSwiping.current = false;
         },
+        onPanResponderTerminate: snapBack,
       });
-    }, [config.swipeToDismiss, onDismiss]);
-
-    // Calculate stack offset
-    const stackOffset = index * (config.gap + 8);
+    }, [config.swipeToDismiss, translateX, clearTimer]);
 
     const containerStyle: Animated.AnimatedProps<ViewStyle> = {
       opacity,
@@ -247,7 +357,9 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
       borderWidth: 1,
       borderRadius: theme.radii.large,
       padding: theme.space[4],
-      marginBottom: index === 0 ? 0 : stackOffset,
+      // Uniform `gap` separation within the visual stack — `index` is the
+      // visual position (0 = the toast at the screen edge).
+      marginTop: index === 0 ? 0 : config.gap,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.1,
@@ -255,7 +367,6 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
       elevation: 4,
       maxWidth: Dimensions.get('window').width - 32,
       width: Dimensions.get('window').width - 32,
-      flex: 1,
     };
 
     return (
@@ -263,6 +374,9 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
         ref={ref}
         style={[containerStyle, style]}
         {...(panResponder?.panHandlers || {})}
+        onTouchStart={pauseTimer}
+        onTouchEnd={resumeTimer}
+        onTouchCancel={resumeTimer}
         accessibilityRole="alert"
         accessibilityLiveRegion="polite"
         accessibilityLabel={toast.accessibilityLabel || toast.title}
@@ -314,7 +428,7 @@ const ToastRoot = forwardRef<View, ToastRootProps>(
 
           {/* Close button */}
           {toast.showClose && (
-            <Button color={getVariantColorName(toast.variant)} radius={'large'} size={1} onPress={() => handleDismiss(true)}>Close</Button>
+            <Button color={getVariantColorName(toast.variant)} radius={'large'} size={1} onPress={() => dismiss(true)}>Close</Button>
             /*<Pressable
               onPress={() => handleDismiss(true)}
               style={({ pressed }) => [
@@ -339,14 +453,15 @@ ToastRoot.displayName = 'Toast.Root';
 // ============================================================================
 
 const ToastViewport = forwardRef<View, ToastViewportProps>(({ style }, ref) => {
-  const { toasts, hideToast, config } = useToastContext();
-  const theme = useTheme();
-
-  // Group toasts by position
-  const topToasts = toasts.filter(t => t.position === 'top');
-  const bottomToasts = toasts.filter(t => t.position === 'bottom');
+  const { toasts, removeToast, config } = useToastContext();
 
   if (toasts.length === 0) return null;
+
+  // Group toasts by position. Newest sits nearest the screen edge it expands
+  // from: the top stack renders newest-first, the bottom stack oldest-first
+  // (so its last child — the newest — is the bottom-most).
+  const topToasts = toasts.filter((t) => t.position === 'top').reverse();
+  const bottomToasts = toasts.filter((t) => t.position === 'bottom');
 
   return (
     <View
@@ -361,7 +476,7 @@ const ToastViewport = forwardRef<View, ToastViewportProps>(({ style }, ref) => {
             <ToastRoot
               key={toast.id}
               toast={toast}
-              onDismiss={() => hideToast(toast.id)}
+              onDismiss={() => removeToast(toast.id)}
               config={config}
               index={index}
             />
@@ -376,7 +491,7 @@ const ToastViewport = forwardRef<View, ToastViewportProps>(({ style }, ref) => {
             <ToastRoot
               key={toast.id}
               toast={toast}
-              onDismiss={() => hideToast(toast.id)}
+              onDismiss={() => removeToast(toast.id)}
               config={config}
               index={index}
             />

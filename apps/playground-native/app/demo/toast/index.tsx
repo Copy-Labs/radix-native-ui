@@ -177,7 +177,9 @@ function ToastDemo() {
         <Flex direction="column" gap={12} paddingHorizontal={4}>
           <Heading size={4}>Stacking</Heading>
           <Text color="gray" size={2}>
-            Multiple toasts stack. Max 3 visible by default.
+            Uniform gaps, newest nearest the screen edge. The 4th toast pushes the
+            oldest out with an animated exit (max 3 visible). Hold a toast to
+            pause its countdown; swipe one sideways to dismiss it.
           </Text>
 
           <Button
@@ -189,6 +191,17 @@ function ToastDemo() {
             }}
           >
             Show Multiple Toasts
+          </Button>
+
+          <Button
+            variant="soft"
+            onPress={() => {
+              toast.show({ title: 'Top toast #1', position: 'top' });
+              setTimeout(() => toast.show({ title: 'Top toast #2', position: 'top' }), 300);
+              setTimeout(() => toast.info({ title: 'Top toast #3', position: 'top' }), 600);
+            }}
+          >
+            Stack at Top
           </Button>
         </Flex>
       </Card>
