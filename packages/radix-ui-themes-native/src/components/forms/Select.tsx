@@ -73,6 +73,7 @@ interface SelectContextValue {
   unregisterItem: (value: string) => void;
   // Accent color for selected items
   color: Color;
+  // Variant of the trigger surface, so Select.Value can contrast its text with it
   variant: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
 }
 
@@ -127,8 +128,13 @@ interface SelectRootProps {
    */
   color?: Color;
   /**
-   * Button variant
-   * @default 'solid'
+   * Variant of the trigger surface. `Select.Value` paints its text (and
+   * chevron) with a color that contrasts with this surface. The trigger's
+   * background itself comes from the `Button` you render inside
+   * `Select.Trigger` — keep this in sync with that Button's `variant` (a solid
+   * Button needs `variant="solid"` here, or the value text stays too dark), or
+   * set it per-value on `Select.Value`.
+   * @default 'soft'
    */
   variant?: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
   /**
@@ -145,7 +151,7 @@ export const SelectRoot = ({
   onOpenChange,
   defaultOpen = false,
   disabled = false,
-  color = 'gray',
+  color,
   variant = 'soft',
   children,
 }: SelectRootProps) => {
@@ -255,8 +261,9 @@ export const SelectRoot = ({
     }
   }, [defaultValue, itemTexts, selectedItemText, setSelectedItemText]);
 
-  // Determine the accent color to use
-  const accentColor = color || theme.accentColor;
+  // Determine the accent color used to tint the selected item. Like every other
+  // component in the library, it falls back to the theme accent.
+  const accentColor = color ?? theme.accentColor;
 
   return (
     <SelectContext.Provider value={{
@@ -336,18 +343,29 @@ export const SelectTrigger = ({ children, asChild = false }: SelectTriggerProps)
 interface SelectValueProps {
   placeholder?: string;
   style?: TextStyle;
+  /**
+   * Color name used for the value text. Defaults to `Select.Root`'s `color`.
+   */
+  color?: Color;
+  /**
+   * Variant of the surface this value is rendered on. Defaults to `Select.Root`'s
+   * `variant`. Set it when the trigger `Button` uses a different variant, so the
+   * text stays legible on the surface it actually sits on.
+   */
+  variant?: 'solid' | 'soft' | 'outline' | 'surface' | 'ghost';
 }
 
-export const SelectValue = ({ placeholder = 'Select an option', style }: SelectValueProps) => {
-  const { value, itemTexts, selectedItemText, colors, size, color, variant } = useSelect();
+export const SelectValue = ({ placeholder = 'Select an option', style, color: colorProp, variant: variantProp }: SelectValueProps) => {
+  const { value, itemTexts, selectedItemText, size, color, variant } = useSelect();
   const theme = useTheme();
   const mode = useThemeMode();
-  const selectedColor = color || theme.accentColor;
+  const selectedColor = colorProp ?? color;
+  const effectiveVariant = variantProp ?? variant;
 
   const grayAlpha = getGrayAlpha(theme, mode);
   const variantColors = useMemo(
-    () => getVariantColors(theme, selectedColor, mode, variant, false),
-    [getVariantColors, selectedColor, theme]
+    () => getVariantColors(theme, selectedColor ?? theme.accentColor, mode, effectiveVariant, false),
+    [theme, selectedColor, mode, effectiveVariant]
   );
 
   // Priority: selectedItemText > itemTexts lookup > placeholder
@@ -363,12 +381,14 @@ export const SelectValue = ({ placeholder = 'Select an option', style }: SelectV
     }
   }
 
+  // Selected text takes the surface's foreground; a placeholder stays muted.
+  const valueColor = selectedText ? variantColors.textColor : grayAlpha[9];
+
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: 8 }}>
       <Text style={[
         {
-          // color: selectedText ? colors[12] : colors[9],
-          color: selectedText ? variantColors.textColor : grayAlpha[9],
+          color: valueColor,
           flex: 1,
           flexShrink: 1
         },
@@ -377,8 +397,7 @@ export const SelectValue = ({ placeholder = 'Select an option', style }: SelectV
         {selectedText || placeholder}
       </Text>
       <ChevronDownIcon
-        // color={selectedText ? colors[12] : colors[9]}
-        color={selectedText ? variantColors.textColor : grayAlpha[9]}
+        color={valueColor}
         width={sizeStyles()}
         height={sizeStyles()}
         style={{ justifyContent: 'center' }}
@@ -729,11 +748,13 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
 
   const itemPadding = getItemPadding();
   const fontSize = getFontSize();
-  const selectedColor = color || theme.accentColor;
-  // getVariantColors(theme, accentColor, mode, 'solid', false);
+  // The selected item is always a solid accent chip: `getVariantColors` resolves
+  // the mode-correct scale for the background and the contrasting foreground for
+  // the label/check. (It used to paint `theme.colors[color]['9']` directly, which
+  // is the light-mode ramp, and the memo never re-ran on mode changes.)
   const variantColors = useMemo(
-    () => getVariantColors(theme, selectedColor, mode, 'solid', false),
-    [getVariantColors, selectedColor, theme]
+    () => getVariantColors(theme, color, mode, 'solid', false),
+    [theme, color, mode]
   );
 
   return (
@@ -745,7 +766,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
         disabled && styles.itemDisabled,
         itemPadding,
         style,
-        { backgroundColor: isSelected ? theme.colors[selectedColor]['9'] : 'transparent', borderRadius: 8 },
+        { backgroundColor: isSelected ? variantColors.backgroundColor : 'transparent', borderRadius: 8 },
       ]}
       accessibilityRole="menuitem"
       accessibilityState={{ selected: isSelected, disabled }}
@@ -768,9 +789,6 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
         >
           {children}
         </Text>
-        {/*{isSelected && (
-          <Text style={{ color: accentColor, fontSize, marginLeft: theme.space[2] }}>✓</Text>
-        )}*/}
         {isSelected && (
           <View
             style={{
@@ -786,7 +804,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
                 position: 'absolute',
                 width: sizeValues.iconSize * 0.46,
                 height: sizeValues.height,
-                backgroundColor: variantColors.textColor, // colors[12], // accentColor,
+                backgroundColor: variantColors.textColor,
                 borderRadius: 1,
                 transform: [
                   { translateX: sizeValues.iconSize * -0.36 },
@@ -800,7 +818,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
                 position: 'absolute',
                 width: sizeValues.iconSize * 1.1,
                 height: sizeValues.height,
-                backgroundColor: variantColors.textColor, // colors[12], // accentColor,
+                backgroundColor: variantColors.textColor,
                 borderRadius: 3,
                 transform: [
                   { translateX: sizeValues.iconSize * 0.1 },

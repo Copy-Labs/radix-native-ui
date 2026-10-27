@@ -61,11 +61,13 @@ The Select component is composed of the following parts:
   <Prop name="disabled" type="boolean" default="false">
     Whether the select is disabled.
   </Prop>
-  <Prop name="color" type="Color" default="'gray'">
-    Accent color for selected items.
+  <Prop name="color" type="Color" default="theme.accentColor">
+    Color of the selected item's chip and of the value text.
   </Prop>
   <Prop name="variant" type="'solid' | 'soft' | 'outline' | 'surface' | 'ghost'" default="'soft'">
-    Visual style variant for the selected value.
+    Variant of the trigger surface, so `Select.Value` can pick a text color that
+    contrasts with it. The trigger's background comes from your own `Button` —
+    declare the same variant here.
   </Prop>
 </PropTable>
 
@@ -85,6 +87,13 @@ The Select component is composed of the following parts:
 <PropTable>
   <Prop name="placeholder" type="string" default="'Select an option'">
     Placeholder text when no option is selected.
+  </Prop>
+  <Prop name="color" type="Color">
+    Color name for the value text. Defaults to `Select.Root`'s `color`.
+  </Prop>
+  <Prop name="variant" type="'solid' | 'soft' | 'outline' | 'surface' | 'ghost'">
+    Variant of the surface this value sits on. Defaults to `Select.Root`'s
+    `variant` — override it per-value when only this trigger differs.
   </Prop>
   <Prop name="style" type="TextStyle">
     Custom styles for the value text.
@@ -161,6 +170,35 @@ The Select component is composed of the following parts:
   </Prop>
 </PropTable>
 
+## Colors
+
+Two surfaces are colored independently, and each resolves its own foreground so
+text always contrasts with what it sits on:
+
+- **The selected item** is always a solid chip in `color` (defaults to the theme
+  accent): its background is the mode-correct `color[9]` step and its label and
+  check use that chip's foreground — white, or near-black for pale colors like
+  `sky`, `mint`, `lime`, `yellow` and `amber`.
+- **The value inside the trigger** is painted with the foreground of the variant
+  you declare (`variant`, default `soft`). Because the trigger's background comes
+  from the `Button` you render, keep the two in sync — a solid Button needs
+  `variant="solid"`, otherwise its label stays too dark to read:
+
+```tsx
+<Select.Root color="indigo" variant="solid">
+  <Select.Trigger asChild>
+    <Button color="indigo" variant="solid">
+      <Button.Label>
+        <Select.Value />
+      </Button.Label>
+    </Button>
+  </Select.Trigger>
+  {/* … */}
+</Select.Root>
+```
+
+A placeholder is always muted, whichever surface it sits on.
+
 ## Examples
 
 ### Basic Select
@@ -173,7 +211,7 @@ function BasicSelect() {
   const [fruit, setFruit] = useState<string>('');
 
   return (
-    <Select.Root value={fruit} onValueChange={setFruit}>
+    <Select.Root value={fruit} onValueChange={setFruit} variant="solid">
       <Select.Trigger asChild>
         <Button variant="solid">
           <Button.Label>
@@ -221,7 +259,7 @@ function BasicSelect() {
 ### With Groups
 
 ```tsx
-<Select.Root value={country} onValueChange={setCountry}>
+<Select.Root value={country} onValueChange={setCountry} variant="surface">
   <Select.Trigger asChild>
     <Button variant="surface">
       <Button.Label>
@@ -260,7 +298,7 @@ function BasicSelect() {
 ### With Disabled Items
 
 ```tsx
-<Select.Root>
+<Select.Root variant="outline">
   <Select.Trigger asChild>
     <Button variant="outline">
       <Button.Label>
@@ -287,7 +325,7 @@ function BasicSelect() {
 ### Size Variants
 
 ```tsx
-<Select.Root>
+<Select.Root variant="outline">
   <Select.Trigger asChild>
     <Button variant="outline" size={1}>
       <Button.Label>
