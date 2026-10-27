@@ -194,6 +194,13 @@ export interface ToastData extends Required<Pick<ToastOptions, 'title'>> {
    * Animation state
    */
   isAnimating: boolean;
+
+  /**
+   * Internal: dismissal was requested (hide/hideAll/max-visible eviction).
+   * The mounted toast plays its exit animation, then removes itself — so
+   * every path off-screen is animated, never popped.
+   */
+  leaving?: boolean;
 }
 
 // ============================================================================
@@ -317,9 +324,16 @@ export interface ToastContextValue {
   showToast: (options: ToastOptions) => string;
 
   /**
-   * Hide a toast
+   * Hide a toast (requests its animated exit; the toast removes itself once
+   * the animation finishes)
    */
   hideToast: (id: string) => void;
+
+  /**
+   * Remove a toast from state immediately (no exit animation) — used by the
+   * viewport once a toast has already animated out.
+   */
+  removeToast: (id: string) => void;
 
   /**
    * Hide all toasts
@@ -353,7 +367,7 @@ export interface ToastRootProps {
   config: Required<ToastConfig>;
 
   /**
-   * Index in stack (for animation offset)
+   * Visual index in the stack (0 = the toast at the screen edge).
    */
   index: number;
 

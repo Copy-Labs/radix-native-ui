@@ -115,10 +115,10 @@ toast.update(id, { title: 'Updated' });
     Show an accent toast. Returns toast ID.
   </Prop>
   <Prop name="hide" type="(id: string) => void">
-    Hide a specific toast by ID.
+    Hide a specific toast by ID. The toast plays its exit animation before being removed.
   </Prop>
   <Prop name="hideAll" type="() => void">
-    Hide all visible toasts.
+    Hide all visible toasts (each animates out).
   </Prop>
   <Prop name="update" type="(id: string, options: Partial<ToastOptions>) => void">
     Update an existing toast.
@@ -178,7 +178,7 @@ Configure toast behavior via `ThemeProvider`:
     Position of toast container.
   </Prop>
   <Prop name="maxVisible" type="number" default="3">
-    Maximum number of visible toasts in stack.
+    Maximum number of visible toasts in stack. When the limit is reached, the oldest toast animates out to make room.
   </Prop>
   <Prop name="duration" type="number" default="5000">
     Default duration in milliseconds.
@@ -190,12 +190,21 @@ Configure toast behavior via `ThemeProvider`:
     Whether toasts can be dismissed by swiping.
   </Prop>
   <Prop name="gap" type="number" default="8">
-    Gap between stacked toasts (in pixels).
+    Uniform gap between stacked toasts (in pixels).
   </Prop>
   <Prop name="hapticFeedback" type="boolean" default="true">
     Whether to enable haptic feedback.
   </Prop>
 </PropTable>
+
+## Stack Behavior
+
+- **Uniform gaps** — every pair of stacked toasts is separated by exactly `gap`; the toast nearest the screen edge sits flush with it.
+- **Newest nearest the edge** — `bottom` toasts stack upward with the newest at the bottom; `top` toasts stack downward with the newest at the top.
+- **Everything animates out** — auto-dismiss, the close button, `toast.hide()`, `toast.hideAll()`, and `maxVisible` eviction all play the exit animation. Nothing pops out of existence.
+- **Pause on touch** — pressing and holding a toast freezes its countdown; releasing resumes with the remaining time. A toast that expired while held dismisses on release.
+- **Swipe to dismiss** — drag a toast horizontally past 100px (swipe-down/up and taps pass through to the content underneath). Vertical drags never capture the gesture.
+- **Dismissal races are safe** — if the auto timer, close button, and a swipe collide, the exit animation plays once and each callback fires at most once.
 
 ## Examples
 
