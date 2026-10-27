@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Badge,
   BottomSheet,
@@ -15,11 +16,20 @@ import { PageBody, PageContainer, PageHeader } from '@/components/PageSection';
 
 const SNAP_LABELS = ['Peek · 25%', 'Half · 60%', 'Tall · 90%'];
 
+// The sheet lives in a full-screen Modal (its own native surface, outside the
+// app's SafeAreaView), so every demo sheet passes the device insets.
+function Sheet(props: React.ComponentProps<typeof BottomSheet.Root>) {
+  const insets = useSafeAreaInsets();
+  return (
+    <BottomSheet.Root {...props} safeAreaInsets={{ top: insets.top, bottom: insets.bottom }} />
+  );
+}
+
 function MultiSnapSheet() {
   const [snapIndex, setSnapIndex] = React.useState(0);
 
   return (
-    <BottomSheet.Root snapPoints={['25%', '60%', '90%']} onSnapPointChange={setSnapIndex}>
+    <Sheet snapPoints={['25%', '60%', '90%']} onSnapPointChange={setSnapIndex}>
       <BottomSheet.Trigger>
         <Button>Multi-Snap Sheet</Button>
       </BottomSheet.Trigger>
@@ -54,7 +64,7 @@ function MultiSnapSheet() {
           </BottomSheet.Footer>
         </BottomSheet.Content>
       </BottomSheet.Portal>
-    </BottomSheet.Root>
+    </Sheet>
   );
 }
 
@@ -72,7 +82,7 @@ export default function BottomSheetDemo() {
           <Flex direction="column" gap={16} padding={16}>
             {/* Basic BottomSheet */}
             <Card>
-              <BottomSheet.Root>
+              <Sheet>
                 <BottomSheet.Trigger>
                   <Button>Open Bottom Sheet</Button>
                 </BottomSheet.Trigger>
@@ -94,13 +104,13 @@ export default function BottomSheetDemo() {
                     </BottomSheet.Footer>
                   </BottomSheet.Content>
                 </BottomSheet.Portal>
-              </BottomSheet.Root>
+              </Sheet>
             </Card>
 
             {/* Snap Points */}
             <Card>
               <View style={styles.row}>
-                <BottomSheet.Root snapPoints={['25%']}>
+                <Sheet snapPoints={['25%']}>
                   <BottomSheet.Trigger>
                     <Button size={2}>25%</Button>
                   </BottomSheet.Trigger>
@@ -118,9 +128,9 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
 
-                <BottomSheet.Root snapPoints={['50%']}>
+                <Sheet snapPoints={['50%']}>
                   <BottomSheet.Trigger>
                     <Button size={2}>50%</Button>
                   </BottomSheet.Trigger>
@@ -138,9 +148,9 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
 
-                <BottomSheet.Root snapPoints={['90%']}>
+                <Sheet snapPoints={['90%']}>
                   <BottomSheet.Trigger>
                     <Button size={2}>90%</Button>
                   </BottomSheet.Trigger>
@@ -159,7 +169,7 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
               </View>
             </Card>
 
@@ -170,7 +180,7 @@ export default function BottomSheetDemo() {
 
             {/* Without Handle */}
             <Card>
-              <BottomSheet.Root>
+              <Sheet>
                 <BottomSheet.Trigger>
                   <Button>No Handle</Button>
                 </BottomSheet.Trigger>
@@ -189,13 +199,13 @@ export default function BottomSheetDemo() {
                     </BottomSheet.Footer>
                   </BottomSheet.Content>
                 </BottomSheet.Portal>
-              </BottomSheet.Root>
+              </Sheet>
             </Card>
 
             {/* Content Sizes */}
             <Card>
               <View style={styles.row}>
-                <BottomSheet.Root>
+                <Sheet>
                   <BottomSheet.Trigger>
                     <Button size={1}>Size 1</Button>
                   </BottomSheet.Trigger>
@@ -213,9 +223,9 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
 
-                <BottomSheet.Root>
+                <Sheet>
                   <BottomSheet.Trigger>
                     <Button size={2}>Size 2</Button>
                   </BottomSheet.Trigger>
@@ -233,9 +243,9 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
 
-                <BottomSheet.Root>
+                <Sheet>
                   <BottomSheet.Trigger>
                     <Button size={3}>Size 3</Button>
                   </BottomSheet.Trigger>
@@ -253,13 +263,13 @@ export default function BottomSheetDemo() {
                       </BottomSheet.Footer>
                     </BottomSheet.Content>
                   </BottomSheet.Portal>
-                </BottomSheet.Root>
+                </Sheet>
               </View>
             </Card>
 
             {/* With List Content */}
             <Card>
-              <BottomSheet.Root snapPoints={['50%']}>
+              <Sheet snapPoints={['50%']}>
                 <BottomSheet.Trigger>
                   <Button>Show Options</Button>
                 </BottomSheet.Trigger>
@@ -297,7 +307,7 @@ export default function BottomSheetDemo() {
                     </BottomSheet.Footer>
                   </BottomSheet.Content>
                 </BottomSheet.Portal>
-              </BottomSheet.Root>
+              </Sheet>
             </Card>
 
             {/* Controlled State */}
@@ -307,7 +317,7 @@ export default function BottomSheetDemo() {
 
             {/* Action Sheet Style */}
             <Card>
-              <BottomSheet.Root snapPoints={['40%']}>
+              <Sheet snapPoints={['40%']}>
                 <BottomSheet.Trigger>
                   <Button color="red">Delete Item</Button>
                 </BottomSheet.Trigger>
@@ -329,12 +339,12 @@ export default function BottomSheetDemo() {
                     </BottomSheet.Footer>
                   </BottomSheet.Content>
                 </BottomSheet.Portal>
-              </BottomSheet.Root>
+              </Sheet>
             </Card>
 
             {/* Form Example */}
             <Card>
-              <BottomSheet.Root snapPoints={['60%']}>
+              <Sheet snapPoints={['60%']}>
                 <BottomSheet.Trigger>
                   <Button>Add Comment</Button>
                 </BottomSheet.Trigger>
@@ -372,7 +382,7 @@ export default function BottomSheetDemo() {
                     </BottomSheet.Footer>
                   </BottomSheet.Content>
                 </BottomSheet.Portal>
-              </BottomSheet.Root>
+              </Sheet>
             </Card>
 
             <View style={{ height: 40 }} />
@@ -394,7 +404,7 @@ function ControlledBottomSheetDemo() {
         Status: {open ? 'Open' : 'Closed'}
       </Text>
 
-      <BottomSheet.Root open={open} onOpenChange={setOpen}>
+      <Sheet open={open} onOpenChange={setOpen}>
         <BottomSheet.Portal>
           <BottomSheet.Overlay />
           <BottomSheet.Content>
@@ -409,7 +419,7 @@ function ControlledBottomSheetDemo() {
             </BottomSheet.Footer>
           </BottomSheet.Content>
         </BottomSheet.Portal>
-      </BottomSheet.Root>
+      </Sheet>
     </View>
   );
 }

@@ -138,6 +138,7 @@ export { BottomSheet } from './BottomSheet';
 export type {
   SnapPoint,
   BottomSheetRootProps,
+  BottomSheetSafeAreaInsets,
   BottomSheetTriggerProps,
   BottomSheetPortalProps,
   BottomSheetOverlayProps,

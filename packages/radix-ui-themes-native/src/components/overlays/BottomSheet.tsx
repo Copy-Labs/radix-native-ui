@@ -21,6 +21,7 @@ import {
   Pressable,
   ScrollView,
   Platform,
+  StatusBar,
   type GestureResponderHandlers,
   TouchableOpacity,
   Vibration,
@@ -48,6 +49,36 @@ export type SnapPoint = string | number;
 // BottomSheet Context
 // ============================================================================
 
+/**
+ * Optional safe-area padding for the sheet. Because the sheet renders inside a
+ * full-screen `Modal` (its own native surface), it can't read the app's
+ * safe-area context, so apps pass `useSafeAreaInsets()` values explicitly.
+ * Omitted → Android top falls back to `StatusBar.currentHeight`, iOS/bottom to
+ * 0, keeping the library dependency-free.
+ */
+interface BottomSheetSafeAreaInsets {
+  top?: number;
+  bottom?: number;
+}
+
+/**
+ * The sheet is laid out at `sheetHeight` and anchored to the bottom, so its
+ * top edge sits at `screenHeight - sheetHeight` when fully open. Padding is
+ * only needed at the top when that edge rises above the status bar / notch
+ * (i.e. a near-full-height snap) — a half-height sheet must not get a gap
+ * above its handle.
+ */
+export function sheetTopPadding(
+  topInset: number,
+  screenHeight: number,
+  sheetHeight: number
+): number {
+  const topEdge = screenHeight - sheetHeight;
+  // The overlap between the inset band and the sheet top, clamped so it never
+  // exceeds the inset (a sheet taller than the screen still only needs topInset).
+  return Math.max(0, Math.min(topInset, topInset - topEdge));
+}
+
 interface BottomSheetContextValue {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -65,6 +96,8 @@ interface BottomSheetContextValue {
   screenHeight: number;
   panHandlers: GestureResponderHandlers;
   requestClose: () => void;
+  /** Safe-area insets forwarded from Root for the Modal-hosted sheet. */
+  safeAreaInsets?: BottomSheetSafeAreaInsets;
   /** Called by BottomSheet.Scrollable wrappers at touch-start with an atTop
    * getter: the sheet's gesture steal stands down inside the zone, except for
    * downward drags once the content is already at the top. */
@@ -141,6 +174,14 @@ interface BottomSheetRootProps {
   defaultSnapPoint?: number;
   /** Fires whenever the sheet settles on a snap point (index into snapPoints). */
   onSnapPointChange?: (index: number) => void;
+  /**
+   * Pad the sheet away from the status bar / home indicator. The sheet lives
+   * in a full-screen `Modal` (its own native surface), so it can't read the
+   * app's safe-area context automatically — pass `useSafeAreaInsets()` from
+   * `react-native-safe-area-context` for exact notch/Dynamic Island/gesture
+   * insets. Defaults: Android top = `StatusBar.currentHeight`, else 0.
+   */
+  safeAreaInsets?: BottomSheetSafeAreaInsets;
 }
 
 export const BottomSheetRoot = ({
@@ -150,6 +191,7 @@ export const BottomSheetRoot = ({
   snapPoints = ['50%'],
   defaultSnapPoint = 0,
   onSnapPointChange,
+  safeAreaInsets,
 }: BottomSheetRootProps) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const [currentSnapIndex, setCurrentSnapIndex] = useState(defaultSnapPoint);
@@ -402,6 +444,7 @@ export const BottomSheetRoot = ({
         panHandlers: panResponder.panHandlers,
         requestClose: animateClose,
         onScrollTouchStart: markScrollTouch,
+        safeAreaInsets,
       }}
     >
       {children}
@@ -478,6 +521,7 @@ export const BottomSheetPortal = ({
       transparent
       visible={open}
       animationType="none"
+      statusBarTranslucent
       supportedOrientations={['portrait', 'landscape']}
       onRequestClose={() => {}}
     >
@@ -583,7 +627,8 @@ export const BottomSheetContent = ({
   size = 2,
   hideHandle = false,
 }: BottomSheetContentProps) => {
-  const { radii, translateY, panHandlers, maxSnapHeight } = useBottomSheet();
+  const { radii, translateY, panHandlers, maxSnapHeight, screenHeight, safeAreaInsets } =
+    useBottomSheet();
   const theme = useTheme();
   const mode = useThemeMode();
   const isDark = mode === 'dark';
@@ -601,6 +646,15 @@ export const BottomSheetContent = ({
   const borderTopLeftRadius = radii.large;
   const borderTopRightRadius = radii.large;
 
+  // Safe-area padding. The sheet bleeds edge-to-edge inside its Modal, so the
+  // home-indicator inset always joins the bottom padding, and the top inset is
+  // only added when the sheet is tall enough to reach the status bar / notch.
+  const topInset =
+    safeAreaInsets?.top ?? (Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) : 0);
+  const bottomInset = safeAreaInsets?.bottom ?? 0;
+  const paddingTop = sheetTopPadding(topInset, screenHeight, maxSnapHeight);
+  const paddingBottom = 16 + bottomInset;
+
   return (
     <Animated.View
       style={[
@@ -613,6 +667,8 @@ export const BottomSheetContent = ({
           // it (this is what makes multi-snap dragging work in both directions).
           height: maxSnapHeight,
           paddingHorizontal: sizeStyles.paddingHorizontal,
+          paddingTop,
+          paddingBottom,
           transform: [{ translateY }],
           ...(shadow || {}),
         },
@@ -983,6 +1039,7 @@ export const BottomSheet = {
 
 export type {
   BottomSheetRootProps,
+  BottomSheetSafeAreaInsets,
   BottomSheetTriggerProps,
   BottomSheetPortalProps,
   BottomSheetOverlayProps,
