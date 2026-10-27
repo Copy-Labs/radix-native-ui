@@ -293,6 +293,63 @@ export default function DropdownMenuDemo() {
                   </DropdownMenu.Root>
                 </Flex>
 
+                {/* DropdownMenu with submenus */}
+                <Flex direction={'column'} gap={16}>
+                  <Heading size={4}>Menu with Submenus</Heading>
+                  <Text size={2} color="gray">
+                    Tap a chevron row to open its flyout. Only one submenu stays
+                    open at a time, and each one keeps its own state.
+                  </Text>
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger asChild>
+                      <Button variant={'soft'} color={'blue'}>
+                        Actions
+                        <Button.Icon>
+                          <Ionicons name={'caret-down'} />
+                        </Button.Icon>
+                      </Button>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Overlay />
+                      <DropdownMenu.Content sideOffset={5}>
+                        <DropdownMenu.Item onSelect={() => handleSelect('Rename')}>
+                          Rename
+                        </DropdownMenu.Item>
+                        <DropdownMenu.Separator />
+                        <DropdownMenu.Sub>
+                          <DropdownMenu.SubTrigger>Share</DropdownMenu.SubTrigger>
+                          <DropdownMenu.SubContent>
+                            <DropdownMenu.Item onSelect={() => handleSelect('Share: Email')}>
+                              Email
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item onSelect={() => handleSelect('Share: Messages')}>
+                              Messages
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item onSelect={() => handleSelect('Share: Copy Link')}>
+                              Copy Link
+                            </DropdownMenu.Item>
+                          </DropdownMenu.SubContent>
+                        </DropdownMenu.Sub>
+                        <DropdownMenu.Sub>
+                          <DropdownMenu.SubTrigger>Export</DropdownMenu.SubTrigger>
+                          <DropdownMenu.SubContent>
+                            <DropdownMenu.Item onSelect={() => handleSelect('Export: PDF')}>
+                              PDF
+                            </DropdownMenu.Item>
+                            <DropdownMenu.Item onSelect={() => handleSelect('Export: CSV')}>
+                              CSV
+                            </DropdownMenu.Item>
+                          </DropdownMenu.SubContent>
+                        </DropdownMenu.Sub>
+                        <DropdownMenu.Separator />
+                        <DropdownMenu.Item color="red" onSelect={() => handleSelect('Delete')}>
+                          Delete
+                        </DropdownMenu.Item>
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
+                </Flex>
+
                 {/* DropdownMenu with disabled items */}
                 <Flex direction={'column'} gap={16}>
                   <Heading size={4}>Menu with Disabled Items</Heading>
