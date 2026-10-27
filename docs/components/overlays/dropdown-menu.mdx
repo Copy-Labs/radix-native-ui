@@ -95,11 +95,23 @@ Radio-style menu item.
 
 ### DropdownMenu.Sub
 
-Nested submenu.
+A nested submenu. Each `Sub` is independently identified, so a menu can hold several submenus without them interfering. Wrap a `SubTrigger` (the row that opens it) and its `SubContent` (the flyout) inside `Sub`:
+
+```tsx
+<DropdownMenu.Sub>
+  <DropdownMenu.SubTrigger>Share</DropdownMenu.SubTrigger>
+  <DropdownMenu.SubContent>
+    <DropdownMenu.Item>Copy link</DropdownMenu.Item>
+    <DropdownMenu.Item>Email</DropdownMenu.Item>
+  </DropdownMenu.SubContent>
+</DropdownMenu.Sub>
+```
+
+Tapping the trigger opens the flyout to the side and highlights the trigger; only one submenu is open at a time (opening another collapses the previous), and closing the whole menu resets the submenus.
 
 ### DropdownMenu.SubTrigger
 
-Trigger for a submenu.
+The row that toggles its submenu. Shows a `›` chevron and highlights while open.
 
 <PropTable>
   <Prop name="children" type="ReactNode">
@@ -112,7 +124,7 @@ Trigger for a submenu.
 
 ### DropdownMenu.SubContent
 
-Content for a submenu.
+The submenu flyout. Only mounted while its own `Sub` is the open submenu.
 
 ### DropdownMenu.Portal
 

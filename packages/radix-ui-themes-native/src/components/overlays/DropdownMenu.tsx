@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef, useId, type ReactNode } from 'react';
 import { View, StyleSheet, type StyleProp, ViewStyle, Modal, Dimensions, TouchableWithoutFeedback,
   TextStyle, Vibration
 } from 'react-native';
@@ -54,6 +54,23 @@ const useDropdownMenu = () => {
   return context;
 };
 
+// Per-`Sub` identity context. Each DropdownMenu.Sub mints a unique id (React
+// useId) so several submenus in one menu stay independent — SubTrigger opens
+// its own id and SubContent only renders while that id is the open submenu.
+interface DropdownMenuSubContextValue {
+  submenuId: string;
+}
+
+const DropdownMenuSubContext = createContext<DropdownMenuSubContextValue | null>(null);
+
+const useDropdownMenuSub = () => {
+  const context = useContext(DropdownMenuSubContext);
+  if (!context) {
+    throw new Error('DropdownMenu.SubTrigger/SubContent must be used within a DropdownMenu.Sub');
+  }
+  return context;
+};
+
 // ============================================================================
 // DropdownMenu.Root - Main component
 // ============================================================================
@@ -84,6 +101,12 @@ export const DropdownMenuRoot = ({
   const colors = useThemeMode() === 'dark' ? theme.colors.gray.dark : theme.colors.gray;
   const radii = theme.radii;
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+
+  // Closing the menu must also collapse any open submenu flyout, so the next
+  // open starts clean.
+  useEffect(() => {
+    if (!open) setOpenSubmenu(null);
+  }, [open]);
   const { anchorRef, anchorPosition, measureAnchor } = useAnchorPosition();
 
   // Default size is 2, will be overridden by DropdownMenuContent
@@ -872,7 +895,14 @@ interface DropdownMenuSubProps {
 }
 
 export const DropdownMenuSub = ({ children }: DropdownMenuSubProps) => {
-  return <View>{children}</View>;
+  // Stable unique identity for this submenu instance, shared with its
+  // trigger/content via context.
+  const submenuId = useId();
+  return (
+    <DropdownMenuSubContext.Provider value={{ submenuId }}>
+      <View>{children}</View>
+    </DropdownMenuSubContext.Provider>
+  );
 };
 
 interface DropdownMenuSubTriggerProps {
@@ -883,9 +913,10 @@ interface DropdownMenuSubTriggerProps {
 
 export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: DropdownMenuSubTriggerProps) => {
   const { colors, openSubmenu, onOpenSubmenu, size } = useDropdownMenu();
+  const { submenuId } = useDropdownMenuSub();
   const globalHaptics = useHaptics();
   const theme = useTheme();
-  const submenuId = 'submenu'; // In a real implementation, this would be unique
+  const isOpen = openSubmenu === submenuId;
 
   // Get font size based on size prop
   const getFontSize = useCallback(() => {
@@ -914,7 +945,7 @@ export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: Drop
   }, [size, theme.space]);
 
   const handlePress = () => {
-    onOpenSubmenu(openSubmenu === submenuId ? null : submenuId);
+    onOpenSubmenu(isOpen ? null : submenuId);
     // Trigger haptic feedback on press
     if (globalHaptics && hapticFeedback) {
       triggerHaptic('press');
@@ -927,14 +958,19 @@ export const DropdownMenuSubTrigger = ({ children, hapticFeedback = true }: Drop
   return (
     <AnimatedPressable
       onPress={handlePress}
-      style={[styles.item, itemPadding]}
+      style={[
+        styles.item,
+        itemPadding,
+        // Highlight while this submenu's flyout is open.
+        isOpen && { backgroundColor: colors[4] },
+      ]}
       pressedScale={0.98}
       pressedOpacity={0.95}
       animationDuration={100}
-      hapticFeedback={hapticFeedback}
+      hapticFeedback={false}
     >
       <Text style={{ color: colors[12], flex: 1, fontSize }}>{children}</Text>
-      <Text style={{ color: colors[8], fontSize }}>›</Text>
+      <Text style={{ color: isOpen ? colors[12] : colors[8], fontSize }}>›</Text>
     </AnimatedPressable>
   );
 };
@@ -944,7 +980,8 @@ interface DropdownMenuSubContentProps {
 }
 
 export const DropdownMenuSubContent = ({ children }: DropdownMenuSubContentProps) => {
-  const { colors, radii, size } = useDropdownMenu();
+  const { colors, radii, size, openSubmenu } = useDropdownMenu();
+  const { submenuId } = useDropdownMenuSub();
   const theme = useTheme();
 
   // Get size-based styles
@@ -970,6 +1007,11 @@ export const DropdownMenuSubContent = ({ children }: DropdownMenuSubContentProps
   }, [size, theme.space]);
 
   const sizeStyles = getSizeStyles();
+
+  // Only the open submenu's flyout is mounted — before this it rendered
+  // unconditionally, so every submenu was permanently visible. (Gate lives
+  // below the hooks to keep hook order stable across open/close renders.)
+  if (openSubmenu !== submenuId) return null;
 
   return (
     <View
