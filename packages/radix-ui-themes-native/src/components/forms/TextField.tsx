@@ -383,6 +383,9 @@ const TextFieldRoot = React.forwardRef<
   };
 
   const inputInnerContainerStyle = {
+    // The box that carries the visible border has to fill the row, otherwise it
+    // hugs its own text and the field renders as a content-width pill.
+    flex: 1,
     borderWidth: 1,
     // borderColor: isFocused ? 'transparent' : color ? variantColors.borderColor : grayAlpha['8'],
     borderColor: inputBorderColor(),
