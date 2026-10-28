@@ -1,0 +1,699 @@
+---
+import Site from '../layouts/site.astro';
+import Demo from '../components/react/demo.tsx';
+import RawPanel from '../components/react/raw-panel.tsx';
+import ThemeLab from '../components/react/theme-lab.tsx';
+import HeroScreen from '../components/react/hero-screen.tsx';
+
+const title = 'radix-native-ui — the Radix Themes design system for React Native';
+const description =
+  'Open-source React Native and Expo component library inspired by Radix Themes: 50+ native-first components, a Radix-compatible theme system, zero runtime dependencies.';
+
+// Verified against the published manifest (npm view radix-native-ui).
+const facts = {
+  version: '0.1.11',
+  license: 'MIT',
+  dependencies: 0,
+  components: '50+',
+  tests: 95,
+  peers: 'react ≥ 18 · react-native ≥ 0.70 · expo ≥ 48',
+};
+
+const spaceScale = [
+  ['1', '4'],
+  ['2', '8'],
+  ['3', '12'],
+  ['4', '16'],
+  ['5', '24'],
+  ['6', '32'],
+  ['7', '40'],
+  ['8', '48'],
+  ['9', '64'],
+];
+
+const typeScale = [
+  ['1', '12 / 16', 'caption'],
+  ['2', '14 / 20', 'body small'],
+  ['3', '16 / 24', 'body'],
+  ['4', '18 / 26', 'lead'],
+  ['5', '20 / 28', 'title'],
+  ['6', '24 / 30', 'heading'],
+  ['7', '28 / 36', 'heading'],
+  ['8', '35 / 40', 'display'],
+  ['9', '60 / 60', 'hero'],
+];
+
+const radii = [
+  ['none', '0'],
+  ['small', '×0.5'],
+  ['medium', '×1'],
+  ['large', '×1.5'],
+  ['full', '×9999'],
+];
+
+/*
+  The quickstart sample lives here as a string rather than inline markup: Astro
+  treats `{` in a template as the start of an expression, and this snippet is
+  full of JSX braces. `set:html` renders it verbatim.
+*/
+const quickstart = `<span class="c">// app/_layout.tsx</span>
+<span class="k">import</span> { <span class="t">ThemeProvider</span>, <span class="t">Card</span>, <span class="t">Flex</span>, <span class="t">Text</span>, <span class="t">Button</span> } <span class="k">from</span> <span class="s">'radix-native-ui'</span>;
+
+<span class="k">export default function</span> <span class="p">App</span>() {
+  <span class="k">return</span> (
+    &lt;<span class="t">ThemeProvider</span> <span class="p">accentColor</span>=<span class="s">"indigo"</span> <span class="p">grayColor</span>=<span class="s">"mauve"</span>
+      <span class="p">radius</span>=<span class="s">"medium"</span> <span class="p">scaling</span>={<span class="s">1</span>} <span class="p">appearance</span>=<span class="s">"inherit"</span>&gt;
+      &lt;<span class="t">Card</span> <span class="p">size</span>={<span class="s">3</span>}&gt;
+        &lt;<span class="t">Flex</span> <span class="p">direction</span>=<span class="s">"column"</span> <span class="p">gap</span>={<span class="s">12</span>}&gt;
+          &lt;<span class="t">Text</span> <span class="p">size</span>={<span class="s">2</span>} <span class="p">color</span>=<span class="s">"gray"</span>&gt;
+            Design tokens that travel from web to native.
+          &lt;/<span class="t">Text</span>&gt;
+          &lt;<span class="t">Button</span> <span class="p">color</span>=<span class="s">"indigo"</span>&gt;Get started&lt;/<span class="t">Button</span>&gt;
+        &lt;/<span class="t">Flex</span>&gt;
+      &lt;/<span class="t">Card</span>&gt;
+    &lt;/<span class="t">ThemeProvider</span>&gt;
+  );
+}`;
+
+/*
+  Step 01 of "how it works", same frontmatter rule as above.
+*/
+const wrapSnippet = `<span class="c">// app/_layout.tsx — one provider at the root</span>
+&lt;<span class="t">ThemeProvider</span>
+  <span class="p">accentColor</span>=<span class="s">"indigo"</span>
+  <span class="p">grayColor</span>=<span class="s">"mauve"</span>
+  <span class="p">radius</span>=<span class="s">"medium"</span>
+  <span class="p">appearance</span>=<span class="s">"inherit"</span>&gt;
+  &lt;<span class="t">YourApp</span> /&gt;
+&lt;/<span class="t">ThemeProvider</span>&gt;`;
+---
+
+<Site title={title} description={description}>
+  <!-- ------------------------------------------------------------ hero -- -->
+  <section class="hero">
+    <div class="ambience" aria-hidden="true">
+      <span class="glow glow-a"></span>
+      <span class="glow glow-b"></span>
+      <span class="glow glow-c"></span>
+      <span class="grain"></span>
+    </div>
+
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">React Native · Expo · TypeScript</p>
+        <h1 class="h1">
+          The Radix Themes look,<br />
+          <span class="grad">built for native.</span>
+        </h1>
+        <p class="lead">
+          A component library for React Native and Expo with a native-first API: compound components,
+          controlled and uncontrolled state, numeric sizes, and a theme system that stays compatible
+          with web Radix Themes — accent colors, gray scales, radius, and scaling.
+        </p>
+
+        <div class="badges">
+          <span class="badge-line">npm <strong>v{facts.version}</strong></span>
+          <span class="badge-line"><strong>{facts.components}</strong> components</span>
+          <span class="badge-line"><strong>{facts.dependencies}</strong> runtime dependencies</span>
+          <span class="badge-line"><strong>{facts.license}</strong> licensed</span>
+          <span class="badge-line"><strong>{facts.tests}</strong> unit tests</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="ghost" href="#install" style="height:38px;padding-inline:18px;font-size:14px">Get started</a>
+          <a class="ghost" href="https://github.com/Copy-Labs/radix-native-ui" rel="noopener" style="height:38px;padding-inline:18px;font-size:14px">
+            Star on GitHub
+          </a>
+        </div>
+
+        <div class="cmd">
+          <span class="prompt">$</span>
+          <span>npm install radix-native-ui</span>
+          <button type="button" data-copy="npm install radix-native-ui">copy</button>
+        </div>
+        <p class="faint">{facts.peers}</p>
+      </div>
+
+      <div class="device">
+        <div class="device-notch" aria-hidden="true"></div>
+        <div class="device-screen">
+          <HeroScreen client:load />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------- compare -- -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">Without / With</p>
+        <h2 class="h2">The same screen, <span class="grad">two ways</span></h2>
+        <p class="lead">
+          Both halves below are live <code>react-native-web</code>, building the same account card.
+          The left one is hand-assembled the way most React Native screens are written: literal
+          colors, literal spacing, a switch made of two Views. Press <strong>Theme</strong> in the
+          nav and watch which half of this page notices.
+        </p>
+      </div>
+
+      <div class="compare">
+        <div class="compare-col reveal" data-delay="1">
+          <span class="compare-tag">Without radix-native-ui</span>
+          <!--
+            `client:load`, not `client:visible`: `StyleSheet.create` styles ship as
+            atomic class names whose stylesheet react-native-web only injects at
+            hydration, so the hand-rolled column would be unstyled until it scrolled
+            into view. Loading it eagerly keeps both halves of the comparison honest
+            at the same moment.
+          -->
+          <RawPanel client:load />
+          <ul class="compare-points">
+            <li>
+              Every value is a literal — <code>#6366f1</code>, <code>padding: 17</code>,
+              <code>borderRadius: 8</code>, <code>fontSize: 12.5</code>.
+            </li>
+            <li>No dark scheme exists to switch to: the card stays white on a dark page.</li>
+            <li>
+              The switch is two Views with no role and no state, so assistive tech sees an
+              unlabeled box.
+            </li>
+            <li>Change the accent or radius of your app and none of this follows.</li>
+          </ul>
+        </div>
+
+        <div class="compare-col after reveal" data-delay="2">
+          <span class="compare-tag good">With radix-native-ui</span>
+          <div class="panel-body column">
+            <Demo kind="account" client:load />
+          </div>
+          <ul class="compare-points">
+            <li>
+              One <code>ThemeProvider</code> supplies the colors, spacing, radius and type this card
+              reads from context.
+            </li>
+            <li>
+              <code>appearance</code> flips the entire card — the same dark ramps your app gets on
+              device.
+            </li>
+            <li>
+              <code>Switch</code> carries the <code>switch</code> role, checked state and haptics;
+              <code>TextField</code> labels its own input.
+            </li>
+            <li>Accent, gray scale, radius and scaling are props, not find-and-replace.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="faint" style="margin-top:24px">
+        The left column is real code on this page, not a mock-up: <code>raw-panel.tsx</code> is the
+        hand-rolled version, <code>demo.tsx</code> builds the right one from the published package.
+      </p>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------- what you get -- -->
+  <section id="why">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Why this library</p>
+        <h2 class="h2">Native by default, not ported by compromise</h2>
+        <p class="lead">
+          The theme tokens match web Radix Themes so designs transfer, but the components are
+          designed for React Native's runtime: no web shims, no heavy dependencies, no JS-thread
+          animations.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature reveal" data-delay="1">
+          <span class="icon" aria-hidden="true">∅</span>
+          <h3 class="h3">Zero runtime dependencies</h3>
+          <p>
+            The published manifest declares no <code>dependencies</code> at all — only peers for
+            React, React Native and Expo. Reanimated, Gesture Handler and list libraries stay your
+            choice, and <code>sideEffects: false</code> keeps web bundles tree-shaken.
+          </p>
+        </div>
+        <div class="feature reveal" data-delay="2">
+          <span class="icon" aria-hidden="true">⌘</span>
+          <h3 class="h3">Native-first API</h3>
+          <p>
+            Compound components (<code>Select.Trigger</code>, <code>Accordion.Item</code>),
+            controlled + uncontrolled state, <code>asChild</code> composition, numeric sizes, and
+            per-item colors — the patterns you already use in React Native.
+          </p>
+        </div>
+        <div class="feature reveal" data-delay="3">
+          <span class="icon" aria-hidden="true">◧</span>
+          <h3 class="h3">Radix-compatible theming</h3>
+          <p>
+            One <code>ThemeProvider</code> switches 31 accent colors, 6 gray scales, radius,
+            scaling, panel background and light/dark/inherit appearance, with helpers for
+            foreground contrast and variant palettes.
+          </p>
+        </div>
+        <div class="feature reveal" data-delay="1">
+          <span class="icon" aria-hidden="true">➜</span>
+          <h3 class="h3">Animations on the native driver</h3>
+          <p>
+            Sidebar drawers, BottomSheet snap points, FloatingTabBar's drag-to-select pill and
+            Toast exits are driven by <code>Animated</code> transforms on the native thread, with
+            gesture-scrubbed progress rather than fixed durations.
+          </p>
+        </div>
+        <div class="feature reveal" data-delay="2">
+          <span class="icon" aria-hidden="true">♡</span>
+          <h3 class="h3">Accessibility is not an afterthought</h3>
+          <p>
+            Roles and states are wired through (<code>tab</code>, <code>switch</code>,
+            <code>menuitem</code>, <code>aria-expanded</code>), text scales with the theme, and
+            haptics degrade to <code>Vibration</code> when <code>expo-haptics</code> is absent.
+          </p>
+        </div>
+        <div class="feature reveal" data-delay="3">
+          <span class="icon" aria-hidden="true">✓</span>
+          <h3 class="h3">Documented, tested, shipped weekly</h3>
+          <p>
+            {facts.tests} unit tests over the theme math, geometry and stack logic; a full
+            playground app; per-component docs with live examples; and a changelog that tracks every
+            PR from {facts.version} backwards.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------ gallery -- -->
+  <section id="components" class="band">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Component gallery</p>
+        <h2 class="h2">These are the real components</h2>
+        <p class="lead">
+          Every panel below is the published <code>radix-native-ui</code> package rendering through
+          <code>react-native-web</code> — the same component tree, the same style math, the same
+          theme context your app builds. Only the page chrome is CSS. Open them; they work.
+        </p>
+      </div>
+
+      <div class="gallery">
+        <div class="panel reveal" data-delay="1">
+          <div class="panel-title">
+            <h3 class="h3">Buttons</h3>
+            <code>Button · Button.Icon · Button.Label</code>
+          </div>
+          <div class="panel-body">
+            <Demo kind="buttons" client:visible />
+          </div>
+          <p class="panel-note">Five variants, four sizes, per-color theming, icon slots on either side.</p>
+        </div>
+
+        <div class="panel reveal" data-delay="2">
+          <div class="panel-title">
+            <h3 class="h3">Typography</h3>
+            <code>Text · Heading · Code · Kbd · Link</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="typography" client:visible />
+          </div>
+          <p class="panel-note">Nine-step type scale with per-size line height and letter spacing.</p>
+        </div>
+
+        <div class="panel reveal" data-delay="3">
+          <div class="panel-title">
+            <h3 class="h3">Form inputs</h3>
+            <code>TextField · TextArea · Switch · Slider</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="forms" client:visible />
+          </div>
+          <p class="panel-note">Slot API for leading/trailing icons, labels, and keyboard props passed through.</p>
+        </div>
+
+        <div class="panel reveal" data-delay="1">
+          <div class="panel-title">
+            <h3 class="h3">Selection</h3>
+            <code>Select · SegmentedControl · Checkbox</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="selection" client:visible />
+          </div>
+          <p class="panel-note">
+            Selections tint with the theme accent, and the trigger surface can override it via
+            <code>variant</code>.
+          </p>
+        </div>
+
+        <div class="panel wide reveal" data-delay="2">
+          <div class="panel-title">
+            <h3 class="h3">Data display</h3>
+            <code>Card · Avatar · Badge · Callout · DataList · Table · Progress · Skeleton</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="data" client:visible />
+          </div>
+          <p class="panel-note">
+            Compound cards with footers, mode-correct accent ramps, and a swappable
+            <code>ListBackend</code> for virtualized lists.
+          </p>
+        </div>
+
+        <div class="panel reveal" data-delay="3">
+          <div class="panel-title">
+            <h3 class="h3">Navigation &amp; structure</h3>
+            <code>Tabs · SegmentedControl · Sidebar · BottomSheet</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="navigation" client:visible />
+          </div>
+          <p class="panel-note">
+            The sidebar opens as a real drawer and the sheet drags between snap points. On device
+            they also respond to momentum swipes and haptics.
+          </p>
+        </div>
+
+        <div class="panel reveal" data-delay="1">
+          <div class="panel-title">
+            <h3 class="h3">Overlays</h3>
+            <code>Dialog · Popover · Tooltip · DropdownMenu · Toast</code>
+          </div>
+          <div class="panel-body">
+            <Demo kind="overlays" client:visible />
+          </div>
+          <p class="panel-note">
+            Nested submenus, anchored positioning with <code>sideOffset</code>, and toast stacks that
+            animate in and out.
+          </p>
+        </div>
+
+        <div class="panel reveal" data-delay="2">
+          <div class="panel-title">
+            <h3 class="h3">Disclosure &amp; feedback</h3>
+            <code>Accordion · Progress · Spinner</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="feedback" client:visible />
+          </div>
+          <p class="panel-note">Single and multiple accordion modes with animated chevrons.</p>
+        </div>
+      </div>
+
+      <p class="faint" style="margin-top:24px">
+        Rendered in a browser, so two things differ from your app: gestures use pointer events
+        instead of native responders, and haptic calls fall back to silence. Layout, color,
+        typography, radius, state and animation logic are the library's own.
+      </p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------ how -- -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">How it works</p>
+        <h2 class="h2">Three steps, <span class="grad">no configuration</span></h2>
+        <p class="lead">
+          There is no plugin, no tailwind config, no style dictionary to regenerate. Install, wrap
+          the root, compose — the third step below runs itself, because every part of it is a real
+          component responding to real state.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal" data-delay="1">
+          <span class="step-num">01</span>
+          <h3 class="h3">Wrap the root</h3>
+          <p>
+            One <code>ThemeProvider</code> at the top of the tree. Everything under it reads the same
+            accent, gray scale, radius and scaling from context.
+          </p>
+          <pre class="code" style="margin:0"><code set:html={wrapSnippet} /></pre>
+        </div>
+
+        <div class="step reveal" data-delay="2">
+          <span class="step-num">02</span>
+          <h3 class="h3">Compose from parts</h3>
+          <p>
+            Compound components with the state handling already settled: <code>value</code> and
+            <code>defaultValue</code>, <code>asChild</code>, per-item colors.
+          </p>
+          <div class="panel-body column">
+            <Demo kind="selection" client:visible />
+          </div>
+        </div>
+
+        <div class="step reveal" data-delay="3">
+          <span class="step-num">03</span>
+          <h3 class="h3">Ship to both platforms</h3>
+          <p>
+            Same tree on iOS and Android. Watch a screen finish itself: the bar animates, the pill
+            slides, the switch flips, the toast fires and expires.
+          </p>
+          <div class="panel-body column">
+            <Demo kind="auto" client:visible />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------ theming -- -->
+  <section id="theming">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Theming</p>
+        <h2 class="h2">One provider, whole-app retheme</h2>
+        <p class="lead">
+          Pick an accent, a gray scale, a radius and a scale factor — the panels above and the
+          samples below recompute from the same tokens. Contrast-aware foregrounds come free: a
+          solid chip in <code>sky</code> gets dark text, one in <code>indigo</code> gets white.
+        </p>
+      </div>
+
+      <div class="theming">
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">Live theme controls</h3>
+            <code>ThemeProvider</code>
+          </div>
+          <div class="panel-body column">
+            <ThemeLab client:visible />
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">The scale</h3>
+            <code>space · radii · typography</code>
+          </div>
+
+          <h4 class="h3" style="font-size:14px">Space (px)</h4>
+          <table class="scale-table">
+            <thead><tr><th>Index</th><th>px</th></tr></thead>
+            <tbody>
+              {spaceScale.map(([i, px]) => <tr><td><code>{i}</code></td><td>{px}</td></tr>)}
+            </tbody>
+          </table>
+
+          <h4 class="h3" style="font-size:14px;margin-top:20px">Typography (px / line-height)</h4>
+          <table class="scale-table">
+            <thead><tr><th>Size</th><th>px / lh</th><th>Typical use</th></tr></thead>
+            <tbody>
+              {typeScale.map(([s, px, use]) => <tr><td><code>{s}</code></td><td>{px}</td><td class="muted">{use}</td></tr>)}
+            </tbody>
+          </table>
+
+          <h4 class="h3" style="font-size:14px;margin-top:20px">Radius</h4>
+          <table class="scale-table">
+            <thead><tr><th>Value</th><th>Factor</th></tr></thead>
+            <tbody>
+              {radii.map(([r, f]) => <tr><td><code>{r}</code></td><td>{f}</td></tr>)}
+            </tbody>
+          </table>
+
+          <p class="panel-note">
+            Base radii are 3, 5, 6, 8, 10, 12, 14, 16 px; every color exposes steps 1–12 in light and
+            dark, plus alpha variants. Docs, playground and changelog live in the repo:
+            <code>docs/</code>, <code>apps/playground-native</code> and the package CHANGELOG.
+          </p>
+        </div>
+      </div>
+
+      <!--
+        The day/night pair. Other launch pages ship two JPEGs here; these are the
+        same island mounted twice with `appearance` pinned, so the pair can never
+        drift out of sync with the package and stays legible at any zoom.
+      -->
+      <div class="pair reveal" style="margin-top:var(--s-6)">
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">appearance="light"</h3>
+            <code>pinned</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="typography" appearance="light" surface client:visible />
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">appearance="dark"</h3>
+            <code>pinned</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="typography" appearance="dark" surface client:visible />
+          </div>
+        </div>
+      </div>
+
+      <p class="faint" style="margin-top:24px">
+        Every other demo on this page reads the nav's Theme button through its own
+        <code>ThemeProvider</code>; these two are pinned to opposite schemes so you can see both at
+        once without flipping anything.
+      </p>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------------- faq -- -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">The details</p>
+        <h2 class="h2">Answered by <span class="grad">the components themselves</span></h2>
+        <p class="lead">
+          There is no bespoke disclosure widget on this page: the answers below are
+          <code>Accordion.Root</code> from the published package — single mode, collapsible, the
+          chevron rotating on an animated value.
+        </p>
+      </div>
+
+      <div class="faq panel reveal" data-delay="1">
+        <div class="panel-body column">
+          <Demo kind="faq" client:visible />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------ install -- -->
+  <section id="install" class="band">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Quick start</p>
+        <h2 class="h2">Two minutes to a themed screen</h2>
+        <p class="lead">
+          Works with React Native 0.70+ and Expo SDK 48+. Wrap your root in
+          <code>ThemeProvider</code> and start composing.
+        </p>
+      </div>
+
+      <div class="theming" style="grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)">
+        <div>
+          <pre class="code"><code set:html={quickstart} /></pre>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="panel-title">
+              <h3 class="h3">Rendered output</h3>
+              <code>Button · Select · Switch</code>
+            </div>
+            <div class="panel-body column">
+              <Demo kind="selection" client:visible />
+            </div>
+            <p class="panel-note">
+              This is what the components in the snippet above produce — the panel you are reading
+              and the demo beside it are the same rendered tree.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- cta -- -->
+  <section id="get-started">
+    <div class="wrap">
+      <div class="cta reveal">
+        <div class="ambience" aria-hidden="true">
+          <span class="glow glow-b"></span>
+          <span class="glow glow-c"></span>
+        </div>
+        <div class="cta-inner">
+          <p class="eyebrow">Ship it today</p>
+          <h2 class="h2">
+            Start with one provider.<br />
+            <span class="grad">Finish with a design system.</span>
+          </h2>
+          <p class="lead" style="margin-inline:auto">
+            Everything you have scrolled past is the npm package, still running. Install it beside
+            your own code and the first themed screen is three components deep.
+          </p>
+
+          <div class="cmd">
+            <span class="prompt">$</span>
+            <span>npm install radix-native-ui</span>
+            <button type="button" data-copy="npm install radix-native-ui">copy</button>
+          </div>
+
+          <div class="hero-actions" style="justify-content:center">
+            <a class="ghost" href="#install" style="height:38px;padding-inline:18px;font-size:14px">
+              Read the quick start
+            </a>
+            <a
+              class="ghost"
+              href="https://github.com/Copy-Labs/radix-native-ui"
+              rel="noopener"
+              style="height:38px;padding-inline:18px;font-size:14px"
+            >
+              Star on GitHub
+            </a>
+            <a
+              class="ghost"
+              href="https://www.npmjs.com/package/radix-native-ui"
+              rel="noopener"
+              style="height:38px;padding-inline:18px;font-size:14px"
+            >
+              View on npm
+            </a>
+          </div>
+
+          <div class="chips">
+            <span class="chip"><span class="dot"></span> React ≥ 18</span>
+            <span class="chip"><span class="dot"></span> React Native ≥ 0.70</span>
+            <span class="chip"><span class="dot"></span> Expo ≥ 48</span>
+            <span class="chip"><span class="dot"></span> TypeScript types included</span>
+            <span class="chip"><span class="dot"></span> {facts.dependencies} runtime deps</span>
+            <span class="chip"><span class="dot"></span> {facts.tests} unit tests</span>
+            <span class="chip"><span class="dot"></span> {facts.license}</span>
+            <span class="chip"><span class="dot"></span> Tree-shakeable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Site>
+
+<style is:global>
+  .panel.wide {
+    grid-column: 1 / -1;
+  }
+  .panel h4 {
+    margin: 0 0 var(--s-2);
+  }
+  .panel .scale-table {
+    margin-bottom: var(--s-3);
+  }
+  .feature code,
+  .lead code,
+  .panel-note code,
+  .section-head code {
+    background: var(--panel-raised);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--r-2);
+    padding: 1px 5px;
+    font-size: 0.88em;
+  }
+  .cmd {
+    margin-top: var(--s-2);
+  }
+</style>
