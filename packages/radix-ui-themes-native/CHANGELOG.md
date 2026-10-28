@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- `TextField` / `TextArea`: **the field now fills the width it is given.** Both components draw their border in two layers — an outer container at `width: '100%'` and an inner one that carries the visible outline — and the inner row had no `flex`, so it sized to its own text. A short value rendered a short box, and the tap target shrank with it (the same is true on device, not just on web). The inner container now grows to the row.
+
 ## [0.1.11] - 2026-10-27
 
 ### Added

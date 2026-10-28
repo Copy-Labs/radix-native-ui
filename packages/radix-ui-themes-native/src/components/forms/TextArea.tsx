@@ -329,10 +329,12 @@ const TextAreaRoot = React.forwardRef<
   };
 
   const inputInnerContainerStyle = {
+    // Fills the row. Without this the box that draws the border shrinks to the
+    // text, so a short value renders a short field.
+    flex: 1,
     borderWidth: 1,
     borderColor: inputBorderColor(),
     borderRadius: selectedRadius === 'full' ? theme.radii.large : radii,
-    // flex: 1,
   };
 
   const inputStyle = {
