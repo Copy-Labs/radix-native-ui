@@ -1,6 +1,7 @@
 ---
 import Site from '../layouts/site.astro';
 import Demo from '../components/react/demo.tsx';
+import RawPanel from '../components/react/raw-panel.tsx';
 import ThemeLab from '../components/react/theme-lab.tsx';
 import HeroScreen from '../components/react/hero-screen.tsx';
 
@@ -73,17 +74,36 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
     &lt;/<span class="t">ThemeProvider</span>&gt;
   );
 }`;
+
+/*
+  Step 01 of "how it works", same frontmatter rule as above.
+*/
+const wrapSnippet = `<span class="c">// app/_layout.tsx — one provider at the root</span>
+&lt;<span class="t">ThemeProvider</span>
+  <span class="p">accentColor</span>=<span class="s">"indigo"</span>
+  <span class="p">grayColor</span>=<span class="s">"mauve"</span>
+  <span class="p">radius</span>=<span class="s">"medium"</span>
+  <span class="p">appearance</span>=<span class="s">"inherit"</span>&gt;
+  &lt;<span class="t">YourApp</span> /&gt;
+&lt;/<span class="t">ThemeProvider</span>&gt;`;
 ---
 
 <Site title={title} description={description}>
   <!-- ------------------------------------------------------------ hero -- -->
   <section class="hero">
+    <div class="ambience" aria-hidden="true">
+      <span class="glow glow-a"></span>
+      <span class="glow glow-b"></span>
+      <span class="glow glow-c"></span>
+      <span class="grain"></span>
+    </div>
+
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <p class="eyebrow">React Native · Expo · TypeScript</p>
         <h1 class="h1">
           The Radix Themes look,<br />
-          <span style="color: var(--accent-11)">built for native.</span>
+          <span class="grad">built for native.</span>
         </h1>
         <p class="lead">
           A component library for React Native and Expo with a native-first API: compound components,
@@ -123,10 +143,79 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
     </div>
   </section>
 
+  <!-- --------------------------------------------------------- compare -- -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">Without / With</p>
+        <h2 class="h2">The same screen, <span class="grad">two ways</span></h2>
+        <p class="lead">
+          Both halves below are live <code>react-native-web</code>, building the same account card.
+          The left one is hand-assembled the way most React Native screens are written: literal
+          colors, literal spacing, a switch made of two Views. Press <strong>Theme</strong> in the
+          nav and watch which half of this page notices.
+        </p>
+      </div>
+
+      <div class="compare">
+        <div class="compare-col reveal" data-delay="1">
+          <span class="compare-tag">Without radix-native-ui</span>
+          <!--
+            `client:load`, not `client:visible`: `StyleSheet.create` styles ship as
+            atomic class names whose stylesheet react-native-web only injects at
+            hydration, so the hand-rolled column would be unstyled until it scrolled
+            into view. Loading it eagerly keeps both halves of the comparison honest
+            at the same moment.
+          -->
+          <RawPanel client:load />
+          <ul class="compare-points">
+            <li>
+              Every value is a literal — <code>#6366f1</code>, <code>padding: 17</code>,
+              <code>borderRadius: 8</code>, <code>fontSize: 12.5</code>.
+            </li>
+            <li>No dark scheme exists to switch to: the card stays white on a dark page.</li>
+            <li>
+              The switch is two Views with no role and no state, so assistive tech sees an
+              unlabeled box.
+            </li>
+            <li>Change the accent or radius of your app and none of this follows.</li>
+          </ul>
+        </div>
+
+        <div class="compare-col after reveal" data-delay="2">
+          <span class="compare-tag good">With radix-native-ui</span>
+          <div class="panel-body column">
+            <Demo kind="account" client:load />
+          </div>
+          <ul class="compare-points">
+            <li>
+              One <code>ThemeProvider</code> supplies the colors, spacing, radius and type this card
+              reads from context.
+            </li>
+            <li>
+              <code>appearance</code> flips the entire card — the same dark ramps your app gets on
+              device.
+            </li>
+            <li>
+              <code>Switch</code> carries the <code>switch</code> role, checked state and haptics;
+              <code>TextField</code> labels its own input.
+            </li>
+            <li>Accent, gray scale, radius and scaling are props, not find-and-replace.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="faint" style="margin-top:24px">
+        The left column is real code on this page, not a mock-up: <code>raw-panel.tsx</code> is the
+        hand-rolled version, <code>demo.tsx</code> builds the right one from the published package.
+      </p>
+    </div>
+  </section>
+
   <!-- -------------------------------------------------- what you get -- -->
   <section id="why">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head reveal">
         <p class="eyebrow">Why this library</p>
         <h2 class="h2">Native by default, not ported by compromise</h2>
         <p class="lead">
@@ -137,7 +226,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
       </div>
 
       <div class="grid-3">
-        <div class="feature">
+        <div class="feature reveal" data-delay="1">
           <span class="icon" aria-hidden="true">∅</span>
           <h3 class="h3">Zero runtime dependencies</h3>
           <p>
@@ -146,7 +235,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
             choice, and <code>sideEffects: false</code> keeps web bundles tree-shaken.
           </p>
         </div>
-        <div class="feature">
+        <div class="feature reveal" data-delay="2">
           <span class="icon" aria-hidden="true">⌘</span>
           <h3 class="h3">Native-first API</h3>
           <p>
@@ -155,7 +244,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
             per-item colors — the patterns you already use in React Native.
           </p>
         </div>
-        <div class="feature">
+        <div class="feature reveal" data-delay="3">
           <span class="icon" aria-hidden="true">◧</span>
           <h3 class="h3">Radix-compatible theming</h3>
           <p>
@@ -164,7 +253,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
             foreground contrast and variant palettes.
           </p>
         </div>
-        <div class="feature">
+        <div class="feature reveal" data-delay="1">
           <span class="icon" aria-hidden="true">➜</span>
           <h3 class="h3">Animations on the native driver</h3>
           <p>
@@ -173,7 +262,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
             gesture-scrubbed progress rather than fixed durations.
           </p>
         </div>
-        <div class="feature">
+        <div class="feature reveal" data-delay="2">
           <span class="icon" aria-hidden="true">♡</span>
           <h3 class="h3">Accessibility is not an afterthought</h3>
           <p>
@@ -182,7 +271,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
             haptics degrade to <code>Vibration</code> when <code>expo-haptics</code> is absent.
           </p>
         </div>
-        <div class="feature">
+        <div class="feature reveal" data-delay="3">
           <span class="icon" aria-hidden="true">✓</span>
           <h3 class="h3">Documented, tested, shipped weekly</h3>
           <p>
@@ -198,7 +287,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
   <!-- ------------------------------------------------------ gallery -- -->
   <section id="components" class="band">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head reveal">
         <p class="eyebrow">Component gallery</p>
         <h2 class="h2">These are the real components</h2>
         <p class="lead">
@@ -209,7 +298,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
       </div>
 
       <div class="gallery">
-        <div class="panel">
+        <div class="panel reveal" data-delay="1">
           <div class="panel-title">
             <h3 class="h3">Buttons</h3>
             <code>Button · Button.Icon · Button.Label</code>
@@ -220,7 +309,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           <p class="panel-note">Five variants, four sizes, per-color theming, icon slots on either side.</p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="2">
           <div class="panel-title">
             <h3 class="h3">Typography</h3>
             <code>Text · Heading · Code · Kbd · Link</code>
@@ -231,7 +320,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           <p class="panel-note">Nine-step type scale with per-size line height and letter spacing.</p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="3">
           <div class="panel-title">
             <h3 class="h3">Form inputs</h3>
             <code>TextField · TextArea · Switch · Slider</code>
@@ -242,7 +331,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           <p class="panel-note">Slot API for leading/trailing icons, labels, and keyboard props passed through.</p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="1">
           <div class="panel-title">
             <h3 class="h3">Selection</h3>
             <code>Select · SegmentedControl · Checkbox</code>
@@ -256,7 +345,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           </p>
         </div>
 
-        <div class="panel wide">
+        <div class="panel wide reveal" data-delay="2">
           <div class="panel-title">
             <h3 class="h3">Data display</h3>
             <code>Card · Avatar · Badge · Callout · DataList · Table · Progress · Skeleton</code>
@@ -270,7 +359,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           </p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="3">
           <div class="panel-title">
             <h3 class="h3">Navigation &amp; structure</h3>
             <code>Tabs · SegmentedControl · Sidebar · BottomSheet</code>
@@ -284,7 +373,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           </p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="1">
           <div class="panel-title">
             <h3 class="h3">Overlays</h3>
             <code>Dialog · Popover · Tooltip · DropdownMenu · Toast</code>
@@ -298,7 +387,7 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           </p>
         </div>
 
-        <div class="panel">
+        <div class="panel reveal" data-delay="2">
           <div class="panel-title">
             <h3 class="h3">Disclosure &amp; feedback</h3>
             <code>Accordion · Progress · Spinner</code>
@@ -318,10 +407,61 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
     </div>
   </section>
 
+  <!-- ------------------------------------------------------------ how -- -->
+  <section id="how">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">How it works</p>
+        <h2 class="h2">Three steps, <span class="grad">no configuration</span></h2>
+        <p class="lead">
+          There is no plugin, no tailwind config, no style dictionary to regenerate. Install, wrap
+          the root, compose — the third step below runs itself, because every part of it is a real
+          component responding to real state.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal" data-delay="1">
+          <span class="step-num">01</span>
+          <h3 class="h3">Wrap the root</h3>
+          <p>
+            One <code>ThemeProvider</code> at the top of the tree. Everything under it reads the same
+            accent, gray scale, radius and scaling from context.
+          </p>
+          <pre class="code" style="margin:0"><code set:html={wrapSnippet} /></pre>
+        </div>
+
+        <div class="step reveal" data-delay="2">
+          <span class="step-num">02</span>
+          <h3 class="h3">Compose from parts</h3>
+          <p>
+            Compound components with the state handling already settled: <code>value</code> and
+            <code>defaultValue</code>, <code>asChild</code>, per-item colors.
+          </p>
+          <div class="panel-body column">
+            <Demo kind="selection" client:visible />
+          </div>
+        </div>
+
+        <div class="step reveal" data-delay="3">
+          <span class="step-num">03</span>
+          <h3 class="h3">Ship to both platforms</h3>
+          <p>
+            Same tree on iOS and Android. Watch a screen finish itself: the bar animates, the pill
+            slides, the switch flips, the toast fires and expires.
+          </p>
+          <div class="panel-body column">
+            <Demo kind="auto" client:visible />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ------------------------------------------------------ theming -- -->
   <section id="theming">
     <div class="wrap">
-      <div class="section-head">
+      <div class="section-head reveal">
         <p class="eyebrow">Theming</p>
         <h2 class="h2">One provider, whole-app retheme</h2>
         <p class="lead">
@@ -379,14 +519,67 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
           </p>
         </div>
       </div>
+
+      <!--
+        The day/night pair. Other launch pages ship two JPEGs here; these are the
+        same island mounted twice with `appearance` pinned, so the pair can never
+        drift out of sync with the package and stays legible at any zoom.
+      -->
+      <div class="pair reveal" style="margin-top:var(--s-6)">
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">appearance="light"</h3>
+            <code>pinned</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="typography" appearance="light" surface client:visible />
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">
+            <h3 class="h3">appearance="dark"</h3>
+            <code>pinned</code>
+          </div>
+          <div class="panel-body column">
+            <Demo kind="typography" appearance="dark" surface client:visible />
+          </div>
+        </div>
+      </div>
+
+      <p class="faint" style="margin-top:24px">
+        Every other demo on this page reads the nav's Theme button through its own
+        <code>ThemeProvider</code>; these two are pinned to opposite schemes so you can see both at
+        once without flipping anything.
+      </p>
+    </div>
+  </section>
+
+  <!-- -------------------------------------------------------------- faq -- -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">The details</p>
+        <h2 class="h2">Answered by <span class="grad">the components themselves</span></h2>
+        <p class="lead">
+          There is no bespoke disclosure widget on this page: the answers below are
+          <code>Accordion.Root</code> from the published package — single mode, collapsible, the
+          chevron rotating on an animated value.
+        </p>
+      </div>
+
+      <div class="faq panel reveal" data-delay="1">
+        <div class="panel-body column">
+          <Demo kind="faq" client:visible />
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ------------------------------------------------------ install -- -->
   <section id="install" class="band">
     <div class="wrap">
-      <div class="section-head">
-        <p class="eyebrow">Get started</p>
+      <div class="section-head reveal">
+        <p class="eyebrow">Quick start</p>
         <h2 class="h2">Two minutes to a themed screen</h2>
         <p class="lead">
           Works with React Native 0.70+ and Expo SDK 48+. Wrap your root in
@@ -411,6 +604,68 @@ const quickstart = `<span class="c">// app/_layout.tsx</span>
               This is what the components in the snippet above produce — the panel you are reading
               and the demo beside it are the same rendered tree.
             </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- cta -- -->
+  <section id="get-started">
+    <div class="wrap">
+      <div class="cta reveal">
+        <div class="ambience" aria-hidden="true">
+          <span class="glow glow-b"></span>
+          <span class="glow glow-c"></span>
+        </div>
+        <div class="cta-inner">
+          <p class="eyebrow">Ship it today</p>
+          <h2 class="h2">
+            Start with one provider.<br />
+            <span class="grad">Finish with a design system.</span>
+          </h2>
+          <p class="lead" style="margin-inline:auto">
+            Everything you have scrolled past is the npm package, still running. Install it beside
+            your own code and the first themed screen is three components deep.
+          </p>
+
+          <div class="cmd">
+            <span class="prompt">$</span>
+            <span>npm install radix-native-ui</span>
+            <button type="button" data-copy="npm install radix-native-ui">copy</button>
+          </div>
+
+          <div class="hero-actions" style="justify-content:center">
+            <a class="ghost" href="#install" style="height:38px;padding-inline:18px;font-size:14px">
+              Read the quick start
+            </a>
+            <a
+              class="ghost"
+              href="https://github.com/Copy-Labs/radix-native-ui"
+              rel="noopener"
+              style="height:38px;padding-inline:18px;font-size:14px"
+            >
+              Star on GitHub
+            </a>
+            <a
+              class="ghost"
+              href="https://www.npmjs.com/package/radix-native-ui"
+              rel="noopener"
+              style="height:38px;padding-inline:18px;font-size:14px"
+            >
+              View on npm
+            </a>
+          </div>
+
+          <div class="chips">
+            <span class="chip"><span class="dot"></span> React ≥ 18</span>
+            <span class="chip"><span class="dot"></span> React Native ≥ 0.70</span>
+            <span class="chip"><span class="dot"></span> Expo ≥ 48</span>
+            <span class="chip"><span class="dot"></span> TypeScript types included</span>
+            <span class="chip"><span class="dot"></span> {facts.dependencies} runtime deps</span>
+            <span class="chip"><span class="dot"></span> {facts.tests} unit tests</span>
+            <span class="chip"><span class="dot"></span> {facts.license}</span>
+            <span class="chip"><span class="dot"></span> Tree-shakeable</span>
           </div>
         </div>
       </div>

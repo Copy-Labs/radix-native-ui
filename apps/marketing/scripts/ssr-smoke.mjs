@@ -34,8 +34,8 @@ const count = (needle) => html.split(needle).length - 1;
 const checks = [
   {
     name: 'hydrated islands prerendered',
-    // hero + gallery panels + theme lab + install sample
-    test: () => count('<astro-island') >= 10,
+    // hero + comparison pair + gallery panels + steps + day/night pair + faq + theme lab
+    test: () => count('<astro-island') >= 15,
     detail: `${count('<astro-island')} <astro-island> elements`,
   },
   {
@@ -77,6 +77,16 @@ const checks = [
     test: () => count('letter-spacing:0.0025px') > 0,
     detail: `${count('letter-spacing:0.0025px')} occurrences`,
   },
+  {
+    /*
+      gray-12 in the *dark* ramp is #eeeef0. Only a ThemeProvider rendered with
+      appearance="dark" can emit it, so this proves the day/night pair is really
+      two schemes rather than a CSS filter over one.
+    */
+    name: 'pinned dark island prerendered against the dark ramp',
+    test: () => count('rgba(238,238,240,1.00)') > 0,
+    detail: `${count('rgba(238,238,240,1.00)')} dark-ramp occurrences`,
+  },
 ];
 
 const sentinels = [
@@ -85,6 +95,16 @@ const sentinels = [
   ['Checkbox label', 'Agree to terms'],
   ['Toast trigger', 'Fire toast'],
   ['Button.Icon label', 'New task'],
+  /*
+   * Select.Value has to sit inside a Button.Label to be rendered at all, so this
+   * is the regression test for the trigger quietly coming out empty.
+   */
+  ['Select trigger value', 'Pick a fruit'],
+  ['Comparison column tag', 'Without radix-native-ui'],
+  ['Account card (library side)', 'Email me product updates'],
+  ['Accordion FAQ question', 'Is this a port of Radix Themes?'],
+  ['How-it-works step', 'Ship to both platforms'],
+  ['Closing CTA', 'three components deep'],
 ];
 
 for (const [label, text] of sentinels) {
@@ -100,9 +120,14 @@ for (const [label, text] of sentinels) {
 for (const [label, text] of [
   ['Sidebar body (overlay closed)', 'Workspace'],
   ['BottomSheet body (sheet closed)', 'Snap points'],
+  /*
+    The self-running demo toasts this title two seconds after it mounts, so a
+    prerendered copy would mean the sequence had been faked into the markup.
+  */
+  ['Auto-demo toast (mount-time sequence)', 'Upload complete'],
 ]) {
   checks.push({
-    name: `${label} absent until opened`,
+    name: `${label} not prerendered`,
     test: () => count(text) === 0,
     detail: `found ${count(text)} occurrence(s) of "${text}", expected 0`,
   });

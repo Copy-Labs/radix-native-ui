@@ -10,6 +10,10 @@
  *   public/shots/hero.png    the phone screen, light mode
  *   public/shots/hero-dark.png   the same after toggling the in-app switch
  *   public/shots/theme-lab.png   the live theme controls
+ *   public/shots/compare.png     the Without / With pair
+ *   public/shots/day-night.png   the pinned light + dark islands
+ *   public/shots/faq.png         the accordion FAQ
+ *   public/shots/cta.png         the closing band
  *   public/shots/<panel>.png     one per gallery panel
  *
  * Requires the browser once: `pnpm --filter marketing exec playwright install chromium`
@@ -62,12 +66,18 @@ try {
   mkdirSync(outDir, { recursive: true });
 
   const browser = await chromium.launch();
-  // Retina-scale output, and a fixed light scheme so re-runs are reproducible:
-  // the shell reads localStorage before first paint.
+  /*
+   * Retina-scale output, and a fixed light scheme so re-runs are reproducible:
+   * the shell reads localStorage before first paint. Reduced motion is emulated
+   * deliberately — it makes every `.reveal` element visible without waiting on
+   * the IntersectionObserver, freezes the ambient glows, and lets the self-running
+   * demo settle on its end state instead of being caught mid-sequence.
+   */
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     deviceScaleFactor: 2,
     colorScheme: 'light',
+    reducedMotion: 'reduce',
   });
   await context.addInitScript(() => localStorage.setItem('theme', 'light'));
   const page = await context.newPage();
@@ -124,6 +134,10 @@ try {
   await page.waitForTimeout(400);
 
   await shot(page.locator('#theming .panel').first(), 'theme-lab.png');
+  await shot(page.locator('#compare .compare'), 'compare.png');
+  await shot(page.locator('#theming .pair'), 'day-night.png');
+  await shot(page.locator('#faq .faq'), 'faq.png');
+  await shot(page.locator('.cta'), 'cta.png');
 
   for (const panel of await page.locator('#components .panel').all()) {
     const heading = (await panel.locator('h3').first().textContent()) || 'panel';

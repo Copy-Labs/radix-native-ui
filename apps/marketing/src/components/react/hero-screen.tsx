@@ -16,14 +16,22 @@ import {
   ThemeProvider,
 } from 'radix-native-ui';
 import { Glyph } from './glyph';
+import { useSiteAppearance, type SiteAppearance } from './use-site-appearance';
 
 /**
  * Hero visual: an app screen built from the real components, inside a CSS phone
  * shell. One CSS pixel equals one layout pixel here, so what you see is what the
  * library produces on a device — the only thing the page adds is the bezel.
+ *
+ * The screen starts on the page's own color scheme and the switch inside it is a
+ * real override, exactly like a dark-mode setting in a real app: flip the page
+ * while the switch is untouched and the phone follows; touch the switch and the
+ * screen keeps its own mind.
  */
 const HeroScreen = () => {
-  const [dark, setDark] = useState(false);
+  const siteAppearance = useSiteAppearance();
+  const [override, setOverride] = useState<SiteAppearance | null>(null);
+  const appearance = override ?? siteAppearance;
   const [tab, setTab] = useState('home');
 
   return (
@@ -31,14 +39,14 @@ const HeroScreen = () => {
       accentColor="indigo"
       grayColor="mauve"
       radius="medium"
-      appearance={dark ? 'dark' : 'light'}
+      appearance={appearance}
     >
       <View style={{ height: 596, width: '100%', position: 'relative', overflow: 'hidden' }}>
         <Flex direction="column" style={{ flex: 1 }} gap={0}>
           <Inset clip="padding-box" p={4}>
             <Flex direction="row" align="center" justify="space-between" gap={8}>
               <Flex direction="row" align="center" gap={10}>
-                <Avatar variant="soft" fallback="SK" size={4} />
+                <Avatar variant="soft" fallback="SK" size={4} radius="full" />
                 <Flex direction="column">
                   <Heading size={5}>Good evening</Heading>
                   <Text size={1} color="gray">
@@ -50,7 +58,11 @@ const HeroScreen = () => {
                 <Text size={1} color="gray">
                   Dark
                 </Text>
-                <Switch size={1} checked={dark} onCheckedChange={setDark} />
+                <Switch
+                  size={1}
+                  checked={appearance === 'dark'}
+                  onCheckedChange={(next) => setOverride(next ? 'dark' : 'light')}
+                />
               </Flex>
             </Flex>
           </Inset>
@@ -93,7 +105,7 @@ const HeroScreen = () => {
             <Card size={3} variant="surface">
               <Flex direction="column" gap={6}>
                 <Flex direction="row" align="center" gap={8}>
-                  <Avatar color="crimson" variant="soft" fallback="JD" size={2} />
+                  <Avatar color="crimson" variant="soft" fallback="JD" size={2} radius="full" />
                   <Flex direction="column" style={{ flex: 1 }}>
                     <Text size={2}>Jordan sent a comment</Text>
                     <Text size={1} color="gray">
@@ -141,7 +153,7 @@ const HeroScreen = () => {
                 icon={<Glyph name="☑" />}
                 badge={4}
               />
-              <FloatingTabBar.Item value="chat" label="Chat" icon={<Glyph name="💬" />} />
+              <FloatingTabBar.Item value="chat" label="Search" icon={<Glyph name="⌕" />} />
               <FloatingTabBar.Item value="you" label="You" icon={<Glyph name="☺" />} />
             </FloatingTabBar.Root>
           </View>

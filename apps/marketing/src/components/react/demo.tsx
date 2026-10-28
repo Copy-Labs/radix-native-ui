@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import {
   Accordion,
@@ -38,9 +38,11 @@ import {
   Spinner,
   Table,
   useToast,
+  useThemeColors,
   type Color,
 } from 'radix-native-ui';
 import { Glyph } from './glyph';
+import { prefersReducedMotion, useSiteAppearance } from './use-site-appearance';
 
 /**
  * One island, many demos.
@@ -54,11 +56,14 @@ export type DemoKind =
   | 'buttons'
   | 'typography'
   | 'forms'
+  | 'account'
   | 'selection'
   | 'data'
   | 'navigation'
   | 'overlays'
-  | 'feedback';
+  | 'feedback'
+  | 'auto'
+  | 'faq';
 
 export interface DemoProps {
   kind: DemoKind;
@@ -67,6 +72,12 @@ export interface DemoProps {
   radius?: 'none' | 'small' | 'medium' | 'large' | 'full';
   scaling?: number;
   appearance?: 'light' | 'dark' | 'inherit';
+  /**
+   * Paint the island's own background from the theme. Needed where a demo is
+   * pinned to a scheme that differs from the page around it — dark text on a
+   * white panel is not a dark mode, it is a bug.
+   */
+  surface?: boolean;
 }
 
 /* ------------------------------------------------------------------ panels -- */
@@ -175,6 +186,75 @@ const Forms = () => {
   );
 };
 
+/*
+  The "With radix-native-ui" half of the comparison. Same screen as
+  `raw-panel.tsx`, same content, so the two columns are directly comparable and
+  nothing is stacked in the library's favour except the code it takes to write.
+*/
+const Account = () => {
+  const [name, setName] = useState('Susan Kare');
+  const [email, setEmail] = useState('susan@apple.com');
+  return (
+    <Card size={3} variant="surface">
+      <Flex direction="column" gap={12}>
+        <Flex direction="row" align="center" gap={10}>
+          <Avatar variant="soft" fallback="SK" size={2} radius="full" />
+          <Flex direction="column" style={{ flex: 1 }}>
+            <Heading size={4}>Susan Kare</Heading>
+            <Text size={1} color="gray">
+              Design lead · 12 projects
+            </Text>
+          </Flex>
+          <Badge variant="soft" color="amber" size={1}>
+            Pro
+          </Badge>
+        </Flex>
+
+        {/* Size 1 controls: the point of this column is the code, so the card is
+            staged at roughly the same scale as the hand-rolled one beside it
+            rather than at the 44px touch target a real screen would use. */}
+        <TextField.Root label="Display name" size={1} value={name} onChangeText={setName} />
+        <TextField.Root
+          label="Email"
+          size={1}
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
+        />
+
+        <Flex direction="row" align="center" justify="space-between">
+          <Text size={2}>Email me product updates</Text>
+          <Switch defaultChecked size={1} />
+        </Flex>
+
+        <Flex direction="column" gap={4}>
+          <Flex direction="row" justify="space-between">
+            <Text size={1} color="gray">
+              Storage
+            </Text>
+            <Text size={1} color="gray">
+              78%
+            </Text>
+          </Flex>
+          <Progress value={78} size={1} />
+        </Flex>
+
+        <Flex direction="row" gap={8}>
+          <Button size={1} style={{ flex: 1 }}>
+            <Button.Icon>
+              <Glyph name="✓" />
+            </Button.Icon>
+            Save changes
+          </Button>
+          <Button size={1} variant="ghost" color="gray">
+            Cancel
+          </Button>
+        </Flex>
+      </Flex>
+    </Card>
+  );
+};
+
 const Selection = () => {
   const [fruit, setFruit] = useState('apple');
   return (
@@ -188,7 +268,12 @@ const Selection = () => {
       <Select.Root value={fruit} onValueChange={setFruit} variant="outline">
         <Select.Trigger asChild>
           <Button variant="outline" size={2} style={{ justifyContent: 'space-between' }}>
-            <Select.Value placeholder="Pick a fruit" />
+            {/* Button.Label is not decoration: a Button given an arbitrary element
+                as its child treats it as an icon slot and renders only that
+                child's children, so a bare Select.Value disappears. */}
+            <Button.Label>
+              <Select.Value placeholder="Pick a fruit" />
+            </Button.Label>
           </Button>
         </Select.Trigger>
         <Select.Portal>
@@ -216,9 +301,9 @@ const Selection = () => {
 const Data = () => (
   <Flex direction="column" gap={14}>
     <Flex gap={10} wrap="wrap" align="center">
-      <Avatar variant="solid" fallback="SK" size={5} />
-      <Avatar color="crimson" variant="soft" fallback="JD" size={5} />
-      <Avatar highContrast color="purple" variant="solid" fallback="AB" size={5} />
+      <Avatar variant="solid" fallback="SK" size={5} radius="full" />
+      <Avatar color="crimson" variant="soft" fallback="JD" size={5} radius="full" />
+      <Avatar highContrast color="purple" variant="solid" fallback="AB" size={5} radius="full" />
       <Badge variant="solid">New</Badge>
       <Badge variant="soft" color="teal">
         Beta
@@ -253,7 +338,9 @@ const Data = () => (
       </Flex>
     </Card>
 
-    <DataList.Root size={2} orientation="vertical">
+    {/* Horizontal is the component's own default and the denser layout, so the
+        label column lines up instead of stacking two lines per row. */}
+    <DataList.Root size={2} orientation="horizontal">
       <DataList.Item>
         <DataList.Label>Name</DataList.Label>
         <DataList.Value>Susan Kare</DataList.Value>
@@ -262,9 +349,13 @@ const Data = () => (
         <DataList.Label>Email</DataList.Label>
         <DataList.Value>susan@apple.com</DataList.Value>
       </DataList.Item>
+      <DataList.Item>
+        <DataList.Label>Role</DataList.Label>
+        <DataList.Value>Design lead</DataList.Value>
+      </DataList.Item>
     </DataList.Root>
 
-    <Table.Root size={2}>
+    <Table.Root size={3}>
       <Table.Header>
         <Table.Row>
           <Table.ColumnHeaderCell>Package</Table.ColumnHeaderCell>
@@ -280,10 +371,22 @@ const Data = () => (
           <Table.Cell>react-native-web</Table.Cell>
           <Table.Cell align="right">0.21.4</Table.Cell>
         </Table.Row>
+        <Table.Row>
+          <Table.Cell>astro</Table.Cell>
+          <Table.Cell align="right">5.18.2</Table.Cell>
+        </Table.Row>
       </Table.Body>
     </Table.Root>
 
-    <Skeleton width={220} height={18} />
+    {/* A lone skeleton bar reads as a rendering glitch; two bars under a label
+        read as the loading state they are. */}
+    <Flex direction="column" gap={6}>
+      <Text size={1} color="gray">
+        Loading activity…
+      </Text>
+      <Skeleton width={280} height={14} />
+      <Skeleton width={180} height={14} />
+    </Flex>
   </Flex>
 );
 
@@ -518,26 +621,191 @@ const Feedback = () => (
   </Flex>
 );
 
+/*
+  A demo that runs itself. `client:visible` hydrates this island the first time the
+  panel scrolls into view, so a mount effect *is* the scroll trigger — no observer
+  and no scroll listener of our own. Everything the sequence touches is a real
+  component state change: the progress bar animates, the segmented pill slides,
+  the switch flips, the toast fires through the provider's viewport.
+*/
+const Auto = () => {
+  const toast = useToast();
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [upload, setUpload] = useState(0);
+  const [view, setView] = useState('day');
+  const [synced, setSynced] = useState(false);
+
+  const clearTimers = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  };
+  const at = (ms: number, fn: () => void) => {
+    timers.current.push(setTimeout(fn, ms));
+  };
+
+  const run = () => {
+    clearTimers();
+    setUpload(0);
+    setView('day');
+    setSynced(false);
+    at(120, () => setUpload(18));
+    at(700, () => setUpload(47));
+    at(950, () => setView('week'));
+    at(1400, () => setUpload(72));
+    at(1750, () => setSynced(true));
+    at(2150, () => setUpload(100));
+    at(2550, () =>
+      toast.success({
+        title: 'Upload complete',
+        description: '12 files synced to the workspace.',
+      }),
+    );
+  };
+
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setUpload(100);
+      setView('week');
+      setSynced(true);
+    } else {
+      run();
+    }
+    return clearTimers;
+  }, []);
+
+  return (
+    <Flex direction="column" gap={12}>
+      <Flex direction="row" align="center" justify="space-between">
+        <Text size={2}>{synced ? 'Synced just now' : 'Syncing workspace…'}</Text>
+        <Badge variant="outline" color={synced ? 'grass' : 'amber'} size={1}>
+          {upload}%
+        </Badge>
+      </Flex>
+      <Progress value={upload} size={2} color={synced ? 'grass' : 'indigo'} />
+      <SegmentedControl.Root value={view} onValueChange={setView} size={2}>
+        <SegmentedControl.Item value="day">Day</SegmentedControl.Item>
+        <SegmentedControl.Item value="week">Week</SegmentedControl.Item>
+        <SegmentedControl.Item value="month">Month</SegmentedControl.Item>
+      </SegmentedControl.Root>
+      <Flex direction="row" align="center" justify="space-between" gap={8}>
+        <Text size={2}>Auto-sync over cellular</Text>
+        <Switch size={2} checked={synced} onCheckedChange={setSynced} />
+      </Flex>
+      <Button size={1} variant="ghost" color="gray" onPress={run}>
+        <Button.Icon>
+          <Glyph name="↻" />
+        </Button.Icon>
+        Run it again
+      </Button>
+    </Flex>
+  );
+};
+
+/*
+  The FAQ is the product: `Accordion` in single collapsible mode, themed by the
+  same provider as everything else. Other launch pages draw a chevron and animate
+  a div; this one has no bespoke markup at all.
+*/
+const FAQ_ITEMS: { id: string; q: string; a: string }[] = [
+  {
+    id: 'radix',
+    q: 'Is this a port of Radix Themes?',
+    a: 'No. It takes the design tokens and the API shape from the web library and rebuilds them for React Native, with no shared code and no web shim. Not affiliated with or endorsed by Radix.',
+  },
+  {
+    id: 'deps',
+    q: 'How does it stay dependency-free?',
+    a: 'Gestures are built on React Native\u2019s own PanResponder, animations on the built-in Animated API, and haptics fall back to Vibration when expo-haptics is missing. The published manifest declares no dependencies — only peers.',
+  },
+  {
+    id: 'state',
+    q: 'Controlled or uncontrolled?',
+    a: 'Both, per component: value / onValueChange beside defaultValue, checked / onCheckedChange beside defaultChecked, and asChild when you want to style an existing element.',
+  },
+  {
+    id: 'web',
+    q: 'Does it render on web?',
+    a: 'This page is the proof — every panel here is the npm package going through react-native-web. It is still native-first: on web, gestures use pointer events and haptic calls are silent.',
+  },
+  {
+    id: 'dark',
+    q: 'What about dark mode?',
+    a: 'ThemeProvider takes appearance light, dark or inherit, and every color step has a dark ramp. Flip the Theme button in the nav: these answers, the demos and the phone above all recompute through the library.',
+  },
+  {
+    id: 'box',
+    q: 'What is in the box?',
+    a: '50+ components across typography, layout, forms, selection, overlays, navigation, data display and disclosure — plus the theme hooks, 95 unit tests, a full playground app and per-component docs.',
+  },
+];
+
+const Faq = () => (
+  <Accordion.Root type="single" collapsible defaultValue="radix">
+    {FAQ_ITEMS.map((item) => (
+      <Accordion.Item key={item.id} value={item.id}>
+        <Accordion.Header>
+          <Accordion.Trigger>{item.q}</Accordion.Trigger>
+        </Accordion.Header>
+        <Accordion.Content>
+          <Text size={2} color="gray">
+            {item.a}
+          </Text>
+        </Accordion.Content>
+      </Accordion.Item>
+    ))}
+  </Accordion.Root>
+);
+
 const panels: Record<DemoKind, () => React.JSX.Element> = {
   buttons: Buttons,
   typography: Typography,
   forms: Forms,
+  account: Account,
   selection: Selection,
   data: Data,
   navigation: Navigation,
   overlays: Overlays,
   feedback: Feedback,
+  auto: Auto,
+  faq: Faq,
 };
 
 /* ----------------------------------------------------------------- island -- */
 
-const DemoIsland = ({ kind, ...theme }: DemoProps) => {
-  const Panel = panels[kind];
-  // ThemeProvider owns the toast viewport (it renders one internally), so the
-  // toast demo below needs no extra mounting here.
+/*
+  A surface that comes from the theme rather than from the page. Used by the
+  pinned light/dark pair: `appearance="dark"` swaps the ramps the components paint
+  with, but the CSS panel behind them still follows the *page*, so without this the
+  dark half would be light-gray text on white.
+*/
+const ThemedSurface = ({ children }: { children: React.ReactNode }) => {
+  const { background } = useThemeColors();
   return (
-    <ThemeProvider {...theme}>
-      <Panel />
+    <View style={{ backgroundColor: background, borderRadius: 12, padding: 14 }}>
+      {children}
+    </View>
+  );
+};
+
+const DemoIsland = ({ kind, appearance, surface, ...theme }: DemoProps) => {
+  const Panel = panels[kind];
+  const siteAppearance = useSiteAppearance();
+  /*
+    Islands follow the page's scheme by default, which is what makes the day/night
+    button a genuine re-theme rather than a CSS trick. A demo that owns its scheme —
+    the pinned light/dark pair in the theming section — passes `appearance` and wins.
+    ThemeProvider owns the toast viewport (it renders one internally), so the toast
+    demos need no extra mounting here.
+  */
+  return (
+    <ThemeProvider appearance={appearance ?? siteAppearance} {...theme}>
+      {surface ? (
+        <ThemedSurface>
+          <Panel />
+        </ThemedSurface>
+      ) : (
+        <Panel />
+      )}
     </ThemeProvider>
   );
 };

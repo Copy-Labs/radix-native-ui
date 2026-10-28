@@ -40,6 +40,9 @@ const year = new Date().getFullYear();
     -->
     <script is:inline>
       (() => {
+        // Marks JS as available so the scroll-reveal styles can opt in: without
+        // this class the reveal rules would leave content at opacity 0 forever.
+        document.documentElement.classList.add('js');
         const stored = localStorage.getItem('theme');
         const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = stored ?? (prefersDark ? 'dark' : 'light');
@@ -56,9 +59,10 @@ const year = new Date().getFullYear();
         </a>
         <nav class="nav-links" aria-label="Sections">
           <a href="#why">Why</a>
+          <a href="#compare">Compare</a>
           <a href="#components">Components</a>
           <a href="#theming">Theming</a>
-          <a href="#install">Install</a>
+          <a href="#faq">FAQ</a>
         </nav>
         <div class="nav-cta">
           <button class="ghost" id="theme-toggle" type="button" aria-label="Toggle color scheme">
@@ -112,6 +116,30 @@ const year = new Date().getFullYear();
           setTimeout(() => (node.textContent = 'copy'), 1200);
         });
       });
+
+      /*
+        Scroll reveals. One observer over every `.reveal`, disconnected as each
+        element lands, so nothing re-animates on a second scroll past and the
+        callback list does not grow with the page. `prefers-reduced-motion` is
+        handled entirely in CSS: the elements are never offset there, so this
+        script is decoration only.
+      */
+      const revealables = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && revealables.length) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('in');
+              observer.unobserve(entry.target);
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.15 },
+        );
+        revealables.forEach((node) => observer.observe(node));
+      } else {
+        revealables.forEach((node) => node.classList.add('in'));
+      }
     </script>
   </body>
 </html>
