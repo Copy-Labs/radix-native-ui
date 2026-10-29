@@ -111,7 +111,10 @@ const getToastColors = (
   const actualColor = variant === 'accent' ? theme.accentColor : colorName;
 
   const colorScale = theme.colors[actualColor];
-  const colorAlpha = getColorAlpha(theme, actualColor);
+  // The alpha step is used as the foreground text color below, so it has to come
+  // from the current scheme's ramp — the light `A9` is a dark translucent color
+  // and turns unreadable on the dark surface.
+  const colorAlpha = getColorAlpha(theme, actualColor, isDark ? 'dark' : 'light');
 
   // Get background color based on variant
   let backgroundColor: string;

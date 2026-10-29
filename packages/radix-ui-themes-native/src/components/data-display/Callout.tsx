@@ -208,8 +208,10 @@ const CalloutIcon = forwardRef<View, CalloutIconProps>(
     const mode = useThemeMode();
     const isDark = mode === 'dark';
 
-    // Get the color scale for the icon color
-    const colorAlpha = getColorAlpha(theme, color);
+    // Get the color scale for the icon color. The alpha step is a foreground, so
+    // it has to come from the current scheme's ramp: `greenA11` from the light
+    // ramp is a dark translucent green, which disappears on a dark soft callout.
+    const colorAlpha = getColorAlpha(theme, color, mode);
     const iconColor = highContrast
       ? isDark ? theme.colors[color].dark?.[12] : theme.colors[color][12]
       : colorAlpha[11];
@@ -270,8 +272,8 @@ const CalloutText = forwardRef<any, CalloutTextProps>(
     // Map callout size to text size
     const textSize = mapCalloutSizeToTextSize(size);
 
-    // Get the color for text
-    const colorAlpha = getColorAlpha(theme, color);
+    // Get the color for text — mode-aware for the same reason as the icon.
+    const colorAlpha = getColorAlpha(theme, color, mode);
     const textColor = highContrast
       ? isDark ? theme.colors[color].dark?.[12] : theme.colors[color][12]
       : colorAlpha[11];

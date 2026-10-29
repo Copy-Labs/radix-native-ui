@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - `TextField` / `TextArea`: **the field now fills the width it is given.** Both components draw their border in two layers — an outer container at `width: '100%'` and an inner one that carries the visible outline — and the inner row had no `flex`, so it sized to its own text. A short value rendered a short box, and the tap target shrank with it (the same is true on device, not just on web). The inner container now grows to the row.
+- `Callout` / `Toast`: **the translucent accent used as text is now taken from the current scheme's ramp.** Both components paint their surface through `getVariantColors` / the dark gray steps — which are mode-aware — but read their foreground (`Callout.Text`, `Callout.Icon`, the colored `Toast` label) from `getColorAlpha(theme, color)` without a mode, so dark mode kept compositing the *light* `A9`/`A11` step. On a soft `green` callout that meant light `greenA11` (a dark translucent green) over dark `greenA3`: roughly 1.3:1, effectively invisible. `getColorAlpha` already accepts a mode; the three call sites now pass it. No API change.
 
 ## [0.1.11] - 2026-10-27
 
