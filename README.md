@@ -178,12 +178,13 @@ function Example() {
 
 ```tsx
 <ThemeProvider
-  mode="light"           // 'light' | 'dark' | undefined (follows device)
+  appearance="light"     // 'light' | 'dark' | 'inherit' (preferred; `mode` is deprecated)
   forcedMode="dark"      // Force specific mode (overrides device settings)
   accentColor="indigo"   // Accent color for components
   grayColor="mauve"      // Gray scale variant
   radius="medium"        // Border radius scale
-  scaling={1}            // Scale factor for all sizes
+  scaling={1}            // Scale factor for all sizes (1 = 100%)
+  haptics={true}         // Global haptic feedback switch (default: true)
 >
   {children}
 </ThemeProvider>
@@ -192,20 +193,33 @@ function Example() {
 ### Using Theme Hooks
 
 ```tsx
-import { useTheme, useThemeMode, useThemeActions } from 'radix-native-ui';
+import { useTheme, useThemeMode, useThemeActions, useHaptics } from 'radix-native-ui';
 
 function MyComponent() {
   const theme = useTheme();
   const mode = useThemeMode();
   const { setMode, toggleMode } = useThemeActions();
+  const hapticsEnabled = useHaptics();
 
   return (
     <Button onPress={toggleMode}>
-      Switch to {mode === 'light' ? 'dark' : 'light'} mode
+      Switch to {mode === 'light' ? 'dark' : 'light'} mode ({hapticsEnabled ? 'haptics on' : 'haptics off'})
     </Button>
   );
 }
 ```
+
+### Haptics
+
+Components provide haptic feedback by default. Disable it globally with `<ThemeProvider haptics={false}>`, or locally per component with `hapticFeedback={false}`. Fire your own haptic with `triggerHaptic`:
+
+```tsx
+import { triggerHaptic, Button } from 'radix-native-ui';
+
+<Button onPress={() => triggerHaptic('notificationSuccess')}>Save</Button>
+```
+
+Available types: `selection`, `press`, `toggleOn`, `toggleOff`, `impactLight`, `impactMedium`, `impactHeavy`, `notificationSuccess`, `notificationWarning`, `notificationError`. On iOS these use the Taptic Engine; on Android they use the system haptic engine via `expo-haptics`, falling back to a short vibration only when that module is unavailable. See the [Haptics guide](./docs/guides/haptics.mdx) for details.
 
 ### Available Accent Colors
 
@@ -334,7 +348,7 @@ cd apps/playground-native && pnpm start
 
 ## Documentation
 
-For detailed component API documentation, see [`packages/radix-ui-themes-native/docs/component-api.md`](./packages/radix-ui-themes-native/docs/component-api.md).
+For the full documentation, see the [Mintlify docs](./docs) or [`packages/radix-ui-themes-native/docs/component-api.md`](./packages/radix-ui-themes-native/docs/component-api.md) for the detailed component API reference.
 
 For the original Radix Themes documentation, visit [radix-ui.com/themes/docs](https://radix-ui.com/themes/docs).
 

@@ -127,7 +127,7 @@ const Switch = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Swit
       }
       // Trigger haptic feedback on toggle (check both global and local settings)
       if (globalHaptics && hapticFeedback && !disabled) {
-        triggerHaptic('press')
+        triggerHaptic(value ? 'toggleOn' : 'toggleOff')
       }
     };
 

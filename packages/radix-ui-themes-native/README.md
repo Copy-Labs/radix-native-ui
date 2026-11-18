@@ -44,10 +44,11 @@ export default function App() {
 
 ```tsx
 <ThemeProvider
-  mode="light"           // 'light' | 'dark' | undefined (follows device)
+  appearance="light"     // 'light' | 'dark' | 'inherit' (preferred; `mode` is deprecated)
   forcedMode="dark"      // Force specific mode (overrides device settings)
   themeOptions={{}}      // Customize theme colors, typography, etc.
   onModeChange={(mode) => console.log('Theme mode changed:', mode)}
+  haptics={true}         // Global haptic feedback switch (default: true)
 >
   {children}
 </ThemeProvider>
@@ -349,18 +350,39 @@ npm test -- Box.test.tsx
 
 ## Haptics & Animations
 
-Many interactive components include built-in haptic feedback and press animations for a native feel:
+Many interactive components include built-in haptic feedback and press animations for a native feel.
 
-### Components with Haptic Feedback
+### Global and local control
 
-- **Button** - Haptic feedback on press (configurable via `hapticFeedback` prop)
-- **IconButton** - Haptic feedback on press
-- **Switch** - Haptic feedback when toggled
-- **Radio** - Haptic feedback when selected
-- **RadioCards** - Haptic feedback when selection changes
-- **Checkbox** - Haptic feedback when toggled
-- **CheckboxCards** - Haptic feedback when selection changes
-- **Select** - Haptic feedback on item selection
+Haptics are enabled by default. Turn them all off with `<ThemeProvider haptics={false}>`, or turn them off for a single component with `hapticFeedback={false}`. A haptic fires only when **both** are enabled. Read the global setting with `useHaptics()`.
+
+```tsx
+import { ThemeProvider, useHaptics, Text } from 'radix-native-ui';
+
+function Settings() {
+  const hapticsEnabled = useHaptics();
+  return <Text>{hapticsEnabled ? 'Haptics on' : 'Haptics off'}</Text>;
+}
+
+<ThemeProvider haptics={false}>{/* every component is silent */}</ThemeProvider>;
+```
+
+### Triggering haptics yourself
+
+```tsx
+import { triggerHaptic, type HapticFeedbackType } from 'radix-native-ui';
+
+triggerHaptic('press'); // light impact for a tap
+triggerHaptic('notificationSuccess'); // a task actually completed
+```
+
+Available types: `selection` (soft tick for sliders and scrollers), `press`, `toggleOn`, `toggleOff`, `impactLight`, `impactMedium`, `impactHeavy`, `notificationSuccess`, `notificationWarning`, `notificationError`.
+
+On iOS, feedback uses the Taptic Engine. On Android, it uses expo-haptics' `performAndroidHapticsAsync` (the system haptic engine — `context-click` for presses, `segment-tick` for selection, `toggle-on`/`toggle-off` for toggles), with a short `Vibration` only as a last-resort fallback when `expo-haptics` is unavailable. `expo-haptics` is an optional peer dependency. See the [Haptics guide](../../../docs/guides/haptics.mdx) for more.
+
+### Components with built-in haptics
+
+Button, IconButton, Switch, Radio, RadioCards, Checkbox, CheckboxCards, Select, Slider, Accordion, SegmentedControl, FloatingTabBar, DropdownMenu, ContextMenu, BottomSheet, Sidebar, and Toast. Each exposes `hapticFeedback` where it makes sense.
 
 ### Press Animations
 

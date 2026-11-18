@@ -36,27 +36,20 @@ function MyComponent() {
 
 ```tsx
 interface Theme {
-  colors: {
-    gray: ColorScale;
-    blue: ColorScale;
-    // ... all color scales
-    blackAlpha: AlphaColorScale;
-    whiteAlpha: AlphaColorScale;
-  };
-  space: number[];
-  radii: Record<number, number>;
-  fontSizes: Record<number, TypographyValue>;
-  fontWeights: Record<string, string>;
-  fonts: {
-    heading: FontConfig;
-    body: FontConfig;
-    strong: FontConfig;
-    em: FontConfig;
-    code: FontConfig;
-    quote: FontConfig;
-  };
+  name: string;
+  scaling: number;
+  radius: 'none' | 'small' | 'medium' | 'large' | 'full';
+  grayColor: 'mauve' | 'olive' | 'sage' | 'sand' | 'slate' | 'gray';
+  accentColor: Color;
+  colors: ColorTokens; // gray, blue, ..., blackAlpha, whiteAlpha
+  space: SpaceScale;
+  radii: RadiusScale;
+  typography: TypographyTokens;
+  shadows: { light: ShadowTokens; dark: ShadowTokens };
 }
 ```
+
+Typography values — including `fontSizes`, `fontWeights`, and `fonts` — live under `theme.typography`. There are no top-level `fontSizes`, `fontWeights`, or `fonts` fields on `Theme`.
 
 ---
 
@@ -151,10 +144,36 @@ interface ThemeColors {
   background: string;
   surface: string;
   panel: string;
-  text: string;
-  textMuted: string;
 }
 ```
+
+---
+
+## useHaptics
+
+Returns the global haptics setting from `ThemeProvider` as a boolean (`true` by default). Throws if called outside a `ThemeProvider`.
+
+### Usage
+
+```tsx
+import { useHaptics, Text } from 'radix-native-ui';
+
+function HapticsSettingLabel() {
+  const hapticsEnabled = useHaptics();
+
+  return <Text>{hapticsEnabled ? 'Haptics on' : 'Haptics off'}</Text>;
+}
+```
+
+### Returns
+
+```tsx
+type Haptics = boolean;
+```
+
+<Note>
+  A haptic fires only when the global `haptics` setting is `true` **and** the individual component's `hapticFeedback` prop is enabled. See [ThemeProvider](/api-reference/theme-provider) for the `haptics` prop.
+</Note>
 
 ---
 
@@ -168,14 +187,14 @@ Returns the toast notification controller.
 import { useToast } from 'radix-native-ui';
 
 function MyComponent() {
-  const { toast, dismiss } = useToast();
+  const { show, success } = useToast();
 
   const handleSuccess = () => {
-    toast({
+    success({
       title: 'Success!',
       description: 'Your changes have been saved.',
-      type: 'success',
     });
+    // Or use the generic form: show({ title: 'Saved', variant: 'success' })
   };
 
   return (
@@ -188,22 +207,31 @@ function MyComponent() {
 
 ```tsx
 interface ToastController {
-  toast: (options: ToastOptions) => void;
-  dismiss: (id?: string) => void;
-  dismissAll: () => void;
+  show: (options: ToastOptions) => string;
+  success: (options: Omit<ToastOptions, 'variant'>) => string;
+  error: (options: Omit<ToastOptions, 'variant'>) => string;
+  warning: (options: Omit<ToastOptions, 'variant'>) => string;
+  info: (options: Omit<ToastOptions, 'variant'>) => string;
+  accent: (options: Omit<ToastOptions, 'variant'>) => string;
+  hide: (id: string) => void;
+  hideAll: () => void;
+  update: (id: string, options: Partial<ToastOptions>) => void;
 }
 
 interface ToastOptions {
   title: string;
   description?: string;
-  type?: 'success' | 'error' | 'warning' | 'info';
+  variant?: 'default' | 'success' | 'error' | 'warning' | 'info' | 'accent';
   duration?: number;
   action?: {
     label: string;
     onPress: () => void;
   };
+  // Also accepts color, position, icon, showClose, style, and callbacks.
 }
 ```
+
+The `show`, `success`, `error`, `warning`, `info`, and `accent` methods return the toast ID, which you can pass to `hide` or `update`. Use the `variant` field (not `type`) to set a toast's visual style.
 
 ---
 

@@ -78,6 +78,45 @@ Do NOT import primitives from react-native when equivalents exist in the library
 
 ---
 
+# Haptics
+
+Haptics are enabled by default and are controlled at two levels:
+
+- **Global:** `<ThemeProvider haptics={false}>` disables haptics for the whole app (default is
+  `true`). `useHaptics()` returns this global boolean and throws outside a `ThemeProvider`.
+- **Local:** interactive components (Button, IconButton, Switch, Checkbox, Radio, Slider,
+  SegmentedControl, menus, etc.) accept a `hapticFeedback?: boolean` prop (default `true`).
+  Feedback fires only when **both** the global setting and the local prop are enabled.
+
+For custom interactions, fire a haptic directly with the exported helper:
+
+```tsx
+import React, { useState } from 'react';
+import { Box, Button, Switch, triggerHaptic, type HapticFeedbackType } from 'radix-native-ui';
+
+function NotificationSettings() {
+  const [enabled, setEnabled] = useState(false);
+  const notify = (type: HapticFeedbackType) => triggerHaptic(type);
+
+  return (
+    <Box gap={3}>
+      <Switch checked={enabled} onCheckedChange={setEnabled} hapticFeedback />
+      <Button onPress={() => notify('notificationSuccess')}>Save</Button>
+    </Box>
+  );
+}
+```
+
+`HapticFeedbackType` is one of: `'selection'`, `'press'`, `'toggleOn'`, `'toggleOff'`,
+`'impactLight'`, `'impactMedium'`, `'impactHeavy'`, `'notificationSuccess'`, `'notificationWarning'`,
+`'notificationError'`.
+
+`expo-haptics` is an optional peer dependency. iOS uses the Taptic Engine; Android prefers
+expo-haptics' `performAndroidHapticsAsync` (system haptics) and only falls back to a short vibration
+as a last resort.
+
+---
+
 # Core Design Philosophy
 
 Agents should follow these principles when generating UI.
@@ -167,8 +206,8 @@ Most components have built-in props for common styling:
 // Button has variant props
 <Button variant="solid" size={2} color="blue">Submit</Button>
 
-// Text has variant props
-<Text variant="title">Welcome</Text>
+// Text has typography props
+<Text size={6} weight="bold">Welcome</Text>
 ```
 
 ### Available Semantic Props
@@ -185,9 +224,11 @@ Most components have built-in props for common styling:
 - `size`: 1 | 2 | 3 | 4
 
 **Text:**
-- `variant`: 'title' | 'body' | 'caption' | etc.
-- `weight`: 'normal' | 'bold'
+- `size`: 1..9 (default 3)
+- `weight`: 'light' | 'regular' | 'medium' | 'bold'
 - `align`: 'left' | 'center' | 'right'
+- `color`: Theme color name
+- `style`: Custom React Native text styles
 
 ---
 
@@ -235,7 +276,7 @@ import { Box, Text, TextField, Button, Stack, Center } from 'radix-native-ui';
 export default function LoginScreen() {
   return (
     <Flex align={'center'} direction={'column'} flex={1} gap={8} justify={'center'} maxWidth={400} padding={4}>
-        <Text variant="title">Welcome Back</Text>
+        <Text size={6} weight="bold">Welcome Back</Text>
         
         <TextField placeholder="Email" />
         
@@ -265,7 +306,7 @@ export default function ProfileScreen() {
           radius="full" 
         />
         
-        <Text variant="title">John Doe</Text>
+        <Text size={6} weight="bold">John Doe</Text>
         
         <Button variant="outline">
           Edit Profile

@@ -156,7 +156,7 @@ const Radio = React.forwardRef<React.ComponentRef<typeof AnimatedPressable>, Rad
         }
         // Trigger haptic feedback on select (check both global and local settings)
         if (globalHaptics && hapticFeedback) {
-          triggerHaptic('press')
+          triggerHaptic('toggleOn')
         }
       }
     };

@@ -65,7 +65,7 @@ import { ThemeProvider } from 'radix-native-ui';
 export default function App() {
   return (
     <ThemeProvider
-      mode="light"           // 'light' | 'dark' | undefined (follows device)
+      appearance="light"     // 'light' | 'dark' | 'inherit' (follows device)
       accentColor="indigo"   // Accent color for components
       grayColor="mauve"      // Gray scale variant
       radius="medium"        // Border radius scale
@@ -76,6 +76,10 @@ export default function App() {
   );
 }
 ```
+
+<Note>
+  The legacy `mode` prop still works, but it is deprecated. Use `appearance` instead.
+</Note>
 
 ## Complete Example
 
@@ -94,7 +98,8 @@ import {
   Switch,
   Badge,
   Avatar,
-  Separator
+  Separator,
+  triggerHaptic
 } from 'radix-native-ui';
 import { ScrollView } from 'react-native';
 
@@ -161,7 +166,12 @@ function LoginForm() {
           secureTextEntry
         />
 
-        <Button onPress={() => console.log('Login')}>
+        <Button
+          onPress={() => {
+            triggerHaptic('notificationSuccess');
+            console.log('Login');
+          }}
+        >
           Sign In
         </Button>
 
@@ -206,6 +216,25 @@ function ThemeToggle() {
   );
 }
 ```
+
+## Haptic Feedback
+
+Components fire their own haptics by default. For your own handlers, use `triggerHaptic`:
+
+```tsx
+import { triggerHaptic } from 'radix-native-ui';
+
+function saveAndCelebrate() {
+  // ...save logic
+  triggerHaptic('notificationSuccess');
+}
+```
+
+Available types: `selection`, `press`, `toggleOn`, `toggleOff`, `impactLight`, `impactMedium`, `impactHeavy`, `notificationSuccess`, `notificationWarning`, `notificationError`.
+
+On iOS, haptics use the Taptic Engine. On Android, `expo-haptics`' system haptics (`performAndroidHapticsAsync`) are preferred, with raw `Vibration` only as a last fallback. `expo-haptics` is an optional peer dependency — the library runs without it.
+
+Set `haptics={false}` on `ThemeProvider` to disable all haptics globally, and read that setting with `useHaptics()`. A haptic fires only when the global setting is `true` **and** the component's `hapticFeedback` prop is enabled.
 
 ## Next Steps
 

@@ -16,7 +16,7 @@ The profile screen uses:
 
 ```tsx
 import React from 'react';
-import { Box, Text, Avatar, Button, Card, Separator, Flex } from 'radix-native-ui';
+import { Box, Text, Avatar, Button, Card, Separator, Flex, ScrollView } from 'radix-native-ui';
 
 interface User {
   name: string;
@@ -38,7 +38,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView flex={1}>
+    <ScrollView style={{ flex: 1 }}>
       <Flex 
         align="center" 
         direction="column" 
@@ -58,32 +58,32 @@ export default function ProfileScreen() {
 
         {/* Name & Email */}
         <Box alignItems="center">
-          <Text variant="title" align="center">
+          <Text size={6} weight="bold" align="center">
             {user.name}
           </Text>
-          <Text variant="body" color="gray" align="center">
+          <Text size={3} color="gray" align="center">
             {user.email}
           </Text>
         </Box>
 
         {/* Bio */}
-        <Text variant="body" align="center">
+        <Text size={3} align="center">
           {user.bio}
         </Text>
 
         {/* Location & Joined - Horizontal layout */}
-        <Flex gap={1} alignItems="center">
-          <Text variant="caption" color="gray">
+        <Flex gap={1} align="center">
+          <Text size={1} color="gray">
             📍 {user.location}
           </Text>
-          <Text variant="caption" color="gray">•</Text>
-          <Text variant="caption" color="gray">
+          <Text size={1} color="gray">•</Text>
+          <Text size={1} color="gray">
             Joined {user.joinedDate}
           </Text>
         </Flex>
 
         {/* Action Buttons - Horizontal layout */}
-        <Flex gap={2} flexDirection="row" style={{ width: '100%' }}>
+        <Flex gap={2} direction="row" style={{ width: '100%' }}>
           <Button variant="solid" size={3} style={{ flex: 1 }}>
             Edit Profile
           </Button>
@@ -96,18 +96,18 @@ export default function ProfileScreen() {
 
         {/* Stats Card */}
         <Card style={{ width: '100%' }}>
-          <Flex gap={3} direction="row" justifyContent="space-around">
+          <Flex gap={3} direction="row" justify="space-around">
             <Box alignItems="center">
-              <Text variant="title">142</Text>
-              <Text variant="caption" color="gray">Posts</Text>
+              <Text size={6} weight="bold">142</Text>
+              <Text size={1} color="gray">Posts</Text>
             </Box>
             <Box alignItems="center">
-              <Text variant="title">1.2K</Text>
-              <Text variant="caption" color="gray">Followers</Text>
+              <Text size={6} weight="bold">1.2K</Text>
+              <Text size={1} color="gray">Followers</Text>
             </Box>
             <Box alignItems="center">
-              <Text variant="title">890</Text>
-              <Text variant="caption" color="gray">Following</Text>
+              <Text size={6} weight="bold">890</Text>
+              <Text size={1} color="gray">Following</Text>
             </Box>
           </Flex>
         </Card>
@@ -116,13 +116,13 @@ export default function ProfileScreen() {
 
         {/* Menu Items - Vertical layout */}
         <Flex align={'center'} direction={'column'} gap={2}>
-          <Button variant="ghost" justifyContent="flex-start">
+          <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
             My Posts
           </Button>
-          <Button variant="ghost" justifyContent="flex-start">
+          <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
             Saved Items
           </Button>
-          <Button variant="ghost" justifyContent="flex-start">
+          <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
             Settings
           </Button>
         </Flex>
@@ -137,5 +137,5 @@ export default function ProfileScreen() {
 1. **Flex for main layout** - Use `Flex` with `direction="column"` for the main profile container
 2. **Avatar sizing** - Use `size={4}` and `radius="full"` for circular avatar
 3. **Card for grouping** - Use `Card` to group related content like stats
-4. **Horizontal layouts** - Use `Flex` with `flexDirection="row"` for horizontal button groups and location/date
+4. **Horizontal layouts** - Use `Flex` with `direction="row"` for horizontal button groups and location/date
 5. **Separator for visual breaks** - Use `Separator` between sections

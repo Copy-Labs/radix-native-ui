@@ -163,7 +163,7 @@ const Checkbox = React.forwardRef<React.ElementRef<typeof AnimatedPressable>, Ch
 
         // Trigger haptic feedback on toggle (check both global and local settings)
         if (globalHaptics && hapticFeedback) {
-          triggerHaptic('press')
+          triggerHaptic(newChecked ? 'toggleOn' : 'toggleOff')
         }
       }
     };

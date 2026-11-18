@@ -571,7 +571,7 @@ export const DropdownMenuItem = ({
       pressedScale={0.98}
       pressedOpacity={0.95}
       animationDuration={100}
-      hapticFeedback={hapticFeedback}
+      hapticFeedback={false}
     >
       <Text
         color={color}
@@ -852,7 +852,7 @@ export const DropdownMenuRadioItem = ({
       pressedScale={0.98}
       pressedOpacity={0.95}
       animationDuration={100}
-      hapticFeedback={hapticFeedback}
+      hapticFeedback={false}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
         <View

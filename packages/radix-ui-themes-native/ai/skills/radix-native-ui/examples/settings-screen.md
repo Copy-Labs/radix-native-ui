@@ -15,7 +15,7 @@ The settings screen uses:
 
 ```tsx
 import React, { useState } from 'react';
-import { Box, Text, Button, Switch, Separator, Flex, Avatar } from 'radix-native-ui';
+import { Box, Text, Button, Switch, Separator, Flex, Avatar, ScrollView } from 'radix-native-ui';
 
 export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
@@ -26,34 +26,34 @@ export default function SettingsScreen() {
   return (
     <Flex align="center" direction="column" flex={1} gap={4} maxWidth={400}>
       {/* Header */}
-      <Box padding={4} borderBottomWidth={1} style={{ width: '100%' }}>
-        <Text variant="title">Settings</Text>
+      <Box padding={4} style={{ width: '100%', borderBottomWidth: 1 }}>
+        <Text size={6} weight="bold">Settings</Text>
       </Box>
 
-      <ScrollView flex={1}>
+      <ScrollView style={{ flex: 1 }}>
         <Flex gap={4} padding={4}>
           
           {/* Account Section */}
           <Box style={{ width: '100%' }}>
-            <Text variant="caption" color="gray" marginBottom={2}>
+            <Text size={1} color="gray" style={{ marginBottom: 8 }}>
               ACCOUNT
             </Text>
             <Flex gap={0}>
-              <Button variant="ghost" justifyContent="flex-start" height="auto" padding={3}>
-                <Flex gap={3} flexDirection="row" alignItems="center" style={{ width: '100%' }}>
+              <Button variant="ghost" style={{ justifyContent: 'flex-start', height: 'auto', padding: 12 }}>
+                <Flex gap={3} direction="row" align="center" style={{ width: '100%' }}>
                   <Avatar src="https://example.com/avatar.jpg" size={3} radius="full" />
                   <Box flex={1}>
-                    <Text variant="body" weight="bold">John Doe</Text>
-                    <Text variant="caption" color="gray">john@example.com</Text>
+                    <Text size={3} weight="bold">John Doe</Text>
+                    <Text size={1} color="gray">john@example.com</Text>
                   </Box>
                 </Flex>
               </Button>
               <Separator />
-              <Button variant="ghost" justifyContent="flex-start">
+              <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
                 Edit Profile
               </Button>
               <Separator />
-              <Button variant="ghost" justifyContent="flex-start">
+              <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
                 Change Password
               </Button>
             </Flex>
@@ -61,7 +61,7 @@ export default function SettingsScreen() {
 
           {/* Preferences Section */}
           <Box style={{ width: '100%' }}>
-            <Text variant="caption" color="gray" marginBottom={2}>
+            <Text size={1} color="gray" style={{ marginBottom: 8 }}>
               PREFERENCES
             </Text>
             <Flex gap={0}>
@@ -90,19 +90,19 @@ export default function SettingsScreen() {
 
           {/* Privacy Section */}
           <Box style={{ width: '100%' }}>
-            <Text variant="caption" color="gray" marginBottom={2}>
+            <Text size={1} color="gray" style={{ marginBottom: 8 }}>
               PRIVACY
             </Text>
             <Flex gap={0}>
-              <Button variant="ghost" justifyContent="flex-start">
+              <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
                 Privacy Policy
               </Button>
               <Separator />
-              <Button variant="ghost" justifyContent="flex-start">
+              <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
                 Terms of Service
               </Button>
               <Separator />
-              <Button variant="ghost" justifyContent="flex-start">
+              <Button variant="ghost" style={{ justifyContent: 'flex-start' }}>
                 Data & Storage
               </Button>
             </Flex>
@@ -110,7 +110,7 @@ export default function SettingsScreen() {
 
           {/* Marketing Section */}
           <Box style={{ width: '100%' }}>
-            <Text variant="caption" color="gray" marginBottom={2}>
+            <Text size={1} color="gray" style={{ marginBottom: 8 }}>
               MARKETING
             </Text>
             <Flex gap={0}>
@@ -125,7 +125,7 @@ export default function SettingsScreen() {
 
           {/* Danger Zone */}
           <Box style={{ width: '100%' }}>
-            <Text variant="caption" color="red" marginBottom={2}>
+            <Text size={1} color="red" style={{ marginBottom: 8 }}>
               DANGER ZONE
             </Text>
             <Button variant="outline" color="red">
@@ -135,7 +135,7 @@ export default function SettingsScreen() {
 
           {/* Version Info */}
           <Box alignItems="center" padding={4} style={{ width: '100%' }}>
-            <Text variant="caption" color="gray">
+            <Text size={1} color="gray">
               Version 1.0.0 (2024.1)
             </Text>
           </Box>
@@ -166,10 +166,10 @@ function SettingToggle({
       justifyContent="space-between"
     >
       <Box flex={1} paddingRight={2}>
-        <Text variant="body">{title}</Text>
-        <Text variant="caption" color="gray">{description}</Text>
+        <Text size={3}>{title}</Text>
+        <Text size={1} color="gray">{description}</Text>
       </Box>
-      <Switch value={value} onValueChange={onValueChange} />
+      <Switch checked={value} onCheckedChange={onValueChange} hapticFeedback />
     </Box>
   );
 }
@@ -179,7 +179,7 @@ function SettingToggle({
 
 1. **Section headers** - Use caption text with `color="gray"` for section labels
 2. **Toggle settings** - Use `Switch` component for boolean settings
-3. **List items** - Use `Button` variant="ghost" with `justifyContent="flex-start"` for tappable items
+3. **List items** - Use `Button` variant="ghost" with `style={{ justifyContent: 'flex-start' }}` for tappable items
 4. **Separator between items** - Use `Separator` for visual division
 5. **Helper components** - Extract `SettingToggle` for reusable toggle list items
 6. **Danger zone** - Use `color="red"` for destructive actions

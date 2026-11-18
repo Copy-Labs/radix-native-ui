@@ -56,8 +56,58 @@ Radix Native UI follows a composable primitive architecture inspired by Radix UI
 ## Importing Components
 
 ```tsx
-import { Button, Text, Box, Input } from 'radix-native-ui';
+import { Button, Text, Box, TextField } from 'radix-native-ui';
 ```
+
+`TextField` is the single-line input. Use it directly (`<TextField placeholder="Email" />`) or compose
+it with `<TextField.Root>` / `<TextField.Slot>` when you need slots. There is no `Input` component.
+
+## Haptics
+
+Haptics are enabled by default and are controlled at two levels:
+
+- `<ThemeProvider haptics={false}>` disables haptics globally (the default is `true`).
+- `useHaptics()` returns that global boolean and throws outside a `ThemeProvider`.
+- Interactive components (Button, IconButton, Switch, Checkbox, Radio, Slider, SegmentedControl,
+  menus, etc.) accept a local `hapticFeedback?: boolean` prop (default `true`). Feedback fires only
+  when **both** the global setting and the local prop are enabled.
+
+For custom interactions, fire a haptic directly:
+
+```tsx
+import React, { useState } from 'react';
+import {
+  Button,
+  Switch,
+  triggerHaptic,
+  type HapticFeedbackType,
+} from 'radix-native-ui';
+
+function NotificationForm() {
+  const [enabled, setEnabled] = useState(false);
+
+  const notify = (type: HapticFeedbackType) => triggerHaptic(type);
+
+  const handleSave = () => {
+    // ... save the form ...
+    notify('notificationSuccess');
+  };
+
+  return (
+    <>
+      <Switch checked={enabled} onCheckedChange={setEnabled} hapticFeedback />
+      <Button onPress={handleSave}>Save</Button>
+    </>
+  );
+}
+```
+
+`HapticFeedbackType` is one of: `'selection'`, `'press'`, `'toggleOn'`, `'toggleOff'`, `'impactLight'`,
+`'impactMedium'`, `'impactHeavy'`, `'notificationSuccess'`, `'notificationWarning'`, `'notificationError'`.
+
+`expo-haptics` is an optional peer dependency. On iOS the Taptic Engine is used; on Android the library
+prefers expo-haptics' `performAndroidHapticsAsync` (system haptics) and only falls back to a short
+vibration when expo-haptics is unavailable.
 
 ## Usage Examples
 
@@ -87,6 +137,7 @@ Generate a settings screen using Radix Native UI with toggle switches and naviga
 | Mistake | Correction |
 |---------|------------|
 | Using "Sheet" | Use "BottomSheet" instead |
+| Using "Input" | Use "TextField" instead |
 | Using className | Use style prop and semantic props |
 | Wrong version numbers | RN >= 0.70, Expo >= 48 |
 
