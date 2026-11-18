@@ -64,7 +64,14 @@ function App() {
   <Prop name="onModeChange" type="(mode: 'light' | 'dark') => void">
     Callback when theme mode changes.
   </Prop>
+  <Prop name="haptics" type="boolean" default="true">
+    Global kill switch for haptic feedback across all components. Haptics fire only when this is `true` **and** the component's own `hapticFeedback` prop is enabled.
+  </Prop>
 </PropTable>
+
+<Note>
+  The legacy `mode` prop still works, but it is deprecated. Use `appearance` instead.
+</Note>
 
 ### Legacy Support
 
@@ -146,7 +153,7 @@ function App() {
   grayColor="mauve"
   panelBackground="translucent"
   radius="large"
-  scaling="105%"
+  scaling={1.05}
   appearance="dark"
 >
   <App />

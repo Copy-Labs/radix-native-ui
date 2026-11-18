@@ -11,9 +11,18 @@ The ThemeProvider component provides theme context to all child components.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | required | Child components |
-| `mode` | `'light' \| 'dark'` | `undefined` | Initial theme mode (follows device if undefined) |
+| `appearance` | `'light' \| 'dark' \| 'inherit'` | `'inherit'` | Color scheme preference (preferred; matches Radix UI Themes web API). `'inherit'` follows the parent provider or the device color scheme |
+| `accentColor` | `Color` | `'indigo'` | Primary accent color for the theme |
+| `grayColor` | `'mauve' \| 'olive' \| 'sage' \| 'sand' \| 'slate' \| 'gray'` | `'mauve'` | Gray scale color |
+| `radius` | `'none' \| 'small' \| 'medium' \| 'large' \| 'full'` | `'medium'` | Border radius scale |
+| `scaling` | `number` | `1` | Overall scaling factor (`1` = 100%, not a percentage string) |
+| `panelBackground` | `'solid' \| 'translucent'` | `'solid'` | Panel background style |
+| `mode` | `'light' \| 'dark'` | `undefined` | **Deprecated** — use `appearance` instead. Initial theme mode (follows device if undefined) |
 | `forcedMode` | `'light' \| 'dark'` | `undefined` | Force specific mode (overrides device settings) |
-| `themeOptions` | `Partial<Theme>` | `{}` | Custom theme configuration |
+| `hasBackground` | `boolean` | `true` | Whether to apply a background color to the container |
+| `themeOptions` | `Partial<Theme>` | `{}` | Legacy theme configuration; flat props take precedence |
+| `toastConfig` | `ToastConfig` | `undefined` | Toast configuration (`position`, `maxVisible`, `duration`, `defaultVariant`, `swipeToDismiss`, `gap`, `hapticFeedback`) |
+| `haptics` | `boolean` | `true` | Global kill-switch for all haptic feedback |
 | `onModeChange` | `(mode: ThemeMode) => void` | `undefined` | Callback when mode changes |
 
 ### Theme Options
@@ -77,6 +86,89 @@ Returns convenience colors for the current mode.
 ```typescript
 const { gray, background, surface, panel } = useThemeColors();
 ```
+
+### useHaptics
+
+Returns the global haptics setting from `ThemeProvider`. Throws if called outside a provider.
+
+```typescript
+const hapticsEnabled = useHaptics();
+// Returns: boolean (the `haptics` prop on ThemeProvider, default true)
+```
+
+### useToast
+
+Returns the toast controller. Must be used inside a `ThemeProvider`.
+
+```typescript
+const { show, success, error, warning, info, accent, hide, hideAll, update } = useToast();
+
+const id = show({ title: 'Saved', description: 'Your changes are saved.', variant: 'success' });
+success({ title: 'Saved' }); // the variant is set for you
+hide(id);
+hideAll();
+update(id, { title: 'Still saving…' });
+```
+
+`show` takes a `ToastOptions` object: `title` (required), plus optional `description`, `variant`, `color`, `duration`, `position`, `action`, `onDismiss`, `onAutoClose`, `accessibilityLabel`, `icon`, `showClose`, and `style`. The option field is `variant`, not `type`; it accepts `'default' | 'success' | 'error' | 'warning' | 'info' | 'accent'`. The `success`, `error`, `warning`, `info`, and `accent` helpers take the same options minus `variant`. Every show method returns the toast id used by `hide` and `update`. There is no `toast`, `dismiss`, or `dismissAll` method — use `show`, `hide`, and `hideAll`.
+
+## Haptics
+
+Haptic feedback is enabled by default. There are two layers of control: a global kill-switch on `ThemeProvider` and a local `hapticFeedback` prop on interactive components. A haptic fires only when **both** are enabled.
+
+### Global control
+
+```tsx
+<ThemeProvider haptics={false}>
+  <App />
+</ThemeProvider>
+```
+
+`haptics` defaults to `true`; setting it to `false` disables all component haptics at once. `useHaptics()` reads the resolved global setting.
+
+### Per-component control
+
+Interactive components accept a local `hapticFeedback?: boolean` prop (default `true` unless noted), for example `Button`, `IconButton`, `Switch`, `Checkbox`, `Radio`, `Slider`, `Accordion.Trigger`, `SegmentedControl.Root`, `DropdownMenu.Item`, `ContextMenu.Item`, and the `AnimatedPressable` primitive. It is gated by the global `haptics` setting, so both must be enabled for a haptic to fire.
+
+A few helpers default it to `false` and must opt in explicitly: `BottomSheet.Trigger`, `BottomSheet.Close`, and `Sidebar.Trigger`. Check the component source if unsure.
+
+```tsx
+<Button hapticFeedback={false}>Silent button</Button>
+<BottomSheet.Trigger hapticFeedback>Opens with a haptic</BottomSheet.Trigger>
+```
+
+### Triggering a haptic manually
+
+```typescript
+import { triggerHaptic, type HapticFeedbackType } from 'radix-native-ui';
+
+triggerHaptic('impactMedium');
+```
+
+`HapticFeedbackType` is one of:
+
+| Type | Feel / typical use |
+|------|--------------------|
+| `'selection'` | Soft tick for scrollers, sliders, and drags |
+| `'press'` | Light impact for taps |
+| `'toggleOn'` | Confirmation for switching on |
+| `'toggleOff'` | Confirmation for switching off |
+| `'impactLight'` | Light impact |
+| `'impactMedium'` | Medium impact |
+| `'impactHeavy'` | Heavy impact |
+| `'notificationSuccess'` | Success notification |
+| `'notificationWarning'` | Warning notification |
+| `'notificationError'` | Error notification |
+
+`triggerHaptic` is fire-and-forget: it never blocks or throws into the calling interaction.
+
+### Platform behavior
+
+- **iOS:** uses the Taptic Engine through expo-haptics' `impactAsync`, `selectionAsync`, and `notificationAsync` APIs.
+- **Android:** prefers expo-haptics' `performAndroidHapticsAsync` (system `HapticFeedbackConstants`): `context-click` for press, `segment-tick` for selection, `toggle-on` / `toggle-off` for toggles, and `confirm` / `reject` for notifications. It only falls back to a short `Vibration` when expo-haptics is unavailable or a call fails (Android only; silent on iOS).
+- `expo-haptics` is optional and declared as a peer dependency.
+
+Duplicate press-like haptics (`press`, `toggleOn`, `toggleOff`) fired by nested layers within 60 ms are collapsed into one, so a single tap produces a single confirmation. `selection` is not deduped, so sliders and drags keep their per-step ticks.
 
 ## Color Helper Functions
 
@@ -504,8 +596,8 @@ import { Button } from 'radix-native-ui';
 <Button
   children={undefined}
   style={undefined}
-  variant="classic" | "solid" | "soft" | "outline" | "ghost"
-  size={1 | 2 | 3}
+  variant="classic" | "solid" | "soft" | "outline" | "surface" | "ghost"
+  size={1 | 2 | 3 | 4}
   disabled={boolean}
   loading={boolean}
   onPress={(event: GestureResponderEvent) => void}
@@ -611,20 +703,36 @@ import { RadioGroup } from 'radix-native-ui';
 
 ### Select
 
-Dropdown select component.
+Composable dropdown select component.
 
 ```tsx
-import { Select } from 'radix-native-ui';
+import { Button, Select } from 'radix-native-ui';
 
-<Select
-  value={string}
-  onValueChange={(value: string) => void}
-  items={Array<{ label: string; value: string }>}
-  placeholder={string}
-  disabled={boolean}
-  size={1 | 2 | 3}
-/>
+<Select.Root value={value} onValueChange={setValue}>
+  <Select.Trigger>
+    <Button variant="soft">
+      <Select.Value placeholder="Select a fruit" />
+    </Button>
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Overlay />
+    <Select.Content>
+      <Select.Item value="apple">Apple</Select.Item>
+      <Select.Item value="banana">Banana</Select.Item>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
 ```
+
+**Parts:**
+
+- `Select.Root` — `value`, `defaultValue`, `onValueChange`, `disabled`, `color`, `variant` (also `open`, `defaultOpen`, `onOpenChange`).
+- `Select.Trigger` — `asChild?` to merge the open handler and anchor ref onto its child.
+- `Select.Content` — dropdown surface; accepts `size`, `side`, `sideOffset`, `align`, `alignOffset`, `avoidCollisions`, and `style`.
+- `Select.Item` — `value` (required), `disabled`, `style`.
+- `Select.Value` — `placeholder?`, `color?`, `variant?` (defaults to the `Root` color and variant).
+
+`Select.Portal`, `Select.Overlay`, `Select.Group`, `Select.Label`, and `Select.Separator` are also available. There is no single monolithic `<Select value items placeholder size />` component.
 
 ## Data Display Components
 
@@ -782,19 +890,22 @@ import { TabNav } from 'radix-native-ui';
 
 ### SegmentedControl
 
-iOS-style segmented control.
+iOS-style segmented control built from composable parts.
 
 ```tsx
 import { SegmentedControl } from 'radix-native-ui';
 
-<SegmentedControl
-  value={string}
-  onValueChange={(value: string) => void}
-  options={Array<{ label: string; value: string }>}
-  disabled={boolean}
-  highContrast={boolean}
-/>
+<SegmentedControl.Root value={value} onValueChange={setValue} size={2} color="blue" radius="medium">
+  <SegmentedControl.Item value="day">Day</SegmentedControl.Item>
+  <SegmentedControl.Item value="week">Week</SegmentedControl.Item>
+  <SegmentedControl.Item value="month" disabled>Month</SegmentedControl.Item>
+</SegmentedControl.Root>
 ```
+
+- `SegmentedControl.Root` — `value`, `defaultValue`, `onValueChange`, `disabled`, `size` (1–4), `color`, `radius` (also `highContrast`, `style`, `hapticFeedback`).
+- `SegmentedControl.Item` — `value` (required), `disabled?`.
+
+There is no `options` prop; render one `Item` per segment.
 
 ## Disclosure Components
 
@@ -1027,14 +1138,14 @@ Direct access to React Native primitives:
 - `ActivityIndicator` - Base ActivityIndicator component
 
 ```tsx
-import { View, Text, Pressable, TouchableOpacity, TextInput, Image, ScrollView, FlatList, ActivityIndicator } from 'radix-native-ui/primitives';
+import { View, Text, Pressable, TouchableOpacity, TextInput, Image, ScrollView, FlatList, ActivityIndicator } from 'radix-native-ui';
 ```
 
 ## Theme Colors Reference
 
 ### Color Scale Structure
 
-Each color in the theme has the following structure:
+Each color in the theme is an `ExtendedColorScale`: numeric keys 1–12 for light mode, a `.dark` object with the same keys for dark mode, and an `.alpha` object for transparent variants:
 
 ```typescript
 theme.colors[colorName] = {
@@ -1069,40 +1180,36 @@ theme.colors[colorName] = {
     10: string,
     11: string, // Text on soft backgrounds
     12: string,
+    dark: { /* ... same 1-12 keys for dark mode */ },
   }
 };
 ```
 
 ### Gray Scale
 
-```typescript
-theme.colors.gray.light = [
-  '#fafafa', // 0
-  '#f5f5f5', // 1
-  '#e5e5e5', // 2
-  '#d4d4d4', // 3
-  '#a3a3a3', // 4
-  '#737373', // 5
-  '#525252', // 6
-  '#404040', // 7
-  '#262626', // 8
-  '#171717', // 9
-  '#0a0a0a', // 10
-];
+The selected gray color is exposed as `theme.colors.gray` using the same object shape — not a `light` array. Its numeric keys cover light mode, `.dark` holds the dark-mode ramp, and `.alpha` holds transparent variants:
 
-theme.colors.gray.dark = [
-  '#0a0a0a', // 0
-  '#171717', // 1
-  '#262626', // 2
-  '#404040', // 3
-  '#525252', // 4
-  '#737373', // 5
-  '#a3a3a3', // 6
-  '#d4d4d5', // 7
-  '#e5e5e5', // 8
-  '#f5f5f5', // 9
-  '#fafafa', // 10
-];
+```typescript
+theme.colors.gray = {
+  1: '#fcfcfc',  // lightest shade
+  2: '#f9f9f9',
+  // ... 3-11
+  12: '#202020', // high contrast text
+  dark: {
+    1: '#111111',
+    2: '#191919',
+    // ... 3-11 (same keys as light mode)
+    12: '#eeeeee',
+  },
+  alpha: {       // transparent variants, also with a `.dark` object
+    1: 'hsla(0, 0%, 0%, 0.01)',
+    // ... 2-11
+    12: 'hsla(0, 0%, 0%, 0.87)',
+    dark: { /* ... 1-12 */ },
+  },
+};
+
+// Dark mode: theme.colors.gray.dark[1], theme.colors.gray.alpha.dark[3], etc.
 ```
 
 ### Black & White Alpha Scales

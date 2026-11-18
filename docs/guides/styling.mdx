@@ -172,10 +172,10 @@ function CustomButton({
 Adapt styles for dark mode:
 
 ```tsx
-import { useTheme } from 'radix-native-ui';
+import { useThemeContext } from 'radix-native-ui';
 
 function ThemedCard() {
-  const { appearance } = useTheme();
+  const { appearance } = useThemeContext();
   const isDark = appearance === 'dark';
 
   return (
@@ -188,6 +188,10 @@ function ThemedCard() {
   );
 }
 ```
+
+<Note>
+  `useTheme()` returns the `Theme` object, which has no `appearance` field. Use `useThemeContext().appearance` for the appearance preference, or `useThemeMode()` for the resolved `light`/`dark` mode.
+</Note>
 
 ## Animation
 

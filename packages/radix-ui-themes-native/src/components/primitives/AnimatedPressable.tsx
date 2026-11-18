@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { Animated, GestureResponderEvent, StyleProp, Vibration, ViewStyle } from 'react-native';
+import { Animated, GestureResponderEvent } from 'react-native';
 import RnPressable, { PressableProps } from './Pressable';
 import { triggerHaptic } from '../../utils/haptics';
 import { useHaptics } from '../../hooks/useTheme';
@@ -31,6 +31,7 @@ export const AnimatedPressable = React.memo(
     (
       {
         children,
+        onPress,
         onPressIn,
         onPressOut,
         disabled,
@@ -83,17 +84,27 @@ export const AnimatedPressable = React.memo(
         ]).start();
       }, [animationDuration, scaleAnim, opacityAnim]);
 
-      // Handle press in with animation and haptic feedback
+      // Handle press in with animation only. The haptic belongs on `onPress`
+      // (below) so it fires once, when the action is actually committed.
+      // Firing it on press-in made buttons buzz on touch-down and again on
+      // click whenever a wrapper component also provided haptic feedback.
       const handlePressIn = useCallback(
         (event: GestureResponderEvent) => {
-          // Trigger haptic feedback if both global and local haptics are enabled
-          if (globalHaptics && hapticFeedback && !disabled) {
-            triggerHaptic('press');
-          }
           animatePressIn();
           onPressIn?.(event);
         },
-        [animatePressIn, onPressIn, globalHaptics, hapticFeedback, disabled]
+        [animatePressIn, onPressIn]
+      );
+
+      // Single home for press haptics: one haptic per committed tap.
+      const handlePress = useCallback(
+        (event: GestureResponderEvent) => {
+          if (globalHaptics && hapticFeedback && !disabled) {
+            triggerHaptic('press');
+          }
+          onPress?.(event);
+        },
+        [onPress, globalHaptics, hapticFeedback, disabled]
       );
 
       // Handle press out with animation
@@ -115,6 +126,7 @@ export const AnimatedPressable = React.memo(
       return (
         <AnimatedPressableComponent
           ref={ref}
+          onPress={handlePress}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           disabled={disabled}

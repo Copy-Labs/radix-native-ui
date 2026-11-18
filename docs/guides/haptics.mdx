@@ -1,0 +1,100 @@
+---
+title: Haptics
+description: Global and per-component haptic feedback, manual triggers, and platform behavior.
+---
+
+# Haptics
+
+Radix Native UI provides haptic feedback out of the box on interactive components. It uses each platform's native haptic engine and gives you two levels of control: a global switch on `ThemeProvider`, and a local `hapticFeedback` prop on components.
+
+## Enabling and disabling haptics
+
+Haptics are **enabled by default**. Disable all haptics for your app with the `haptics` prop on `ThemeProvider`:
+
+```tsx
+import { ThemeProvider } from 'radix-native-ui';
+
+export default function App() {
+  return (
+    <ThemeProvider haptics={false}>
+      {/* No component in this tree produces haptic feedback */}
+    </ThemeProvider>
+  );
+}
+```
+
+Every interactive component also accepts a local `hapticFeedback` prop. A haptic only fires when **both** the global `haptics` setting and the component's `hapticFeedback` prop are enabled:
+
+```tsx
+import { Button, Switch } from 'radix-native-ui';
+
+<Button hapticFeedback={false}>Silent button</Button>
+<Switch hapticFeedback={false} label="Silent switch" />
+```
+
+This is useful for high-frequency controls (for example a slider that ticks on every step) where you want the gesture to stay quiet in one part of your UI. A few components default `hapticFeedback` to `false` — such as `BottomSheet.Close` and `Sidebar` item helpers — so check their individual API pages when in doubt.
+
+## Reading the global setting
+
+Use `useHaptics()` to read the global setting, for example to reflect it in a settings screen. It must be used inside a `ThemeProvider`.
+
+```tsx
+import { useHaptics, Text } from 'radix-native-ui';
+
+function HapticsStatus() {
+  const haptics = useHaptics();
+  return <Text>{haptics ? 'Haptics on' : 'Haptics off'}</Text>;
+}
+```
+
+## Triggering haptics manually
+
+For your own interactions, import `triggerHaptic` from the package root. It is fire-and-forget: it never blocks your code and never throws.
+
+```tsx
+import { triggerHaptic, Button } from 'radix-native-ui';
+
+function SaveButton({ onSave }: { onSave: () => Promise<void> }) {
+  const handleSave = async () => {
+    await onSave();
+    triggerHaptic('notificationSuccess');
+  };
+
+  return <Button onPress={handleSave}>Save</Button>;
+}
+```
+
+### Haptic types
+
+`triggerHaptic` accepts a `HapticFeedbackType`:
+
+| Type | Feel | Typical use |
+| --- | --- | --- |
+| `selection` | Very light tick | Scrollers, sliders, discrete selection changes |
+| `press` | Light impact | Buttons, tabs, routine taps |
+| `toggleOn` / `toggleOff` | On/off tick | Switches, checkboxes, radios |
+| `impactLight` | Light impact | Same feel as `press` |
+| `impactMedium` | Medium impact | Meaningful commits such as submit or add |
+| `impactHeavy` | Heavy impact | Rare, high-emphasis moments |
+| `notificationSuccess` | Success pattern | A task actually completed |
+| `notificationWarning` | Warning pattern | A task needs attention |
+| `notificationError` | Error pattern | A task failed |
+
+Reserve notification haptics for real outcomes — if everything buzzes, nothing does. Duplicate press haptics fired by nested components within a 60 ms window are collapsed automatically, so a single tap produces a single confirmation.
+
+## Platform behavior
+
+`expo-haptics` is an **optional peer dependency**. When installed, haptics use the native engine on each platform:
+
+- **iOS** — the Taptic Engine, via `impactAsync`, `selectionAsync`, and `notificationAsync`.
+- **Android** — expo-haptics' `performAndroidHapticsAsync`, which uses the system `HapticFeedbackConstants` (`context-click` for press, `segment-tick` for selection, `toggle-on`/`toggle-off` for toggles, `confirm`/`reject` for notifications). This needs no `VIBRATE` permission and feels like a native Android tap.
+
+If `expo-haptics` is not installed, or a haptic call fails, the library falls back to a short vibration on Android and stays silent on iOS. Haptics are always a nice-to-have — they will never break an interaction.
+
+## Installation
+
+For the best experience, install the optional peer dependency in your Expo app:
+
+```bash
+npx expo install expo-haptics
+```

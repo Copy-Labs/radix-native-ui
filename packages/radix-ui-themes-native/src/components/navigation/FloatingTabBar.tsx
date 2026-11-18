@@ -13,7 +13,7 @@ import React, {
 } from 'react';
 import { Animated, PanResponder, StyleSheet, View } from 'react-native';
 import { Text } from '../typography';
-import { useTheme, useThemeMode } from '../../hooks/useTheme';
+import { useTheme, useThemeMode, useHaptics } from '../../hooks/useTheme';
 import { getVariantColors } from '../../theme/color-helpers';
 import type { Color, RadiusSize } from '../../theme/types';
 import AnimatedPressable from '../primitives/AnimatedPressable';
@@ -221,6 +221,7 @@ const FloatingTabBarRoot = ({
 }: FloatingTabBarRootProps) => {
   const theme = useTheme();
   const mode = useThemeMode();
+  const globalHaptics = useHaptics();
   const isDark = mode === 'dark';
   const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
 
@@ -245,9 +246,9 @@ const FloatingTabBarRoot = ({
       if (disabled) return;
       if (!isControlled) setInternalValue(next);
       onValueChange?.(next);
-      if (hapticFeedback) triggerHaptic('press');
+      if (globalHaptics && hapticFeedback) triggerHaptic('press');
     },
-    [disabled, isControlled, onValueChange, hapticFeedback]
+    [disabled, isControlled, onValueChange, globalHaptics, hapticFeedback]
   );
 
   const metrics = SIZE_METRICS[size];
@@ -418,7 +419,7 @@ const FloatingTabBarRoot = ({
       const zoneValue = idx >= 0 ? layouts[idx].value : null;
       if (zoneValue !== hoverRef.current) {
         hoverRef.current = zoneValue;
-        if (zoneValue && zoneValue !== activeRef.current && hapticFeedback) {
+        if (zoneValue && zoneValue !== activeRef.current && globalHaptics && hapticFeedback) {
           triggerHaptic('selection');
         }
         setHoverValue(zoneValue);
@@ -475,7 +476,7 @@ const FloatingTabBarRoot = ({
       onPanResponderTerminate: (_: any, g: any) => endDrag(g.locationX),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dragToSelect, disabled, hapticFeedback, select, readyLayouts, centerOf, positionPill, metrics.pillSize]);
+  }, [dragToSelect, disabled, globalHaptics, hapticFeedback, select, readyLayouts, centerOf, positionPill, metrics.pillSize]);
 
   const contextValue = useMemo<FloatingTabBarContextValue>(
     () => ({

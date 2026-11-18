@@ -38,7 +38,7 @@ export default function App() {
   </Prop>
   <Prop name="mode" type="'light' | 'dark' | undefined" default="undefined">
     Initial theme mode. When undefined, follows the device's color scheme.
-    **Deprecated:** Use `appearance` instead for consistency with Radix UI.
+    **Deprecated:** Still works, but use `appearance` instead for consistency with Radix UI.
   </Prop>
   <Prop name="forcedMode" type="'light' | 'dark' | undefined" default="undefined">
     Force a specific mode, overriding device settings.
@@ -62,7 +62,7 @@ export default function App() {
     Panel background style.
   </Prop>
   <Prop name="haptics" type="boolean" default="true">
-    Enable or disable haptic feedback globally.
+    Global kill switch for haptic feedback: when `false`, no component haptics fire. A haptic fires only when this setting is `true` **and** the component's own `hapticFeedback` prop (for example `toastConfig.hapticFeedback`) is enabled.
   </Prop>
   <Prop name="toastConfig" type="ToastConfig">
     Toast configuration options.
@@ -109,8 +109,8 @@ export default function App() {
 
 | Scale | Description |
 |-------|-------------|
-| `gray` | Standard gray (default) |
-| `mauve` | Warm gray with purple tint |
+| `mauve` | Warm gray with purple tint (default) |
+| `gray` | Standard gray |
 | `olive` | Green-tinted gray |
 | `sage` | Soft green-tinted gray |
 | `sand` | Warm beige-tinted gray |
@@ -137,7 +137,7 @@ export default function App() {
 ### With Dark Mode
 
 ```tsx
-<ThemeProvider mode="dark">
+<ThemeProvider appearance="dark">
   <App />
 </ThemeProvider>
 ```
@@ -146,7 +146,7 @@ export default function App() {
 
 ```tsx
 <ThemeProvider
-  mode="light"
+  appearance="light"
   accentColor="indigo"
   grayColor="mauve"
   radius="medium"
@@ -165,7 +165,7 @@ function AppWithTheme() {
 
   return (
     <ThemeProvider
-      mode={mode}
+      appearance={mode}
       onModeChange={setMode}
     >
       <App />

@@ -117,16 +117,17 @@ import { Button, Text, Box } from 'radix-native-ui';
 
 | Component | Description |
 |-----------|-------------|
-| `View` | Base View wrapper |
-| `Text` | Base Text wrapper |
-| `Pressable` | Touchable wrapper |
-| `TouchableOpacity` | Touchable with opacity feedback |
-| `TouchableHighlight` | Touchable with highlight feedback |
-| `AnimatedPressable` | Touchable with scale/opacity animations |
+| `View` | Base View wrapper (prefer `Box` for layouts) |
+| `Text` | Base Text wrapper (prefer the themed `Text` component) |
+| `AnimatedPressable` | Pressable with scale/opacity animation and optional `hapticFeedback`; use only when `Button`/`IconButton` don't fit |
 | `ScrollView` | Scrollable container |
 | `FlatList` | Efficient scrolling list |
 | `Image` | Image component |
 | `ActivityIndicator` | Activity indicator |
+
+For anything tappable, prefer `Button` or `IconButton` (see Forms & Inputs). Do **not** reach for
+`TouchableOpacity`, `TouchableHighlight`, or raw `Pressable` - use `AnimatedPressable` only when a
+custom pressable surface is truly needed (see AGENTS.md).
 
 ---
 

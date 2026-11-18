@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2026-11-18
+
+### Added
+- **Native haptics on Android.** `triggerHaptic` now prefers expo-haptics' `performAndroidHapticsAsync` (the system `HapticFeedbackConstants` engine — `context-click` for presses, `segment-tick` for selection, `toggle-on`/`toggle-off` for toggles, `confirm`/`reject` for notifications) instead of the raw `Vibrator` simulation used by `impactAsync`/`selectionAsync`. This needs no `VIBRATE` permission and feels like a native Android tap. iOS continues to use the Taptic Engine.
+- New `HapticFeedbackType` values `toggleOn` / `toggleOff`. Switch, Checkbox, Radio, CheckboxCards and RadioCards now use them so toggling on feels distinct from toggling off on Android.
+- `triggerHaptic` and `HapticFeedbackType` are now exported from the package root (`radix-native-ui`), so apps can fire feedback for their own interactions without reaching into internal paths.
+- Docs: new **Haptics** guide covering the global `haptics` switch, per-component `hapticFeedback`, `useHaptics()`, all haptic types and platform behavior. Corrected stale component APIs (`Select`, `SegmentedControl`, `Button`, `useToast`, color scales, removed the invalid `radix-native-ui/primitives` import path), replaced deprecated `mode` examples with `appearance`, and updated the AI skill pack so agents stop generating `Input` and raw `TouchableOpacity` code.
+
+### Fixed
+- **Double haptic on touch and click.** `AnimatedPressable` fired a `press` haptic on `onPressIn` (touch-down) while several compound components also fired one from their `onPress` (click). Haptics now fire once, on the committed press. `Select.Trigger`, `Select.Item` and `DropdownMenu.Item`/`RadioItem` no longer inherit the primitive's haptic layer when they already provide their own.
+- `Slider`: one confirmation per gesture (on release) instead of one on pan grant and another on release; a track tap no longer double-fires.
+- `FloatingTabBar`: now respects the global `haptics` setting from `ThemeProvider` (it previously ignored it).
+- `triggerHaptic`: expo-haptics is now resolved once and memoized instead of via a fire-and-forget import at module load, so the first interaction no longer uses a different fallback than later ones. Rejected haptic promises now fall back correctly instead of surfacing as unhandled rejections. Duplicate press-like haptics from nested layers within 60 ms are collapsed into one.
+- No-op haptics implementations (web shim / test doubles) no longer break when their methods return synchronously.
+
 ## [Unreleased]
 
 ### Fixed

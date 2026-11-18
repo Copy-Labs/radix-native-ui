@@ -330,7 +330,12 @@ export const SelectTrigger = ({ children, asChild = false }: SelectTriggerProps)
   }
 
   return (
-    <AnimatedPressable ref={anchorRef} onPress={handlePress} disabled={disabled}>
+    <AnimatedPressable
+      ref={anchorRef}
+      onPress={handlePress}
+      disabled={disabled}
+      hapticFeedback={false}
+    >
       {children}
     </AnimatedPressable>
   );
@@ -761,6 +766,7 @@ export const SelectItem = ({ children, value: itemValue, disabled = false, style
     <AnimatedPressable
       onPress={handlePress}
       disabled={disabled}
+      hapticFeedback={false}
       style={[
         styles.item,
         disabled && styles.itemDisabled,

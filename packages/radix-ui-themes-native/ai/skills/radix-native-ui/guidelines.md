@@ -7,7 +7,7 @@ When generating UI with Radix Native UI, follow these guidelines:
 Always import components from `radix-native-ui`:
 
 ```tsx
-import { Button, Text, Box, Input } from 'radix-native-ui';
+import { Button, Text, Box, TextField } from 'radix-native-ui';
 ```
 
 DO NOT import from react-native when equivalents exist in the library.
@@ -41,9 +41,9 @@ Many components have built-in props for common styling needs:
 // Button has variant props
 <Button variant="solid" size={2} color="blue">Submit</Button>
 
-// Text has variant props
-<Text variant="title">Welcome</Text>
-<Text variant="body">Content here</Text>
+// Text has typography props
+<Text size={6} weight="bold">Welcome</Text>
+<Text size={3}>Content here</Text>
 ```
 
 ### Available Style Props
@@ -76,8 +76,8 @@ Prefer primitives over raw React Native components:
 ```tsx
 // Preferred
 <Box flex={1} justifyContent="center" padding={4}>
-  <Text variant="title">Welcome</Text>
-  <Input placeholder="Enter email" />
+  <Text size={6} weight="bold">Welcome</Text>
+  <TextField placeholder="Email" />
   <Button variant="solid">Submit</Button>
 </Box>
 
@@ -124,6 +124,21 @@ Prefer primitives over raw React Native components:
 - ❌ Duplicate primitives that already exist
 - ❌ Use web-only UI code
 - ❌ Use "Sheet" - it's called "BottomSheet"
+- ❌ Use "Input" - it's called "TextField"
+
+---
+
+## Haptics
+
+Haptics are on by default. Use `<ThemeProvider haptics={false}>` to disable them globally;
+`useHaptics()` reads that global boolean (and throws outside a `ThemeProvider`). Interactive
+components also take a local `hapticFeedback={false}` prop - feedback fires only when **both** the
+global setting and the local prop are enabled. For your own interactions, import
+`{ triggerHaptic, type HapticFeedbackType }` from `radix-native-ui` and call
+`triggerHaptic('notificationSuccess')`. Valid types: `selection`, `press`, `toggleOn`, `toggleOff`,
+`impactLight`, `impactMedium`, `impactHeavy`, `notificationSuccess`, `notificationWarning`,
+`notificationError`. `expo-haptics` is optional: iOS uses the Taptic Engine, Android prefers system
+haptics via `performAndroidHapticsAsync`, with vibration only as a last-resort fallback.
 
 ---
 

@@ -29,7 +29,7 @@ Configure the theme with the following options:
 
 ```tsx
 <ThemeProvider
-  mode="light"           // 'light' | 'dark' | undefined
+  appearance="light"     // 'light' | 'dark' | 'inherit'
   forcedMode="dark"      // Force specific mode
   accentColor="indigo"   // Accent color
   grayColor="mauve"      // Gray scale variant
@@ -93,7 +93,7 @@ Adjust the overall scale of components:
 ### Light Mode
 
 ```tsx
-<ThemeProvider mode="light">
+<ThemeProvider appearance="light">
   {/* App will use light theme */}
 </ThemeProvider>
 ```
@@ -101,20 +101,24 @@ Adjust the overall scale of components:
 ### Dark Mode
 
 ```tsx
-<ThemeProvider mode="dark">
+<ThemeProvider appearance="dark">
   {/* App will use dark theme */}
 </ThemeProvider>
 ```
 
 ### System Default
 
-When `mode` is undefined, the theme follows the device's color scheme:
+Use `appearance="inherit"` (the default) to follow the device's color scheme:
 
 ```tsx
-<ThemeProvider>
+<ThemeProvider appearance="inherit">
   {/* Theme will follow device settings */}
 </ThemeProvider>
 ```
+
+<Note>
+  The legacy `mode` prop still works, but it is deprecated. Use `appearance` instead.
+</Note>
 
 ### Forced Mode
 
@@ -189,24 +193,20 @@ The theme object contains:
 
 ```tsx
 interface Theme {
-  colors: {
-    gray: ColorScale;
-    blue: ColorScale;
-    // ... all color scales
-    blackAlpha: AlphaColorScale;
-    whiteAlpha: AlphaColorScale;
-  };
-  space: number[];
-  radii: Record<number, number>;
-  fontSizes: Record<number, TypographyValue>;
-  fontWeights: Record<string, string>;
-  fonts: {
-    heading: FontConfig;
-    body: FontConfig;
-    // ... other font configs
-  };
+  name: string;
+  scaling: number;
+  radius: 'none' | 'small' | 'medium' | 'large' | 'full';
+  grayColor: 'mauve' | 'olive' | 'sage' | 'sand' | 'slate' | 'gray';
+  accentColor: Color;
+  colors: ColorTokens; // gray, blue, ..., blackAlpha, whiteAlpha
+  space: SpaceScale;
+  radii: RadiusScale;
+  typography: TypographyTokens; // fontSizes, fontWeights, fonts, ...
+  shadows: { light: ShadowTokens; dark: ShadowTokens };
 }
 ```
+
+Typography values (including `fontSizes`, `fontWeights`, and `fonts`) live under `theme.typography`, not at the top level.
 
 ## Next Steps
 

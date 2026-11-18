@@ -191,6 +191,10 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
     const theme = useTheme();
     const mode = useThemeMode();
     const globalHaptics = useHaptics();
+    // Tracks whether the current gesture actually moved a thumb, so a single
+    // tap/drag produces exactly one haptic (on release) instead of one on
+    // grant and another on release.
+    const didDragRef = useRef(false);
     const isDark = mode === 'dark';
     const grayScale = isDark ? theme.colors.gray.dark : theme.colors.gray;
     const grayAlpha = getGrayAlpha(theme);
@@ -403,11 +407,6 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
         const position = Math.max(0, Math.min(1, touchX / currentTrackLayout.width));
         const newValue = positionToValue(position);
 
-        // Trigger haptic feedback on track press
-        if (globalHaptics && hapticFeedback) {
-          triggerHaptic('press')
-        }
-
         if (valuesRef.current.length === 1) {
           updateValue([newValue]);
           handleValueChangeEnd([newValue]);
@@ -458,6 +457,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           }
         }
 
+        didDragRef.current = true;
         updateValue(newValues);
       },
       [positionToValue, updateValue]
@@ -493,11 +493,7 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
 
           setActiveThumbIndex(nearestIndex);
           activeThumbIndexRef.current = nearestIndex;
-
-          // Trigger haptic feedback when starting to drag
-          if (globalHaptics && hapticFeedback) {
-            triggerHaptic('selection')
-          }
+          didDragRef.current = false;
         },
         onPanResponderMove: (
           _event: GestureResponderEvent,
@@ -511,18 +507,23 @@ const Slider = React.forwardRef<React.ComponentRef<typeof RNView>, SliderProps>(
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
-          // Trigger haptic feedback when releasing the thumb
-          if (globalHaptics && hapticFeedback) {
-            triggerHaptic('selection');
+          // One confirmation per gesture, on commit — not on touch-down too.
+          if (didDragRef.current) {
+            didDragRef.current = false;
+            if (globalHaptics && hapticFeedback) {
+              triggerHaptic('selection');
+            }
           }
         },
         onPanResponderTerminate: () => {
           setActiveThumbIndex(null);
           activeThumbIndexRef.current = null;
           handleValueChangeEnd(valuesRef.current);
-          // Trigger haptic feedback when gesture is terminated
-          if (globalHaptics && hapticFeedback) {
-            triggerHaptic('selection');
+          if (didDragRef.current) {
+            didDragRef.current = false;
+            if (globalHaptics && hapticFeedback) {
+              triggerHaptic('selection');
+            }
           }
         },
         // Prevent parent ScrollView from taking over the gesture

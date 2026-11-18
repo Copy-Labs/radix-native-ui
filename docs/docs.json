@@ -182,6 +182,7 @@
               "guides/accessibility",
               "guides/forms",
               "guides/compound-components",
+              "guides/haptics",
               "guides/performance"
             ]
           }

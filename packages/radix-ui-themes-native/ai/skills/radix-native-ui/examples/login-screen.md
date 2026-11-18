@@ -15,7 +15,7 @@ The login screen uses:
 
 ```tsx
 import React, { useState } from 'react';
-import { Box, Text, TextField, Button, Link, Center, Stack } from 'radix-native-ui';
+import { Box, Text, TextField, Button, Link, Flex } from 'radix-native-ui';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -32,17 +32,17 @@ export default function LoginScreen() {
     <Flex align={'center'} direction={'column'} flex={1} gap={4} justify={'center'} maxWidth={400} padding={4}>
         {/* Header */}
         <Box alignItems="center" marginBottom={4}>
-          <Text variant="title" align="center">
+          <Text size={6} weight="bold" align="center">
             Welcome Back
           </Text>
-          <Text variant="body" color="gray" align="center">
+          <Text size={3} color="gray" align="center">
             Sign in to continue
           </Text>
         </Box>
 
         {/* Email Input */}
         <Box>
-          <Text variant="body" marginBottom={1}>
+          <Text size={3} style={{ marginBottom: 4 }}>
             Email
           </Text>
           <TextField
@@ -56,7 +56,7 @@ export default function LoginScreen() {
 
         {/* Password Input */}
         <Box>
-          <Text variant="body" marginBottom={1}>
+          <Text size={3} style={{ marginBottom: 4 }}>
             Password
           </Text>
           <TextField
@@ -70,7 +70,7 @@ export default function LoginScreen() {
         {/* Forgot Password */}
         <Box alignItems="flex-end">
           <Link href="/forgot-password">
-            <Text variant="body" color="blue">
+            <Text size={3} color="blue">
               Forgot password?
             </Text>
           </Link>
@@ -89,9 +89,9 @@ export default function LoginScreen() {
 
         {/* Sign Up Link */}
         <Box flexDirection="row" justifyContent="center" gap={1}>
-          <Text variant="body">Don't have an account?</Text>
+          <Text size={3}>Don't have an account?</Text>
           <Link href="/signup">
-            <Text variant="body" color="blue" weight="bold">
+            <Text size={3} color="blue" weight="bold">
               Sign up
             </Text>
           </Link>

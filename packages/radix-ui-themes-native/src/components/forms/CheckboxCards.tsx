@@ -302,7 +302,7 @@ const CheckboxCardsItem = React.forwardRef<
         }
         // Trigger haptic feedback (check global setting)
         if (globalHaptics) {
-          triggerHaptic('press')
+          triggerHaptic(isChecked ? 'toggleOff' : 'toggleOn')
         }
       }
     };

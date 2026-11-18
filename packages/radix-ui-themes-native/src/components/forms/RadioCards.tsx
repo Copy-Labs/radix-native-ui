@@ -294,7 +294,7 @@ const RadioCardsItem = React.forwardRef<
         onValueChange(value);
         // Trigger haptic feedback (check both global and local settings)
         if (globalHaptics) {
-          triggerHaptic('press')
+          triggerHaptic('toggleOn')
         }
       }
     };
